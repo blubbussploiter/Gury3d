@@ -205,5 +205,4 @@ void RBX::SnapJoint::createJoint()
 	part1->body->connector = this;
 
 	_body = body;
-
 }

@@ -98,6 +98,21 @@ void RBX::XplicitNgine::createBody(RBX::PVInstance* part)
 		part->body->_body->updateInertiaTensor();
 	}
 
+	Vector3 velocity, rotVelocity;
+
+	velocity = part->getVelocity();
+	rotVelocity = part->getRotVelocity();
+
+	if(velocity != Vector3::zero())
+	{
+		part->body->_body->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+	}
+
+	if (rotVelocity != Vector3::zero())
+	{
+		part->body->_body->setAngularVelocity(btVector3(rotVelocity.x, rotVelocity.y, rotVelocity.z));
+	}
+
 	if (part->getCanCollide())
 	{
 		_world->addRigidBody(part->body->_body);
@@ -140,6 +155,14 @@ void RBX::XplicitNgine::updateBody(RBX::PVInstance* part)
 
 	connector = part->body->connector;
 	transform = part->body->_body->getWorldTransform();
+
+	btVector3 linVel, angVel;
+
+	linVel = part->body->_body->getLinearVelocity();
+	angVel = part->body->_body->getAngularVelocity();
+
+	part->velocity = Vector3(linVel.x(), linVel.y(), linVel.z());
+	part->rotVelocity = Vector3(angVel.x(), angVel.y(), angVel.z());
 
 	if (connector)
 	{

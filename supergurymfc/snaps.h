@@ -6,6 +6,12 @@
 namespace RBX
 {
 
+	class SnapConstraint : public btTypedConstraint
+	{
+	public:
+
+	};
+
 	class SnapJoint : public Joint
 	{
 	private:

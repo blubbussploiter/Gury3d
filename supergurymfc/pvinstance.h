@@ -104,9 +104,39 @@ namespace RBX
 		int getBottomSurface() { return bottom; }
 		void setBottomSurface(int s) { setFace(BOTTOM, (RBX::SurfaceType)s); }
 
-		void setVelocity()
+		void setVelocity(Vector3 newVelocity)
 		{
+			if (body->_body && newVelocity != Vector3::zero())
+			{
+				body->_body->setLinearVelocity(btVector3(newVelocity.x, newVelocity.y, newVelocity.z));
+			}
+			velocity = newVelocity;
+		}
 
+		void setRotVelocity(Vector3 newVelocity)
+		{
+			if (body->_body && newVelocity != Vector3::zero())
+			{
+				body->_body->setAngularVelocity(btVector3(newVelocity.x, newVelocity.y, newVelocity.z));
+			}
+			rotVelocity = newVelocity;
+		}
+
+		void setAnchored(bool a)
+		{
+			anchored = a;
+			if (body->_body)
+			{
+				RBX::RunService::singleton()->getPhysics()->resetBody(this);
+			}
+		}
+		void setCanCollide(bool c) 
+		{
+			canCollide = c; 
+			if (body->_body)
+			{
+				RBX::RunService::singleton()->getPhysics()->resetBody(this);
+			}
 		}
 
 		FormFactor getFormFactor() { return formFactor; }
@@ -114,6 +144,7 @@ namespace RBX
 		void setFormFactor(FormFactor f)
 		{
 			formFactor = f;
+			setSize(getSize());
 		}
 
 		bool getShowControllerFlag() { return showControllerFlag; }
@@ -182,9 +213,6 @@ namespace RBX
 		bool getAnchored() { return anchored; }
 		bool getCanCollide() { return canCollide; }
 		bool getLocked() { return locked; }
-
-		void setAnchored(bool a) { anchored = a; RBX::RunService::singleton()->getPhysics()->updateAnchor(this); }
-		void setCanCollide(bool c) { canCollide = c; }
 
 		SurfaceType getSurface(NormalId face);
 
