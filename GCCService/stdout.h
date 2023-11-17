@@ -1,0 +1,16 @@
+#ifndef RBX_STDOUT_H
+#define RBX_STDOUT_H
+
+#include "log.h"
+
+namespace RBX
+{
+
+	class StandardOut
+	{
+	public:
+		static void print(MessageType type, const char* format, ...);
+	};
+}
+
+#endif

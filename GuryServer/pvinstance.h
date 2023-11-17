@@ -1,0 +1,264 @@
+#ifndef RENDER_SHAPES_H
+#define RENDER_SHAPES_H
+
+#include <G3DAll.h>
+#include <vector>
+
+#include "decal.h"
+#include "brickcolor.h"
+
+#include "runservice.h"
+
+#include "extents.h"
+#include "joints.h"
+
+#include "IRenderable.h"
+
+namespace RBX
+{
+
+	class PVInstance;
+
+	extern void renderSurface(RenderDevice* rd, RBX::PVInstance* pv, NormalId n, SurfaceType s, unsigned int& glid);
+	extern CoordinateFrame getSurfaceCenter(NormalId face, Vector3 size, Extents e);
+	extern TextureRef getSurface(RBX::SurfaceType s);
+	extern float getAffectedFormFactor(RBX::PVInstance* pv);
+	extern void initSurfaces();
+
+	class PhysBody
+	{
+	public:
+		int tag;
+		bool isColliding;
+		btRigidBody* _body;
+		btCollisionObject* _collider;
+		btCollisionShape* _shape;
+		RBX::Joint* connector;
+	};
+
+	class PVInstance :
+		public RBX::Derivable<Render::Renderable>
+	{
+	private:
+
+		float elasticity, friction, erp, cfm;
+		float lineWidth, lineHeight;
+
+		Vector2 cylinderOriginX, cylinderOriginY,
+			uv0, uv1, uv2;
+
+		unsigned int idFront, idBack, idTop, idBottom, idRight, idLeft;
+		float alpha;
+
+	public:
+
+		Vector3 size;
+		Color3 color;
+
+		CoordinateFrame cframe;
+
+		Vector3 velocity;
+		Vector3 rotVelocity;
+
+		SurfaceType front, back, top, bottom, right, left;
+
+		FormFactor formFactor;
+
+		bool showControllerFlag;
+		bool anchored;
+		bool locked;
+
+		int shape;
+
+	public:
+
+		PhysBody* body;
+
+		void setShape(int s) { shape = s; }
+		int getShape() { return shape; }
+
+		int getFrontSurface() { return front; }
+		void setFrontSurface(int s) { setFace(FRONT, (RBX::SurfaceType)s); }
+
+		int getBackSurface() { return back; }
+		void setBackSurface(int s) { setFace(BACK, (RBX::SurfaceType)s); }
+
+		int getRightSurface() { return right; }
+		void setRightSurface(int s) { setFace(RIGHT, (RBX::SurfaceType)s); }
+
+		int getLeftSurface() { return left; }
+		void setLeftSurface(int s) { setFace(LEFT, (RBX::SurfaceType)s); }
+
+		int getTopSurface() { return top; }
+		void setTopSurface(int s) { setFace(TOP, (RBX::SurfaceType)s); }
+
+		int getBottomSurface() { return bottom; }
+		void setBottomSurface(int s) { setFace(BOTTOM, (RBX::SurfaceType)s); }
+
+		FormFactor getFormFactor() { return formFactor; }
+
+		void setFormFactor(FormFactor f)
+		{
+			formFactor = f;
+		}
+
+		bool getShowControllerFlag() { return showControllerFlag; }
+		void setShowControllerFlag(bool scf) { showControllerFlag = scf; }
+
+		void setFace(NormalId f, SurfaceType s);
+		void initFace(unsigned int& f, SurfaceType s);
+
+		virtual void render(RenderDevice* rd);
+		virtual void renderFace(RenderDevice* rd, NormalId face, bool isDrawingDecal = 0);
+
+		virtual void renderSurfaces(RenderDevice* rd);
+		virtual void render3DSurfaces(RenderDevice* rd);
+
+		void render3dSurface(RenderDevice* d, NormalId face);
+
+		void drawCylinderPluses(RenderDevice* d);
+
+		void calculateCylinderOffsets();
+		void calculateUvs();
+
+		Vector3 getSizeExternal()
+		{
+			return getSize() * 2;
+		}
+
+		Vector3 getSize()
+		{
+			return size;
+		}
+
+		void setSize(Vector3 s) {
+
+			size = s;			
+			size /= 2;
+			size.y *= getAffectedFormFactor(this);
+
+			switch (shape)
+			{
+			case cylinder:
+			{
+				size.y *= 2;
+				calculateCylinderOffsets();
+				break;
+			}
+			case ball: break;
+			}
+
+			calculateUvs();
+
+			RBX::RunService::singleton()->getPhysics()->removeBody(this);
+			RBX::RunService::singleton()->getPhysics()->createBody(this);
+
+		}
+
+		Vector3 getPosition() { return cframe.translation; }
+
+		void setPosition(Vector3 p) { setCFrame(CoordinateFrame(cframe.rotation, p)); }
+		CoordinateFrame getCFrame() { return cframe; }
+
+		void setCFrameNoPhysics(CoordinateFrame cf) { cframe = cf; }
+		void setCFrame(CoordinateFrame cf) { cframe = cf; RBX::RunService::singleton()->getPhysics()->updateBodyCFrame(cframe, this); }
+
+		Color3 getColor() { return color; }
+		void setColor(Color3 c) { color = c; }
+		bool getAnchored() { return anchored; }
+		bool getLocked() { return locked; }
+
+		void setAnchored(bool a) { anchored = a; RBX::RunService::singleton()->getPhysics()->updateAnchor(this); }
+		SurfaceType getSurface(NormalId face);
+		float getTransparency() { return transparency; }
+		void setTransparency(float f) { transparency = f; alpha = 1 - transparency; }
+
+		Vector3 getVelocity() { return velocity; }
+		Vector3 getRotVelocity() { return rotVelocity; }
+		Vector3 getEulerRotation() { float x, y, z; cframe.rotation.toEulerAnglesXYZ(x, y, z); return Vector3(x, y, z); }
+		void setEulerRotation(float x, float y, float z) { setCFrame(CoordinateFrame(Matrix3::fromEulerAnglesXYZ(x, y, z), getCFrame().translation)); }
+
+		void lookAt(Vector3 v)
+		{
+			CoordinateFrame cf;
+			cf = getCFrame();
+			cf.lookAt(v);
+			setCFrame(cf);
+		}
+
+		void setLocked(bool l) { locked = l; }
+
+		Box getBox() {
+			Box box = Box(Vector3(size.x / 2.f, size.y / 2.4f, size.z / 2.f), Vector3(-size.x / 2.f, -size.y / 2.4f, -size.z / 2.f));
+			CoordinateFrame c = CoordinateFrame(getCFrame().rotation, getPosition());
+			return c.toWorldSpace(box);
+		}
+
+		Instance* clone() const {
+			RBX::PVInstance* i = new PVInstance(*this);
+			i->body = new PhysBody();
+			RBX::RunService::singleton()->getPhysics()->createBody(i);
+			return i;
+		}
+
+		Extents getLocalExtents() { return Extents(-getSize() / 2, getSize() / 2); }
+		Extents getWorldExtents()
+		{
+			Extents localExtents = getLocalExtents();
+			return localExtents.toWorldSpace(getCFrame());
+		}
+
+		float getElasticity() { return elasticity; }
+		void setElasticity(float el) { elasticity = el; }
+		float getFriction() { return friction; }
+		void setFriction(float f) { friction = f; }
+		float getERP() { return erp; }
+		float getCFM() { return cfm; }
+		void setCFM(float _cfm) { cfm = _cfm; }
+		void setERP(float _erp) { erp = _erp; }
+
+		void onRemove() { RBX::RunService::singleton()->getPhysics()->removeBody(this); }
+
+		PVInstance()
+		{
+			cframe = CoordinateFrame(Vector3(0.f, 0.f, 0.f));
+			size = Vector3(4.f, 1.2f, 2.f);
+			color = Color3(0.639216f, 0.635294f, 0.643137f);
+
+			setClassName("PVInstance");
+			setName("PVInstance");
+
+			idFront = -1;
+			idBack = -1;
+			idTop = -1;
+			idBottom = -1;
+			idRight = -1;
+			idLeft = -1;
+
+			isAffectedByPhysics = 1;
+
+			elasticity = 0.5f;
+			friction = 0.300000012f;
+
+			body = new PhysBody();
+
+			alpha = 1;
+
+			setFormFactor(FormFactor::Symmetric);
+
+			shape = part;
+		}
+		virtual ~PVInstance() { RBX::RunService::singleton()->getPhysics()->removeBody(this); }
+
+	};
+
+	namespace Primitives
+	{
+		extern void rawCylinderAlongX(Color4 color, float radius, float axis);
+		extern void drawLine(Vector2 pos, RenderDevice* d, Color3 color, float width, float height);
+		extern void drawBall(RenderDevice* d, RBX::PVInstance* base);
+		extern void drawCylinder(RenderDevice* d, RBX::PVInstance* base);
+	}
+}
+
+#endif

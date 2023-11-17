@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <RootNamespace>supergurymfc</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\server\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOW;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\include;..\include\studio;..\include\include;..\include\fmod\inc;..\include\fmod\studio;..\include\bullet;..\include\bullet\vectormathlibrary\include\vectormath\scalar\cpp\;..\include\lua</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ole32.lib;Advapi32.lib;</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="decode.h" />
+    <ClInclude Include="encode.h" />
+    <ClInclude Include="application.h" />
+    <ClInclude Include="backpack.h" />
+    <ClInclude Include="bitstreamHelp.h" />
+    <ClInclude Include="brickcolor.h" />
+    <ClInclude Include="bthelp.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="classes.h" />
+    <ClInclude Include="clonebin.h" />
+    <ClInclude Include="content.h" />
+    <ClInclude Include="controller.h" />
+    <ClInclude Include="crashreporter.h" />
+    <ClInclude Include="datamodel.h" />
+    <ClInclude Include="decal.h" />
+    <ClInclude Include="documentManager.h" />
+    <ClInclude Include="enum.h" />
+    <ClInclude Include="extents.h" />
+    <ClInclude Include="gametool.h" />
+    <ClInclude Include="guid.h" />
+    <ClInclude Include="GuiRoot.h" />
+    <ClInclude Include="hinge.h" />
+    <ClInclude Include="hopperbin.h" />
+    <ClInclude Include="humanoid.h" />
+    <ClInclude Include="ICameraOwner.h" />
+    <ClInclude Include="idserializer.h" />
+    <ClInclude Include="instance.h" />
+    <ClInclude Include="instancebridge.h" />
+    <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="ISelectable.h" />
+    <ClInclude Include="ISteppable.h" />
+    <ClInclude Include="joints.h" />
+    <ClInclude Include="jointservice.h" />
+    <ClInclude Include="keyboard.h" />
+    <ClInclude Include="lighting.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="luabridge.h" />
+    <ClInclude Include="networkserver.h" />
+    <ClInclude Include="rbx_identifiers.h" />
+    <ClInclude Include="replicator.h" />
+    <ClInclude Include="surfaceFactory.h" />
+    <ClInclude Include="md5.h" />
+    <ClInclude Include="mesh.h" />
+    <ClInclude Include="model.h" />
+    <ClInclude Include="motor.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="oscontext.h" />
+    <ClInclude Include="part.h" />
+    <ClInclude Include="players.h" />
+    <ClInclude Include="property.h" />
+    <ClInclude Include="pvenums.h" />
+    <ClInclude Include="pvinstance.h" />
+    <ClInclude Include="ray.h" />
+    <ClInclude Include="rbx.h" />
+    <ClInclude Include="rbxmath.h" />
+    <ClInclude Include="rbxwindow.h" />
+    <ClInclude Include="rightkeyboard.h" />
+    <ClInclude Include="runservice.h" />
+    <ClInclude Include="scene.h" />
+    <ClCompile Include="clientproxy.cpp" />
+    <ClCompile Include="guid.cpp" />
+    <ClCompile Include="idserializer.cpp" />
+    <ClCompile Include="iobfix.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="md5.cpp" />
+    <ClCompile Include="networkserver.cpp" />
+    <ClCompile Include="physbody.cpp" />
+    <ClCompile Include="replicator.cpp" />
+    <ClCompile Include="serializer.h" />
+    <ClInclude Include="scriptcontext.h" />
+    <ClInclude Include="selection.h" />
+    <ClInclude Include="service.h" />
+    <ClInclude Include="snaps.h" />
+    <ClInclude Include="sounds.h" />
+    <ClInclude Include="soundservice.h" />
+    <ClInclude Include="stdout.h" />
+    <ClInclude Include="strings.h" />
+    <ClInclude Include="thumbnailGenerator.h" />
+    <ClInclude Include="view.h" />
+    <ClInclude Include="workspace.h" />
+    <ClInclude Include="yieldingthreads.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="application.cpp" />
+    <ClCompile Include="appSteps.cpp" />
+    <ClCompile Include="backpack.cpp" />
+    <ClCompile Include="backpackItem.cpp" />
+    <ClCompile Include="brickcolor.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="CameraControlMenu.cpp" />
+    <ClCompile Include="camera_utils.cpp" />
+    <ClCompile Include="classes.cpp" />
+    <ClCompile Include="clonebin.cpp" />
+    <ClCompile Include="content.cpp" />
+    <ClCompile Include="controller.cpp" />
+    <ClCompile Include="crashreporter.cpp" />
+    <ClCompile Include="datamodel.cpp" />
+    <ClCompile Include="decal.cpp" />
+    <ClCompile Include="ExplNgine.cpp" />
+    <ClCompile Include="gametool.cpp" />
+    <ClCompile Include="GuiBox.cpp" />
+    <ClCompile Include="GuiButton.cpp" />
+    <ClCompile Include="GuiHint.cpp" />
+    <ClCompile Include="GuiImage.cpp" />
+    <ClCompile Include="GuiImageButton.cpp" />
+    <ClCompile Include="GuiLabel.cpp" />
+    <ClCompile Include="GuiList.cpp" />
+    <ClCompile Include="GuiMessage.cpp" />
+    <ClCompile Include="GuiRoot.cpp" />
+    <ClCompile Include="humanoid.cpp" />
+    <ClCompile Include="instance.cpp" />
+    <ClCompile Include="instancemt.cpp" />
+    <ClCompile Include="jointservice.cpp" />
+    <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="lighting.cpp" />
+    <ClCompile Include="log.cpp" />
+    <ClCompile Include="luargs.cpp" />
+    <ClCompile Include="MenuBar.cpp" />
+    <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="motor.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="oscontext.cpp" />
+    <ClCompile Include="part.cpp" />
+    <ClCompile Include="players.cpp" />
+    <ClCompile Include="plr_controller.cpp" />
+    <ClCompile Include="primitives.cpp" />
+    <ClCompile Include="pvinstance.cpp" />
+    <ClCompile Include="ray.cpp" />
+    <ClCompile Include="rightkeyboard.cpp" />
+    <ClCompile Include="runservice.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="scriptcontext.cpp" />
+    <ClCompile Include="selection.cpp" />
+    <ClCompile Include="serializer.cpp" />
+    <ClCompile Include="snaps.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="sounds.cpp" />
+    <ClCompile Include="stdout.cpp" />
+    <ClCompile Include="surfaceFactory.cpp" />
+    <ClCompile Include="surfaces.cpp" />
+    <ClCompile Include="thumbnailGenerator.cpp" />
+    <ClCompile Include="valuebridge.cpp" />
+    <ClCompile Include="view.cpp" />
+    <ClCompile Include="workspace.cpp" />
+    <ClCompile Include="..\include\lua\lapi.c" />
+    <ClCompile Include="..\include\lua\lauxlib.c" />
+    <ClCompile Include="..\include\lua\lbaselib.c" />
+    <ClCompile Include="..\include\lua\lcode.c" />
+    <ClCompile Include="..\include\lua\ldblib.c" />
+    <ClCompile Include="..\include\lua\ldebug.c" />
+    <ClCompile Include="..\include\lua\ldo.c" />
+    <ClCompile Include="..\include\lua\ldump.c" />
+    <ClCompile Include="..\include\lua\lfunc.c" />
+    <ClCompile Include="..\include\lua\lgc.c" />
+    <ClCompile Include="..\include\lua\linit.c" />
+    <ClCompile Include="..\include\lua\liolib.c" />
+    <ClCompile Include="..\include\lua\llex.c" />
+    <ClCompile Include="..\include\lua\lmathlib.c" />
+    <ClCompile Include="..\include\lua\lmem.c" />
+    <ClCompile Include="..\include\lua\loadlib.c" />
+    <ClCompile Include="..\include\lua\lobject.c" />
+    <ClCompile Include="..\include\lua\lopcodes.c" />
+    <ClCompile Include="..\include\lua\loslib.c" />
+    <ClCompile Include="..\include\lua\lparser.c" />
+    <ClCompile Include="..\include\lua\lstate.c" />
+    <ClCompile Include="..\include\lua\lstring.c" />
+    <ClCompile Include="..\include\lua\lstrlib.c" />
+    <ClCompile Include="..\include\lua\ltable.c" />
+    <ClCompile Include="..\include\lua\ltablib.c" />
+    <ClCompile Include="..\include\lua\ltm.c" />
+    <ClCompile Include="..\include\lua\lundump.c" />
+    <ClCompile Include="..\include\lua\lvm.c" />
+    <ClCompile Include="..\include\lua\lzio.c" />
+    <ClCompile Include="..\include\lua\print.c" />
+    <ClCompile Include="appmanager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="supergurymfc.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\supergurymfc.ico" />
+    <Image Include="res\supergurymfcDoc.ico" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="res\userimages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\supergurymfc.rc2" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
