@@ -2,7 +2,9 @@
 
 #include "scene.h"
 #include "workspace.h"
+
 #include "jointservice.h"
+#include "scriptcontext.h"
 
 #include "datamodel.h"
 #include "players.h"
@@ -26,9 +28,12 @@ void RBX::RunService::run()
         localPlayer->setAsController();
     }
 
-    reset();
+    if (scriptContext)
+    {
+        scriptContext->runScripts();
+    }
 
-    RBX::StandardOut::print(RBX::MESSAGE_INFO, "RunService::run()");
+    reset();
     isRunning = true;
 }
 
@@ -40,6 +45,7 @@ void RBX::RunService::stop()
 void RBX::RunService::reset()
 {
     RBX::Scene::singleton()->updatePhysicsObjects();
+    //RBX::Datamodel::getDatamodel()->scriptContext->runScripts();
     /* add here, check for jointservice build joints on load,
     RBX::Workspace::singleton()->buildJoints(); */
    // RBX::Workspace::singleton()->buildJoints();

@@ -79,6 +79,7 @@ void RBX::ModelInstance::render(RenderDevice* rd)
 	{
 	case KeyboardRight: color = Color3::BLUE; break;
 	case KeyboardLeft: color = Color3::RED; break;
+	case None: return;
 	}
 	drawControllerFlag(rd, color);
 }

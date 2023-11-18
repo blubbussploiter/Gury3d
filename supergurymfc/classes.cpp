@@ -5,6 +5,7 @@
 #include "lighting.h"
 #include "workspace.h"
 #include "humanoid.h"
+#include "basescript.h"
 #include "decal.h"
 #include "model.h"
 #include "mesh.h"
@@ -36,6 +37,12 @@ RBX::Instance* RBX::fromName(std::string className)
 	if (className == "Decal")
 	{
 		return new RBX::Decal();
+	}
+
+	if (className == "Script" ||
+		className == "BaseScript")
+	{
+		return new RBX::BaseScript();
 	}
 
 	if (className == "Lighting")

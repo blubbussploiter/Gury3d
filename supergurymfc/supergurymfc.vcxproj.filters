@@ -405,6 +405,9 @@
     <ClInclude Include="CCommandBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="basescript.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -750,6 +753,9 @@
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="CCommandBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basescript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -90,6 +90,7 @@ void RBX::Datamodel::open()
     yieldingThreads = new Lua::YieldingThreads(scriptContext);
     players = new RBX::Network::Players();
     guiRoot = Gui::singleton();
+    runService->scriptContext = scriptContext;
 
     fillExplorerWindow();
 

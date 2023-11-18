@@ -340,7 +340,6 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
         partCenter = getCFrame();
         center = getSurfaceCenter(face, getSize(), getWorldExtents());
 
-        center.lookAt(center.translation - center.lookVector());
         d->setObjectToWorldMatrix(center);
 
         switch (type)

@@ -6,6 +6,7 @@
 
 #include "workspace.h"
 #include "datamodel.h"
+#include "scriptcontext.h"
 
 #include "camera.h"
 #include "appmanager.h"
@@ -67,11 +68,13 @@ void RBX::getPVInstances(RBX::Instances* instances, RBX::Instances* pvs)
 void RBX::Workspace::onDescendentAdded(RBX::Instance* descendent)
 {
     RBX::View::singleton()->onWorkspaceDescendentAdded(descendent);
+    RBX::ScriptContext::singleton()->onWorkspaceDescendentAdded(descendent);
 }
 
 void RBX::Workspace::onDescendentRemoved(RBX::Instance* descendent)
 {
     RBX::View::singleton()->onWorkspaceDescendentRemoved(descendent);
+    RBX::ScriptContext::singleton()->onWorkspaceDescendentRemoved(descendent);
 }
 
 bool RBX::Workspace::setImageServerView()

@@ -32,26 +32,25 @@ void RBX::Lighting::begin(RenderDevice* device)
     device->setSpecularCoefficient(1.0f);
 
     ambientColor = (bottom_ambient + top_ambient) / 2.0f;
-
-    device->setAmbientLightColor(ambientColor);
     device->setColorClearValue(clear_color);
     
-    bool renderDiffuse = ((spotLight_color.r * 255) < 220);
+    bool renderDiffuse = ((spotLight_color.r * 255) < 200);
+
     device->setLight(0, GLight::directional(lighting.lightDirection, spotLight_color * 0.8999999761581421f, 1, renderDiffuse)); /* places with spotlightcolors greater than 220, 220, 220 render SUPER bright (or just weirdly), and places with less than that render SUPER dark. so disable if its not so */
 
     if (top_ambient != ambientColor && !renderDiffuse)
     {
         Color3 ambient = top_ambient - ambientColor;
-        //device->setLight(1, GLight::directional(-Vector3::unitX(), ambient, 0, 1));
-        device->setLight(2, GLight::directional(Vector3::unitY(), ambient, 0, 1));
-        //device->setLight(3, GLight::directional(Vector3::unitZ(), ambient, 0, 1));
+        device->setLight(1, GLight::directional(Vector3::unitY(), ambient, 0, 1));
     }
 
     if (bottom_ambient != ambientColor)
     {
         Color3 ambient = bottom_ambient - ambientColor;
-        device->setLight(4, GLight::directional(toLight, ambient, 0, 1));
+        device->setLight(2, GLight::directional(toLight, ambient, 0, 1));
     }
+
+    device->setAmbientLightColor(ambientColor);
 }
 
 void RBX::Lighting::end(RenderDevice* device)

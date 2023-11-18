@@ -4,7 +4,23 @@
 #include "datamodel.h"
 #include "workspace.h"
 
+#include "luabridge.h"
+#include "classes.h"
+
+#include "runservice.h"
+
 using namespace RBX::Reflection;
+
+int instanceNew(lua_State* L)
+{
+	const char* instance = luaL_checkstring(L, 1);
+	if (instance)
+	{
+		RBX::Instance* newInstance = RBX::fromName(instance);
+		return RBX::Reflection::LuaMetatable<RBX::Instance>::pushObject(L, newInstance);
+	}
+	return 0;
+}
 
 void RBX::ScriptContext::openState()
 {
@@ -27,6 +43,11 @@ void RBX::ScriptContext::openState()
 
 		lua_register(globalState, "wait", & ScriptContext::wait);
 		lua_register(globalState, "print", &ScriptContext::print);
+
+		lua_newtable(globalState);
+		lua_pushcfunction(globalState, instanceNew);
+		lua_setfield(globalState, -2, "new");
+		lua_setglobal(globalState, "Instance");
 
 	}
 }
@@ -67,6 +88,81 @@ void RBX::ScriptContext::execute(std::string script)
 int RBX::ScriptContext::resume(lua_State* L, int narg)
 {
 	return lua_resume(L, narg);
+}
+
+void RBX::ScriptContext::onWorkspaceDescendentAdded(RBX::Instance* descendent)
+{
+	RBX::BaseScript* script = dynamic_cast<RBX::BaseScript*>(descendent);
+	if (script)
+	{
+		scripts.push_back(script);
+	}
+}
+
+void RBX::ScriptContext::onWorkspaceDescendentRemoved(RBX::Instance* descendent)
+{
+	if (std::find(
+		scripts.begin(),
+		scripts.end(),
+		descendent) != scripts.end())
+	{
+		scripts.erase(std::remove(
+			scripts.begin(),
+			scripts.end(),
+			descendent));
+	}
+}
+
+void RBX::ScriptContext::runScript(RBX::BaseScript* script)
+{
+	lua_State* thread;
+	std::string source;
+
+	thread = script->establishScriptThread(globalState);
+
+	if (!thread)
+	{
+		throw std::exception("ScriptContext::runScript: Unable to create a new thread");
+	}
+
+	RBX::Reflection::LuaMetatable<RBX::Instance>::pushConObject(thread, script);
+
+	lua_setglobal(thread, "script");
+	source = script->getSource();
+
+	if (luaL_loadbuffer(thread, source.c_str(), source.size(), script->getName().c_str()))
+	{
+		throw std::runtime_error(lua_tostring(thread, -1));
+	}
+
+	if (lua_resume(thread, 0))
+	{
+		throw std::runtime_error(lua_tostring(thread, -1));
+	}
+}
+
+RBX::ScriptContext* RBX::ScriptContext::singleton()
+{
+	RBX::RunService* runService = RBX::RunService::singleton();
+	if (runService->scriptContext) return runService->scriptContext;
+	return 0;
+}
+
+void RBX::ScriptContext::runScripts()
+{
+	for (unsigned int i = 0; i < scripts.size(); i++)
+	{
+		RBX::BaseScript* script = scripts.at(i);
+		if (!script) continue;
+		try
+		{
+			runScript(script);
+		}
+		catch (std::runtime_error err)
+		{
+			RBX::StandardOut::print(RBX::MESSAGE_ERROR, err.what());
+		}
+	}
 }
 
 int RBX::ScriptContext::print(lua_State* L)

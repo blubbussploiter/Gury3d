@@ -7,6 +7,8 @@
 #include "instance.h"
 #include "service.h"
 
+#include "scriptcontext.h"
+
 #define BODY_MASS 1.333f
 #define contains(v, i) (std::find(v.begin(), v.end(), i) != v.end())
 
@@ -81,6 +83,9 @@ namespace RBX
 		XplicitNgine* physics;
 		RBX::Instances* steppers;
 	public:
+
+		ScriptContext* scriptContext;
+
 		bool isRunning;
 		void run();
 		void stop();

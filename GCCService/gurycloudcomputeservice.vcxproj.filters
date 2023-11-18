@@ -357,6 +357,9 @@
     <ClInclude Include="guid.h">
       <Filter>Header Files\game\network\guid</Filter>
     </ClInclude>
+    <ClInclude Include="basescript.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="serializer.h">

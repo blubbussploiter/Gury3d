@@ -14,6 +14,8 @@ std::map<std::string, int> instanceImages =
 	{"Instance", 0},
 	{"Part", 1},
 	{"PVInstance", 1},
+	{"Script", 3},
+	{"BaseScript", 3},
 	{"Decal", 4},
 	{"SpecialMesh", 5},
 	{"Humanoid", 6},

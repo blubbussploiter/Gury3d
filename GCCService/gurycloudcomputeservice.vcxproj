@@ -188,6 +188,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="basescript.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="encode.h" />
     <ClInclude Include="application.h" />
