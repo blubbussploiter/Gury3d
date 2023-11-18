@@ -42,9 +42,9 @@ void RBX::Lighting::begin(RenderDevice* device)
     if (top_ambient != ambientColor && !renderDiffuse)
     {
         Color3 ambient = top_ambient - ambientColor;
-        device->setLight(1, GLight::directional(-Vector3::unitX(), ambient, 0, 1));
+        //device->setLight(1, GLight::directional(-Vector3::unitX(), ambient, 0, 1));
         device->setLight(2, GLight::directional(Vector3::unitY(), ambient, 0, 1));
-        device->setLight(3, GLight::directional(Vector3::unitZ(), ambient, 0, 1));
+        //device->setLight(3, GLight::directional(Vector3::unitZ(), ambient, 0, 1));
     }
 
     if (bottom_ambient != ambientColor)

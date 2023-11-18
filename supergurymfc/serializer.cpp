@@ -104,7 +104,7 @@ CoordinateFrame readCFrame(rapidxml::xml_node<>* node)
 
 RBX::Content getContent(rapidxml::xml_node<>* node)
 {
-	rapidxml::xml_node<>* binaryNode, *urlNode, * nullNode;
+	rapidxml::xml_node<>* binaryNode, * urlNode, * nullNode;
 
 	binaryNode = node->first_node("binary");
 	urlNode = node->first_node("url");
@@ -128,7 +128,7 @@ RBX::Content getContent(rapidxml::xml_node<>* node)
 void setProperty(rapidxml::xml_node<>* node, RBX::Instance* instance, std::string propertyType, std::string propertyValue, std::string propertyName)
 {
 	int token;
-	 
+
 	rttr::type type = rttr::type::get_by_name(instance->getClassName());
 	rttr::property property = type.get_property(propertyName);
 
@@ -164,7 +164,7 @@ void setProperty(rapidxml::xml_node<>* node, RBX::Instance* instance, std::strin
 			case 5: /* token */
 			{
 				int value = std::stoi(propertyValue);
-				if(property.is_enumeration())
+				if (property.is_enumeration())
 				{
 					rttr::enumeration en = property.get_enumeration();
 

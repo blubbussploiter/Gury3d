@@ -24,12 +24,12 @@ RTTR_REGISTRATION
          .property("Shape", &RBX::PVInstance::getShape, &RBX::PVInstance::setShape)(rttr::metadata("Type", RBX::Part))
          .property("shape", &RBX::PVInstance::getShape, &RBX::PVInstance::setShape)
          .property("size", &RBX::PVInstance::getSizeExternal, &RBX::PVInstance::setSize)(rttr::metadata("Type", RBX::Part))
-         .property("FrontSurface", &RBX::PVInstance::getFrontSurface, &RBX::PVInstance::setFrontSurface)
-         .property("BackSurface", &RBX::PVInstance::getBackSurface, &RBX::PVInstance::setBackSurface)
-         .property("TopSurface", &RBX::PVInstance::getTopSurface, &RBX::PVInstance::setTopSurface)
-         .property("BottomSurface", &RBX::PVInstance::getBottomSurface, &RBX::PVInstance::setBottomSurface)
-         .property("RightSurface", &RBX::PVInstance::getRightSurface, &RBX::PVInstance::setRightSurface)
-         .property("LeftSurface", &RBX::PVInstance::getLeftSurface, &RBX::PVInstance::setLeftSurface)
+         .property("FrontSurface", &RBX::PVInstance::getFrontSurface, &RBX::PVInstance::setFrontSurface)(rttr::metadata("Type", RBX::Surface))
+         .property("BackSurface", &RBX::PVInstance::getBackSurface, &RBX::PVInstance::setBackSurface)(rttr::metadata("Type", RBX::Surface))
+         .property("TopSurface", &RBX::PVInstance::getTopSurface, &RBX::PVInstance::setTopSurface)(rttr::metadata("Type", RBX::Surface))
+         .property("BottomSurface", &RBX::PVInstance::getBottomSurface, &RBX::PVInstance::setBottomSurface)(rttr::metadata("Type", RBX::Surface))
+         .property("RightSurface", &RBX::PVInstance::getRightSurface, &RBX::PVInstance::setRightSurface)(rttr::metadata("Type", RBX::Surface))
+         .property("LeftSurface", &RBX::PVInstance::getLeftSurface, &RBX::PVInstance::setLeftSurface)(rttr::metadata("Type", RBX::Surface))
          .property("rawFormFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
          .property("formFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
          .property("Transparency", &RBX::PVInstance::getTransparency, &RBX::PVInstance::setTransparency)(rttr::metadata("Type", RBX::Appearance));
@@ -264,18 +264,26 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
     glTranslatef(0.0, 0.0, -axis * 0.5);
     glTranslatef(0.0, 0.0, axis);
 
+    glTranslatef(0.0f, 0.0f, 0.01f);
+
     RBX::Primitives::drawLine(cylinderOriginX, d, FRONT_CROSS, lineWidth, -lineHeight);
     RBX::Primitives::drawLine(cylinderOriginX, d, FRONT_CROSS, -lineWidth, -lineHeight);
     RBX::Primitives::drawLine(cylinderOriginY, d, FRONT_CROSS, -lineHeight, lineWidth);
     RBX::Primitives::drawLine(cylinderOriginY, d, FRONT_CROSS, -lineHeight, -lineWidth);
+   
+    glTranslatef(0.0f, 0.0f, -0.01f);
 
     glRotatef(180.0, 0.0, 1.0, 0.0);
     glTranslatef(0.0, 0.0, axis);
+
+    glTranslatef(0.0f, 0.0f, 0.01f);
 
     RBX::Primitives::drawLine(cylinderOriginX, d, BACK_CROSS, lineWidth, -lineHeight);
     RBX::Primitives::drawLine(cylinderOriginX, d, BACK_CROSS, -lineWidth, -lineHeight);
     RBX::Primitives::drawLine(cylinderOriginY, d, BACK_CROSS, -lineHeight, lineWidth);
     RBX::Primitives::drawLine(cylinderOriginY, d, BACK_CROSS, -lineHeight, -lineWidth);
+    
+    glTranslatef(0.0f, 0.0f, -0.01f);
 
 }
 
@@ -303,13 +311,12 @@ void RBX::PVInstance::calculateCylinderOffsets()
     float radius, scale;
 
     radius = getSize().x;
-
-    scale = radius * 0.2;
+    scale = radius * 0.1f;
 
     cylinderOriginX = Vector2(0, scale / 2);
     cylinderOriginY = Vector2(scale / 2, 0);
 
-    lineWidth = radius / 1.5f;
+    lineWidth = radius / 1.25f;
     lineHeight = scale;
 }
 
@@ -328,24 +335,30 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
     if (type != SurfaceType::Smooth)
     {
 
-        CoordinateFrame center;
-        center = getSurfaceCenter(face, getSize(), getLocalExtents());
+        CoordinateFrame center, partCenter;
 
-        d->setObjectToWorldMatrix(getCFrame());
+        partCenter = getCFrame();
+        center = getSurfaceCenter(face, getSize(), getWorldExtents());
+
+        center.lookAt(center.translation - center.lookVector());
+        d->setObjectToWorldMatrix(center);
 
         switch (type)
         {
         case SurfaceType::Hinge:
         {
-            Draw::cylinder(Cylinder(center.translation - center.lookVector() * 0.5f, center.translation + center.lookVector() * 0.5f, 0.2f), d, Color3::yellow(), Color4::clear());
+            RBX::Primitives::rawCylinderAlongX(Color3::yellow(), 0.2f, 1.0f, 6);
             break;
         }
         case SurfaceType::SteppingMotor:
         case SurfaceType::Motor:
         {
 
-            Draw::cylinder(Cylinder(center.translation - center.lookVector() * 0.5f, center.translation + center.lookVector() * 0.5f, 0.2f), d, Color3::yellow(), Color4::clear());
-            Draw::cylinder(Cylinder(center.translation, center.translation + center.lookVector() * 0.1f, 0.5f), d, Color3::gray(), Color4::clear());
+            RBX::Primitives::rawCylinderAlongX(Color3::gray(), 0.4f, 0.2f, 6);
+            RBX::Primitives::rawCylinderAlongX(Color3::yellow(), 0.2f, 1.0f, 6);
+
+            //Draw::cylinder(Cylinder(center.translation - center.lookVector() * 0.5f, center.translation + center.lookVector() * 0.5f, 0.2f), d, Color3::yellow(), Color4::clear());
+            //Draw::cylinder(Cylinder(center.translation, center.translation + center.lookVector() * 0.1f, 0.5f), d, Color3::gray(), Color4::clear());
 
             break;
         }

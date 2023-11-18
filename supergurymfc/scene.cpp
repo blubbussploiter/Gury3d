@@ -45,6 +45,11 @@ bool physicsRule(RBX::Render::Renderable* r)
 	return r->isAffectedByPhysics;
 }
 
+bool darkRule(RBX::Render::Renderable* r)
+{
+	return opaqueRule(r) && r->unaffectedByLight;
+}
+
 bool steppableRule(RBX::Render::Renderable* r)
 {
 	RBX::ISteppable* steppable;
@@ -125,6 +130,7 @@ void RBX::Scene::transparentPass(RenderDevice* rd)
 void RBX::Scene::darkPass(RenderDevice* rd)
 {
 	baseRender(rd, opaqueRule, render3DSurface);
+	baseRender(rd, darkRule, renderRenderable);
 }
 
 void RBX::Scene::lastPass(RenderDevice* rd)

@@ -15,7 +15,7 @@ namespace RBX
 		public:
 
 			bool isSpecialShape;
-			bool renderedLast;
+			bool unaffectedByLight, renderedLast;
 
 			float alpha, transparency, localTransparency;
 
@@ -27,7 +27,11 @@ namespace RBX
 			virtual void renderFace(RenderDevice* rd, NormalId face) {};
 
 			virtual ~Renderable() {}
-			Renderable() { isRenderable = 1; isSpecialShape = false; }
+			Renderable() 
+			{ 
+				isRenderable = 1; 
+				isSpecialShape = false;
+			}
 			RTTR_ENABLE(RBX::Instance);
 		};
 

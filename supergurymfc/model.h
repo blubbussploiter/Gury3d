@@ -12,7 +12,7 @@
 namespace RBX
 {
 	class ModelInstance :
-		public RBX::Instance,
+		public RBX::Render::Renderable,
 		public RBX::ISelectable,
 		public ICameraOwner
 	{
@@ -33,6 +33,9 @@ namespace RBX
 		{
 			controllerType = c;
 		}
+
+		void drawControllerFlag(RenderDevice* rd, Color3 color);
+		void render(RenderDevice* rd);
 
 		void setPrimaryPartCFrame(CoordinateFrame cframe);
 		CoordinateFrame getPrimaryPartCFrame();
@@ -69,6 +72,7 @@ namespace RBX
 			controllerType = ControllerTypes::None;
 			controller = nullptr;
 			primaryPart = nullptr;
+			unaffectedByLight = true;
 			setClassName("Model");
 			setName("Model");
 		}

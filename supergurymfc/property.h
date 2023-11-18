@@ -17,7 +17,8 @@ namespace RBX
 		Behavior,
 		Appearance,
 		Game,
-		Part
+		Part,
+		Surface
 	};
 
 	static std::string getType(Types t)
@@ -29,6 +30,7 @@ namespace RBX
 		case Appearance: return "Appearance";
 		case Game: return "Game";
 		case Part: return "Part";
+		case Surface: return "Surface";
 		}
 		return "";
 	}

@@ -86,23 +86,23 @@ namespace RBX
 		void setShape(Shape s) { shape = s; }
 		Shape getShape() { return shape; }
 
-		int getFrontSurface() { return front; }
-		void setFrontSurface(int s) { setFace(FRONT, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getFrontSurface() { return front; }
+		void setFrontSurface(RBX::SurfaceType s) { setFace(FRONT, s); }
 
-		int getBackSurface() { return back; }
-		void setBackSurface(int s) { setFace(BACK, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getBackSurface() { return back; }
+		void setBackSurface(RBX::SurfaceType s) { setFace(BACK, s); }
 
-		int getRightSurface() { return right; }
-		void setRightSurface(int s) { setFace(RIGHT, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getRightSurface() { return right; }
+		void setRightSurface(RBX::SurfaceType s) { setFace(RIGHT, s); }
 
-		int getLeftSurface() { return left; }
-		void setLeftSurface(int s) { setFace(LEFT, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getLeftSurface() { return left; }
+		void setLeftSurface(RBX::SurfaceType s) { setFace(LEFT, s); }
 
-		int getTopSurface() { return top; }
-		void setTopSurface(int s) { setFace(TOP, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getTopSurface() { return top; }
+		void setTopSurface(RBX::SurfaceType s) { setFace(TOP, s); }
 
-		int getBottomSurface() { return bottom; }
-		void setBottomSurface(int s) { setFace(BOTTOM, (RBX::SurfaceType)s); }
+		RBX::SurfaceType getBottomSurface() { return bottom; }
+		void setBottomSurface(RBX::SurfaceType s) { setFace(BOTTOM, s); }
 
 		void setVelocity(Vector3 newVelocity)
 		{
@@ -304,7 +304,7 @@ namespace RBX
 
 	namespace Primitives
 	{
-		extern void rawCylinderAlongX(Color4 color, float radius, float axis);
+		extern void rawCylinderAlongX(Color4 color, float radius, float axis, int slices=12);
 		extern void drawLine(Vector2 pos, RenderDevice* d, Color3 color, float width, float height);
 		extern void drawBall(RenderDevice* d, RBX::PVInstance* base);
 		extern void drawCylinder(RenderDevice* d, RBX::PVInstance* base);

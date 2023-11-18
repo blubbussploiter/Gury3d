@@ -23,6 +23,7 @@ namespace RBX
 		Weld,
 		Studs,
 		Inlet,
+		UNKNOWN_FILLER,
 		Hinge,
 		Motor,
 		SteppingMotor,

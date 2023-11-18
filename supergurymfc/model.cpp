@@ -61,6 +61,28 @@ void RBX::ModelInstance::makeController()
 	//RBX::ControllerService::singleton()->addController(controller);
 }
 
+void RBX::ModelInstance::drawControllerFlag(RenderDevice* rd, Color3 color)
+{
+	RBX::PVInstance* primaryPart = getPrimaryPart();
+	if (!primaryPart) return;
+
+	rd->setObjectToWorldMatrix(primaryPart->getCFrame());
+	/* draw the flag stand */
+
+	Draw::line(Line::fromTwoPoints(Vector3::zero(), Vector3(0, 4, 0)), rd, color);
+}
+
+void RBX::ModelInstance::render(RenderDevice* rd)
+{
+	Color3 color;
+	switch (controllerType)
+	{
+	case KeyboardRight: color = Color3::BLUE; break;
+	case KeyboardLeft: color = Color3::RED; break;
+	}
+	drawControllerFlag(rd, color);
+}
+
 void RBX::ModelInstance::setPrimaryPartCFrame(CoordinateFrame cframe)
 {
 	getPrimaryPart()->setCFrame(cframe);

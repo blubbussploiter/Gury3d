@@ -59,12 +59,12 @@ CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents exten
 	{
 		case NormalId::FRONT:
 		{
-			positionCenter = extentsCenter + Vector3(0,0, size.z);
+			positionCenter = extentsCenter + Vector3(0,0, -size.z);
 			break;
 		}
 		case NormalId::BACK:
 		{
-			positionCenter = extentsCenter - Vector3(0, 0, size.z);
+			positionCenter = extentsCenter + Vector3(0, 0, size.z);
 			break;
 		}
 		case NormalId::LEFT:
@@ -92,7 +92,7 @@ CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents exten
 	CoordinateFrame lookAt;
 
 	lookAt = extentsCenter;
-	lookAt.lookAt(positionCenter);
+	//lookAt.lookAt(positionCenter);
 
-	return CoordinateFrame(lookAt.rotation, positionCenter);
+	return CoordinateFrame(Matrix3::identity(), positionCenter);
 }
