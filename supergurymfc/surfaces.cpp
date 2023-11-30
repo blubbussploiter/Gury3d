@@ -40,7 +40,7 @@ TextureRef RBX::getSurface(RBX::SurfaceType s)
 	bool b = surfaces.copySubImage(surface, surfaces, 0, y, 64, 128);
 	Texture::Parameters params;
 
-	params.interpolateMode = Texture::BILINEAR_NO_MIPMAP;
+	params.interpolateMode = Texture::BILINEAR_MIPMAP;
 	params.wrapMode = Texture::TILE;
 
 	TextureRef r = Texture::fromGImage(fn, surface, TextureFormat::AUTO, Texture::DIM_2D, params);

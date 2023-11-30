@@ -34,8 +34,9 @@ public:
 	void OnChangeVisualStyle();
 
 	void AddInstance(RBX::Instance* instance);
-	void SelectInstance(RBX::Instance* i);
+	void RemoveInstance(RBX::Instance* instance);
 
+	void SelectInstance(RBX::Instance* i);
 	void ClearInstances();
 
 	HTREEITEM GetInstance(RBX::Instance* instance);

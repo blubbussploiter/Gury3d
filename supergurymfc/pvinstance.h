@@ -1,5 +1,4 @@
-#ifndef RENDER_SHAPES_H
-#define RENDER_SHAPES_H
+#pragma once
 
 #include <G3DAll.h>
 #include <vector>
@@ -83,8 +82,18 @@ namespace RBX
 
 		PhysBody* body;
 
-		void setShape(Shape s) { shape = s; }
-		Shape getShape() { return shape; }
+		void setShape(Shape s) 
+		{
+			shape = s;
+			if (body->_body)
+			{
+				RBX::RunService::singleton()->getPhysics()->resetBody(this);
+			}
+		}
+		Shape getShape()
+		{ 
+			return shape; 
+		}
 
 		RBX::SurfaceType getFrontSurface() { return front; }
 		void setFrontSurface(RBX::SurfaceType s) { setFace(FRONT, s); }
@@ -195,8 +204,11 @@ namespace RBX
 
 			calculateUvs();
 
-			RBX::RunService::singleton()->getPhysics()->removeBody(this);
-			RBX::RunService::singleton()->getPhysics()->createBody(this);
+			if (body->_body)
+			{
+				RBX::RunService::singleton()->getPhysics()->removeBody(this);
+				RBX::RunService::singleton()->getPhysics()->createBody(this);
+			}
 
 		}
 
@@ -285,13 +297,13 @@ namespace RBX
 			idRight = -1;
 			idLeft = -1;
 
-			isAffectedByPhysics = 1;
-
 			elasticity = 0.5f;
 			friction = 0.300000012f;
 
-			body = new PhysBody();
+			canCollide = true;
+			anchored = false;
 
+			body = new PhysBody();
 			alpha = 1;
 
 			setFormFactor(FormFactor::Symmetric);
@@ -310,5 +322,3 @@ namespace RBX
 		extern void drawCylinder(RenderDevice* d, RBX::PVInstance* base);
 	}
 }
-
-#endif

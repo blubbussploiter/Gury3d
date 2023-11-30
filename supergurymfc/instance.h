@@ -31,13 +31,7 @@ namespace RBX
 
 		GuidItem* id;
 
-		bool isRenderable;
-		bool isAffectedByPhysics; /* derived from PVInstance? */
-
 		bool isParentLocked;
-		bool isSteppable;
-
-		void testMethod(std::string s) { printf("adada %s\n", s.c_str()); }
 
 		bool isAncestorOf(RBX::Instance* i);
 

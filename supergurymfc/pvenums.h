@@ -70,9 +70,9 @@ namespace RBX
 
 		rttr::registration::enumeration<Shape>("Shape")
 			(
-				rttr::value("ball", ball),
-				rttr::value("block", part),
-				rttr::value("cylinder", cylinder)
+				rttr::value("Ball", ball),
+				rttr::value("Block", part),
+				rttr::value("Cylinder", cylinder)
 			);
 
 		rttr::registration::enumeration<FormFactor>("FormFactor")

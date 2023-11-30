@@ -41,13 +41,11 @@ void updatePVInstances(RBX::Instances* PVInstances)
     for (size_t i = 0; i < PVInstances->size(); i++)
     {
         RBX::Instance* child = PVInstances->at(i);
-        if (child->isRenderable || child->isAffectedByPhysics)
+
+        if (RBX::IsA<RBX::PVInstance>(child))
         {
-            if (RBX::IsA<RBX::PVInstance>(child))
-            {
-                part = (RBX::PVInstance*)child;
-                RBX::RunService::singleton()->getPhysics()->createBody(part);
-            }
+            part = (RBX::PVInstance*)child;
+            RBX::RunService::singleton()->getPhysics()->createBody(part);
         }
     }
 }
@@ -67,6 +65,7 @@ void RBX::getPVInstances(RBX::Instances* instances, RBX::Instances* pvs)
 
 void RBX::Workspace::onDescendentAdded(RBX::Instance* descendent)
 {
+    RBX::RunService::singleton()->onWorkspaceDescendentAdded(descendent);
     RBX::View::singleton()->onWorkspaceDescendentAdded(descendent);
     RBX::ScriptContext::singleton()->onWorkspaceDescendentAdded(descendent);
 }

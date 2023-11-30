@@ -27,5 +27,5 @@ namespace RBX
 	extern void pushVariant(lua_State* L, rttr::variant var);
 
 	extern void pushLuaValue(lua_State* L, RBX::Instance* obj, rttr::property prop);
-	extern void assignLuaValue(lua_State* L, RBX::Instance* obj, rttr::property prop, int idx);
+	extern void assignLuaValue(lua_State* L, RBX::Instance* obj, rttr::property& prop, int idx);
 }

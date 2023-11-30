@@ -45,6 +45,8 @@ namespace RBX
 		void updateBodyCFrame(CoordinateFrame cf, RBX::PVInstance* p);
 		void updateAnchor(RBX::PVInstance* part);
 
+		void computeLinearVerticalAccelerationRestitution(RBX::PVInstance* p);
+
 		bool isTouching(RBX::PVInstance* part, bool ignoreSiblings=0);
 		bool areColliding(RBX::PVInstance* part1, RBX::PVInstance* part2);
 
@@ -93,7 +95,9 @@ namespace RBX
 		void update();
 		void heartbeat();
 		void updateSteppers();
-		void workspaceOnDescendentAdded(RBX::Instance* descendent);
+
+		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
+
 		XplicitNgine* getPhysics() { return physics; }
 		/* deprecated, use Datamodel->runService */
 		static RunService* singleton();

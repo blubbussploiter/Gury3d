@@ -17,11 +17,12 @@ RTTR_REGISTRATION
         .method("run", &RBX::RunService::run);
 }
 
-
 void RBX::RunService::run()
 {
     RBX::Network::Player* localPlayer;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
+
+    reset();
 
     if (localPlayer)
     {
@@ -33,7 +34,6 @@ void RBX::RunService::run()
         scriptContext->runScripts();
     }
 
-    reset();
     isRunning = true;
 }
 
@@ -45,10 +45,6 @@ void RBX::RunService::stop()
 void RBX::RunService::reset()
 {
     RBX::Scene::singleton()->updatePhysicsObjects();
-    //RBX::Datamodel::getDatamodel()->scriptContext->runScripts();
-    /* add here, check for jointservice build joints on load,
-    RBX::Workspace::singleton()->buildJoints(); */
-   // RBX::Workspace::singleton()->buildJoints();
 }
 
 void RBX::RunService::update()
@@ -57,11 +53,10 @@ void RBX::RunService::update()
 
     for (int i = 0; i < 6; i++)
     {
-        physics->update();
+        physics->update(1.50f);
     }
 
     RBX::Scene::singleton()->updatePhysicsObjects();
-
 }
 
 void RBX::RunService::heartbeat()
@@ -77,12 +72,8 @@ void RBX::RunService::updateSteppers()
     }
 }
 
-void RBX::RunService::workspaceOnDescendentAdded(RBX::Instance* descendent)
+void RBX::RunService::onWorkspaceDescendentAdded(RBX::Instance* descendent)
 {
-    if (descendent->isSteppable)
-    {
-        steppers->push_back(descendent);
-    }
 }
 
 RBX::RunService* RBX::RunService::singleton()

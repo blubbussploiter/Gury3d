@@ -408,6 +408,12 @@
     <ClInclude Include="basescript.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
+    <ClInclude Include="cframebridge.h">
+      <Filter>Header Files\game\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3bridge.h">
+      <Filter>Header Files\game\lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -743,20 +749,32 @@
     <ClCompile Include="physbody.cpp">
       <Filter>Source Files\rbx\game\services\physics</Filter>
     </ClCompile>
-    <ClCompile Include="surfaceFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CInsertObjectDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="contentprovider.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="CCommandBar.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\rbx\studio</Filter>
+    </ClCompile>
+    <ClCompile Include="CInsertObjectDlg.cpp">
+      <Filter>Source Files\rbx\studio</Filter>
+    </ClCompile>
+    <ClCompile Include="surfaceFactory.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
     <ClCompile Include="basescript.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="hopperbin.cpp">
+      <Filter>Source Files\rbx\game\services\hopperbins</Filter>
+    </ClCompile>
+    <ClCompile Include="brickmap.cpp">
+      <Filter>Source Files\rbx\game\services\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="vector3mt.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="cframemt.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

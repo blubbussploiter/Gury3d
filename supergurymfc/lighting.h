@@ -1,5 +1,6 @@
 #include <G3DAll.h>
 #include "instance.h"
+#include "service.h"
 
 namespace RBX
 {
@@ -11,7 +12,8 @@ namespace RBX
 	}
 
 	class Lighting :
-		public RBX::Instance
+		public RBX::Instance,
+		public RBX::Service<RBX::Lighting>
 	{
 	private:
 		float latitude;
@@ -35,15 +37,20 @@ namespace RBX
 		void setTopAmbient(Color3 c) { top_ambient = c; }
 		void setBottomAmbient(Color3 c) { bottom_ambient = c; }
 		void setClearColor(Color3 c) { clear_color = c; }
+
 		void setTimeOfDay(std::string t) 
 		{
 			timeOfDay = Time::fromString(t.c_str());
-			if (params) params->setTime(timeOfDay);
+			getParameters().setTime(timeOfDay);
 		}
+
 		void setGeoLatitude(float l)
 		{ 
 			latitude = l; 
-			if (params) params->setLatitude(latitude);
+			if (params)
+			{
+				params->setLatitude(latitude);
+			}
 		}
 
 		Color3 getSpotLight() { return spotLight_color; }

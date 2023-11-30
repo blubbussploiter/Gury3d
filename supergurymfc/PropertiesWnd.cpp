@@ -111,6 +111,12 @@ void setProperty(rttr::variant v, CMFCPropertyGridProperty*& property, std::stri
 		property = new CMFCPropertyGridProperty(name.c_str(), v.to_double(), "");
 	}
 
+	if (t == rttr::type::get<int>())
+	{
+		int n = v.to_int();
+		property = new CMFCPropertyGridProperty(name.c_str(), (_variant_t)n, "");
+	}
+
 	if (t == rttr::type::get<G3D::Vector3>())
 	{
 		property = new CMFCPropertyGridProperty(name.c_str());

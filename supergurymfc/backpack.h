@@ -22,18 +22,18 @@ namespace RBX
 		std::map<HopperBin*, BackpackItem*> items;
 	public:
 		void keypress(G3D::UserInput* ui);
-		void updateGui(RenderDevice* rd, G3D::UserInput* ui);
+		void updateGui();
 		void removeBackpackItem(HopperBin* b) { items.erase(b); }
 		BackpackItem* getBackpackItem(HopperBin* b) { return items[b]; }
 		BackpackItem* createBackpackItem(HopperBin* item);
-		Backpack(RBX::Instance* player)
+		Backpack()
 		{
 			setName("Backpack");
 			setClassName("Backpack");
-			setParent(player);
 			isParentLocked = 1;
 		}
 		virtual ~Backpack() {}
+		RTTR_ENABLE(RBX::Instance)
 	};
 
 	class BackpackItem : public RBX::Gui::GuiButton

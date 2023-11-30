@@ -5,21 +5,27 @@
 #include "workspace.h"
 
 #include "luabridge.h"
+#include "vector3bridge.h"
+#include "cframebridge.h"
+
 #include "classes.h"
 
 #include "runservice.h"
 
-using namespace RBX::Reflection;
-
 int instanceNew(lua_State* L)
 {
 	const char* instance = luaL_checkstring(L, 1);
-	if (instance)
+	if (!instance) return 0;
+
+	RBX::Instance* newInstance = RBX::fromName(instance);
+
+	if (!lua_isnil(L, 2))
 	{
-		RBX::Instance* newInstance = RBX::fromName(instance);
-		return RBX::Reflection::LuaMetatable<RBX::Instance>::pushObject(L, newInstance);
+		newInstance->setParent(RBX::Lua::SharedPtrBridge<RBX::Instance>::getPtr(L, 2));
 	}
-	return 0;
+
+	RBX::Lua::SharedPtrBridge<RBX::Instance>::push(L, newInstance);
+	return 1;
 }
 
 void RBX::ScriptContext::openState()
@@ -29,19 +35,24 @@ void RBX::ScriptContext::openState()
 	{
 		globalState = luaL_newstate();
 
-		lua_pushcclosure(globalState, luaopen_base, 0);
-		lua_pushstring(globalState, "");
-		lua_pcall(globalState, 1, 0, 0);
+		luaopen_base(globalState);
+		luaopen_math(globalState);
+		luaopen_string(globalState);
 
-		RBX_LUA_REGISTER(globalState, RBX::Instance);
+		luaL_register(globalState, "Vector3", RBX::Lua::Vector3Bridge::classLibrary);
+		luaL_register(globalState, "CFrame", RBX::Lua::CoordinateFrameBridge::classLibrary);
 
-		LuaMetatable<Instance>::pushObject(globalState, Datamodel::getDatamodel());
+		RBX_LUA_REGISTER(globalState, G3D::Vector3);
+		RBX_LUA_REGISTER(globalState, G3D::CoordinateFrame);
+		RBX_PTR_LUA_REGISTER(globalState, RBX::Instance);
+
+		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(globalState, Datamodel::getDatamodel());
 		lua_setglobal(globalState, "game");
 
-		LuaMetatable<Instance>::pushObject(globalState, Workspace::singleton());
+		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(globalState, Workspace::singleton());
 		lua_setglobal(globalState, "workspace");
 
-		lua_register(globalState, "wait", & ScriptContext::wait);
+		lua_register(globalState, "wait", &ScriptContext::wait);
 		lua_register(globalState, "print", &ScriptContext::print);
 
 		lua_newtable(globalState);
@@ -61,14 +72,13 @@ void RBX::ScriptContext::executeInNewThread(std::string script)
 	}
 
 	RBX::StandardOut::print(RBX::MESSAGE_INFO, "ScriptContext::executeInNewThread %.64s", script.c_str());
-	if (luaL_loadbuffer(thread, script.c_str(), script.size(), name.c_str()))
+	if (luaL_loadbuffer(thread, script.c_str(), script.size(), "="))
 	{
 		throw std::runtime_error(lua_tostring(thread, -1));
 	}
-
-	if (lua_resume(thread, 0))
+	else
 	{
-		throw std::runtime_error(lua_tostring(thread, -1));
+		resume(thread, 0);
 	}
 }
 
@@ -87,7 +97,20 @@ void RBX::ScriptContext::execute(std::string script)
 
 int RBX::ScriptContext::resume(lua_State* L, int narg)
 {
-	return lua_resume(L, narg);
+	int status;
+	status = lua_resume(L, narg);
+
+	if (status == LUA_YIELD)
+	{
+		return 1;
+	}
+
+	if (status)
+	{
+		throw std::runtime_error(lua_tostring(L, -1));
+	}
+
+	return 0;
 }
 
 void RBX::ScriptContext::onWorkspaceDescendentAdded(RBX::Instance* descendent)
@@ -118,6 +141,7 @@ void RBX::ScriptContext::runScript(RBX::BaseScript* script)
 	lua_State* thread;
 	std::string source;
 
+	if (std::find(scripts.begin(), scripts.end(), script) == scripts.end()) return;
 	thread = script->establishScriptThread(globalState);
 
 	if (!thread)
@@ -125,27 +149,19 @@ void RBX::ScriptContext::runScript(RBX::BaseScript* script)
 		throw std::exception("ScriptContext::runScript: Unable to create a new thread");
 	}
 
-	RBX::Reflection::LuaMetatable<RBX::Instance>::pushConObject(thread, script);
-
+	RBX::Lua::SharedPtrBridge<RBX::Instance>::push(thread, script);
 	lua_setglobal(thread, "script");
+
 	source = script->getSource();
 
 	if (luaL_loadbuffer(thread, source.c_str(), source.size(), script->getName().c_str()))
 	{
 		throw std::runtime_error(lua_tostring(thread, -1));
 	}
-
-	if (lua_resume(thread, 0))
+	else
 	{
-		throw std::runtime_error(lua_tostring(thread, -1));
+		resume(thread, 0);
 	}
-}
-
-RBX::ScriptContext* RBX::ScriptContext::singleton()
-{
-	RBX::RunService* runService = RBX::RunService::singleton();
-	if (runService->scriptContext) return runService->scriptContext;
-	return 0;
 }
 
 void RBX::ScriptContext::runScripts()
@@ -192,8 +208,15 @@ int RBX::ScriptContext::wait(lua_State* L)
 {
 	double timeout;
 
-	timeout = lua_tonumber(L, 1);
+	timeout = lua_tonumber(L, 1); 
 	RBX::Datamodel::getDatamodel()->yieldingThreads->queueWaiter(L, timeout);
 
 	return lua_yield(L, 0);
+}
+
+RBX::ScriptContext* RBX::ScriptContext::singleton()
+{
+	RBX::RunService* runService = RBX::RunService::singleton();
+	if (runService->scriptContext) return runService->scriptContext;
+	return 0;
 }

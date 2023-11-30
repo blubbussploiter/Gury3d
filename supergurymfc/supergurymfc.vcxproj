@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="basescript.h" />
     <ClInclude Include="CCommandBar.h" />
+    <ClInclude Include="cframebridge.h" />
     <ClInclude Include="CInsertObjectDlg.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="encode.h" />
@@ -250,9 +251,12 @@
     <ClInclude Include="runservice.h" />
     <ClInclude Include="scene.h" />
     <ClCompile Include="basescript.cpp" />
+    <ClCompile Include="brickmap.cpp" />
     <ClCompile Include="CCommandBar.cpp" />
+    <ClCompile Include="cframemt.cpp" />
     <ClCompile Include="CInsertObjectDlg.cpp" />
     <ClCompile Include="contentprovider.cpp" />
+    <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="iobfix.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="physbody.cpp" />
@@ -266,6 +270,7 @@
     <ClInclude Include="stdout.h" />
     <ClInclude Include="strings.h" />
     <ClInclude Include="thumbnailGenerator.h" />
+    <ClInclude Include="vector3bridge.h" />
     <ClInclude Include="view.h" />
     <ClInclude Include="workspace.h" />
     <ClInclude Include="yieldingthreads.h" />
@@ -349,6 +354,7 @@
     <ClCompile Include="surfaces.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
     <ClCompile Include="valuebridge.cpp" />
+    <ClCompile Include="vector3mt.cpp" />
     <ClCompile Include="view.cpp" />
     <ClCompile Include="workspace.cpp" />
     <ClCompile Include="..\include\lua\lapi.c" />

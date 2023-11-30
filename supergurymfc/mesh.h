@@ -90,7 +90,6 @@ namespace RBX
 				setName("SpecialMesh");
 				setMeshType(Head);
 				mesh_scale = Vector3::one();
-				isSpecialShape = true;
 			}
 			virtual ~SpecialMesh() {}
 

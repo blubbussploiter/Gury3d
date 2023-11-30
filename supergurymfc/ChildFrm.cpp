@@ -33,13 +33,11 @@ void createApplication(CChildFrame* frame)
 		if (!manager->toLoad.empty())
 		{
 			app->rbxlFile = manager->toLoad;
-			manager->toLoad = std::string();
 		}
 
 		if (!manager->fileName.empty())
 		{
 			frame->SetWindowTextA(manager->fileName.c_str());
-			manager->fileName = std::string();
 		}
 
 		frame->application = app;

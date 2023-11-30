@@ -1,12 +1,18 @@
 #include "backpack.h"
 #include "GuiRoot.h"
 
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<RBX::Backpack>("Backpack")
+		.constructor<>();
+}
+
 void RBX::Backpack::keypress(G3D::UserInput* ui)
 {
 
 }
 
-void RBX::Backpack::updateGui(RenderDevice* rd, G3D::UserInput* ui)
+void RBX::Backpack::updateGui()
 {
 	for (unsigned int i = 0; i < getChildren()->size(); i++)
 	{
@@ -16,18 +22,19 @@ void RBX::Backpack::updateGui(RenderDevice* rd, G3D::UserInput* ui)
 			if (!items[bin])
 			{
 				items[bin] = createBackpackItem(bin);
+				RBX::Gui::singleton()->add(items[bin]);
 			}
 			else
 			{
-				rd->push2D();
+				//rd->push2D();
 				if (items[bin]->number)
 				{
 					items[bin]->number->title = std::to_string(i + 1);
 				}
 				items[bin]->position.x = (i * 65);
-				items[bin]->handleMouse(ui);
-				items[bin]->render(rd);
-				rd->popState();
+				//items[bin]->handleMouse(ui);
+				//items[bin]->render(rd);
+				//rd->popState();
 			}
 		}
 	}

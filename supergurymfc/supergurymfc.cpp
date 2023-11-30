@@ -51,7 +51,7 @@ CsupergurymfcApp::CsupergurymfcApp() noexcept
 {
 	m_bHiColorIcons = FALSE;
 
-	m_nAppLook = ID_VIEW_APPLOOK_OFF_XP;
+	m_nAppLook = ID_VIEW_APPLOOK_VS_2005;
 
 	// TODO: replace application ID string below with unique ID string; recommended
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation

@@ -2,11 +2,11 @@
 #include <iostream>
 #include "instancebridge.h"
 
-RBX_LUA_REGISTER_NAME(RBX::Instance, "Instance");
+RBX_PTR_LUA_REGISTER_NAME(RBX::Instance, "Instance");
 
 int funcProxy(lua_State* L)
 {
-	RBX::Instance* instance = RBX::Reflection::LuaMetatable<RBX::Instance>::getObject(L, 1);
+	RBX::Instance* instance = RBX::Lua::SharedPtrBridge<RBX::Instance>::getPtr(L, 1);
 	
 	if (instance)
 	{
@@ -43,20 +43,17 @@ int funcProxy(lua_State* L)
 	return 0;
 }
 
-int RBX::Reflection::LuaMetatable<RBX::Instance>::on_tostring(lua_State* L)
+int RBX::Lua::SharedPtrBridge<RBX::Instance>::on_tostring(RBX::Instance* object, lua_State* L)
 {
-	Instance* instance = RBX::Reflection::LuaMetatable<RBX::Instance>::getObject(L, 1);
-	lua_pushstring(L, instance->getName().c_str());
+	lua_pushstring(L, object->getName().c_str());
 	return 1;
 }
 
-int RBX::Reflection::LuaMetatable<RBX::Instance>::on_index(lua_State* L)
+int RBX::Lua::SharedPtrBridge<RBX::Instance>::on_index(RBX::Instance* object, const char* name, lua_State* L)
 {
-	Instance* instance = RBX::Reflection::LuaMetatable<RBX::Instance>::getObject(L, 1);
-	const char* index = lua_tostring(L, 2);
 
-	rttr::type base = rttr::detail::get_type_from_instance(instance);
-	rttr::type type = rttr::type::get_by_name(instance->getClassName());
+	rttr::type base = rttr::detail::get_type_from_instance(object);
+	rttr::type type = rttr::type::get_by_name(object->getClassName());
 
 	if (!type)
 	{
@@ -65,15 +62,15 @@ int RBX::Reflection::LuaMetatable<RBX::Instance>::on_index(lua_State* L)
 
 	if (type)
 	{
-		rttr::property prop = type.get_property(index);
+		rttr::property prop = type.get_property(name);
 
 		if (prop)
 		{
-			pushLuaValue(L, instance, prop);
+			pushLuaValue(L, object, prop);
 			return 1;
 		}
 
-		rttr::method method = type.get_method(index);
+		rttr::method method = type.get_method(name);
 		if (method)
 		{
 			lua_pushvalue(L, 2);
@@ -83,24 +80,21 @@ int RBX::Reflection::LuaMetatable<RBX::Instance>::on_index(lua_State* L)
 	}
 
 	Instance* child;
-	child = instance->findFirstChild(index);
+	child = object->findFirstChild(name);
 
 	if (child)
 	{
-		RBX::Reflection::LuaMetatable<RBX::Instance>::pushObject(L, child);
+		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(L, child);
 		return 1;
 	}
 
-	return luaL_error(L, "'%s' not valid member of %s", index, instance->getName().c_str());
+	return luaL_error(L, "'%s' not valid member of %s", name, object->getName().c_str());
 }
 
-int RBX::Reflection::LuaMetatable<RBX::Instance>::on_newindex(lua_State* L)
+int RBX::Lua::SharedPtrBridge<RBX::Instance>::on_newindex(RBX::Instance* object, const char* name, lua_State* L)
 {
-	Instance* instance = RBX::Reflection::LuaMetatable<RBX::Instance>::getObject(L, 1);
-	const char* index = lua_tostring(L, 2);
-
-	rttr::type base = rttr::detail::get_type_from_instance(instance);
-	rttr::type type = rttr::type::get_by_name(instance->getClassName());
+	rttr::type base = rttr::detail::get_type_from_instance(object);
+	rttr::type type = rttr::type::get_by_name(object->getClassName());
 
 	if (!type)
 	{
@@ -109,13 +103,13 @@ int RBX::Reflection::LuaMetatable<RBX::Instance>::on_newindex(lua_State* L)
 
 	if (type)
 	{
-		rttr::property prop = type.get_property(index);
+		rttr::property prop = type.get_property(name);
 		if (prop)
 		{
-			assignLuaValue(L, instance, prop, 3);
+			assignLuaValue(L, object, prop, 3);
 			return 0;
 		}
 	}
 
-	return luaL_error(L, "'%s' not valid member of %s '%s'", index, instance->getClassName().c_str(), instance->getName().c_str());
+	return luaL_error(L, "'%s' not valid member of %s '%s'", name, object->getClassName().c_str(), object->getName().c_str());
 }
