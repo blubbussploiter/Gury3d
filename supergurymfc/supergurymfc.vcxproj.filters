@@ -410,6 +410,7 @@
     </ClInclude>
     <ClInclude Include="StartView.h">
       <Filter>Header Files\studio</Filter>
+    </ClInclude>
     <ClInclude Include="cframebridge.h">
       <Filter>Header Files\game\lua</Filter>
     </ClInclude>
