@@ -228,6 +228,7 @@
     <ClInclude Include="lighting.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="luabridge.h" />
+    <ClInclude Include="StartView.h" />
     <ClInclude Include="surfaceFactory.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="mesh.h" />
@@ -349,6 +350,7 @@
     <ClCompile Include="snaps.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sounds.cpp" />
+    <ClCompile Include="StartView.cpp" />
     <ClCompile Include="stdout.cpp" />
     <ClCompile Include="surfaceFactory.cpp" />
     <ClCompile Include="surfaces.cpp" />

@@ -408,6 +408,9 @@
     <ClInclude Include="basescript.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
+    <ClInclude Include="StartView.h">
+      <Filter>Header Files\studio</Filter>
+    </ClInclude>
     <ClInclude Include="cframebridge.h">
       <Filter>Header Files\game\lua</Filter>
     </ClInclude>
@@ -775,6 +778,9 @@
     </ClCompile>
     <ClCompile Include="cframemt.cpp">
       <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="StartView.cpp">
+      <Filter>Source Files\rbx\studio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

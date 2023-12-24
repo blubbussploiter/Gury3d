@@ -9,24 +9,34 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gurycloudcomputeservice", "
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|Win32.Build.0 = Debug|Win32
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|x64.ActiveCfg = Debug|x64
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|x64.Build.0 = Debug|x64
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|x86.ActiveCfg = Debug|Win32
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Debug|x86.Build.0 = Debug|Win32
+		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|Win32.ActiveCfg = Release|Win32
+		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|Win32.Build.0 = Release|Win32
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|x64.ActiveCfg = Release|x64
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|x64.Build.0 = Release|x64
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|x86.ActiveCfg = Release|Win32
 		{CF8EA185-0F2A-474A-A66B-8E3825E2F907}.Release|x86.Build.0 = Release|Win32
+		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|Win32.Build.0 = Debug|Win32
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|x64.ActiveCfg = Debug|x64
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|x64.Build.0 = Debug|x64
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|x86.ActiveCfg = Debug|Win32
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Debug|x86.Build.0 = Debug|Win32
+		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Release|Win32.ActiveCfg = Release|Win32
+		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Release|Win32.Build.0 = Release|Win32
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Release|x64.ActiveCfg = Release|x64
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Release|x64.Build.0 = Release|x64
 		{8C2BE9A8-1F58-458C-A33A-80EDDE813D3A}.Release|x86.ActiveCfg = Release|Win32

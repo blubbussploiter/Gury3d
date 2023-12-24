@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "appmanager.h"
 
 class CsupergurymfcView : public CView
 {
@@ -17,11 +17,13 @@ public:
 
 // Operations
 public:
-
+	RBX::Experimental::Application* application;
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnInitialUpdate();
+	afx_msg void OnSetFocus(CWnd* pNewWnd);
 protected:
 
 // Implementation
@@ -39,6 +41,7 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	DECLARE_MESSAGE_MAP()
 };
 

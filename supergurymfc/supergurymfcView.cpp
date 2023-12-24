@@ -16,6 +16,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include <thread>
 
 
 // CsupergurymfcView
@@ -24,10 +25,53 @@ IMPLEMENT_DYNCREATE(CsupergurymfcView, CView)
 
 BEGIN_MESSAGE_MAP(CsupergurymfcView, CView)
 	ON_WM_CONTEXTMENU()
+	ON_WM_SETFOCUS()
+	ON_WM_KILLFOCUS()
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
 // CsupergurymfcView construction/destruction
+
+void suspendCurrentApplication(RBX::Experimental::Application* application)
+{
+	RBX::AppManager* manager = RBX::AppManager::singleton();
+
+	if (manager->getApplication())
+	{
+		manager->getApplication()->suspend();
+	}
+
+	manager->setCurrentApplication(application);
+	manager->getApplication()->resume();
+}
+
+void createApplication(CsupergurymfcView* frame)
+{
+	RBX::AppManager* manager = RBX::AppManager::singleton();
+
+	if (!frame->application)
+	{
+		RBX::Experimental::Application* app = manager->instantiate(frame->GetSafeHwnd());
+
+		if (!manager->toLoad.empty())
+		{
+			app->rbxlFile = manager->toLoad;
+			manager->toLoad = std::string();
+		}
+
+		if (!manager->fileName.empty())
+		{
+			frame->SetWindowTextA(manager->fileName.c_str());
+			manager->fileName = std::string();
+		}
+
+		frame->application = app;
+		suspendCurrentApplication(frame->application);
+
+		frame->application->start();
+		manager->start();
+	}
+}
 
 CsupergurymfcView::CsupergurymfcView() noexcept
 {
@@ -47,6 +91,9 @@ BOOL CsupergurymfcView::PreCreateWindow(CREATESTRUCT& cs)
 	return CView::PreCreateWindow(cs);
 }
 
+void CsupergurymfcView::OnInitialUpdate() {
+	std::thread{ createApplication, this }.detach();
+}
 // CsupergurymfcView drawing
 
 void CsupergurymfcView::OnDraw(CDC* /*pDC*/)
@@ -69,7 +116,20 @@ void CsupergurymfcView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 }
 
+void CsupergurymfcView::OnSetFocus(CWnd* pNewWnd) {
+	RBX::AppManager* manager = RBX::AppManager::singleton();
 
+	if (application)
+	{
+		suspendCurrentApplication(application);
+		application->onFocus();
+	}
+}
+
+void CsupergurymfcView::OnKillFocus(CWnd* pNewWnd) 
+{
+	CView::OnKillFocus(pNewWnd);
+}
 // CsupergurymfcView diagnostics
 
 #ifdef _DEBUG
