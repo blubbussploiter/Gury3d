@@ -32,7 +32,7 @@ void RBX::Controller::handleInput(G3D::UserInput* ui)
 		}
 	}
 
-	if (ui->keyPressed(SDLK_j))
+	if (ui->keyPressed(SDLK_SPACE))
 	{
 		direction = MovementDirections::Jump;
 	}

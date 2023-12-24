@@ -28,14 +28,16 @@ namespace RBX
 		virtual void update(RenderDevice* rd, G3D::UserInput* ui) {}
 		virtual void activate() {}
 		virtual void deactivate() {}
+
 		HopperBin()
 		{
-			binType = SCRIPT_BIN;
-			active = 0;
 			setName("HopperBin");
 			setClassName("HopperBin");
+			binType = SCRIPT_BIN;
+			active = 0;
 		}
 		virtual ~HopperBin() { deactivate(); };
+		RTTR_ENABLE(RBX::Instance);
 	};
 }
 #endif

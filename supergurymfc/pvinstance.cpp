@@ -6,8 +6,7 @@
 #include "mesh.h"
 #include "ray.h"
 
-#define FRONT_CROSS Color3(0.35f, 0.35f, 0.35f)
-#define BACK_CROSS  Color3(1,1,1)
+#define CROSS Color3(0.5f, 0.5f, 0.5f)
 
 RTTR_REGISTRATION
 {
@@ -18,6 +17,8 @@ RTTR_REGISTRATION
          .property("Locked", &RBX::PVInstance::getLocked, 
              &RBX::PVInstance::setLocked)(rttr::metadata("Type", RBX::Behavior))
          .property("Position", &RBX::PVInstance::getPosition, &RBX::PVInstance::setPosition)(rttr::metadata("Type", RBX::Data))
+         .property("Velocity", &RBX::PVInstance::getVelocity, &RBX::PVInstance::setVelocity)(rttr::metadata("Type", RBX::Data))
+         .property("RotVelocity", &RBX::PVInstance::getRotVelocity, &RBX::PVInstance::setRotVelocity)(rttr::metadata("Type", RBX::Data))
          .property("CFrame", &RBX::PVInstance::getCFrame, &RBX::PVInstance::setCFrame)
          .property("Elasticity", &RBX::PVInstance::getElasticity, &RBX::PVInstance::setElasticity)(rttr::metadata("Type", RBX::Part))
          .property("Friction", &RBX::PVInstance::getFriction, &RBX::PVInstance::setFriction)(rttr::metadata("Type", RBX::Part))
@@ -175,6 +176,7 @@ void RBX::PVInstance::render(RenderDevice* d)
         }
         case cylinder:
         {
+            d->setShininess(50.0f);
             RBX::Primitives::drawCylinder(d, this);
             drawCylinderPluses(d);
 
@@ -258,7 +260,8 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 
     radius = getSize().x;
     axis = getSize().y;
-
+    
+    glPushMatrix();
     glRotatef(-90.0, 0.0, 1.0, 0.0);
 
     glTranslatef(0.0, 0.0, -axis * 0.5);
@@ -266,10 +269,10 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 
     glTranslatef(0.0f, 0.0f, 0.01f);
 
-    RBX::Primitives::drawLine(cylinderOriginX, d, FRONT_CROSS, lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginX, d, FRONT_CROSS, -lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginY, d, FRONT_CROSS, -lineHeight, lineWidth);
-    RBX::Primitives::drawLine(cylinderOriginY, d, FRONT_CROSS, -lineHeight, -lineWidth);
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, lineWidth, -lineHeight);
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, -lineHeight);
+    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, lineWidth);
+    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, -lineWidth);
    
     glTranslatef(0.0f, 0.0f, -0.01f);
 
@@ -278,13 +281,13 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 
     glTranslatef(0.0f, 0.0f, 0.01f);
 
-    RBX::Primitives::drawLine(cylinderOriginX, d, BACK_CROSS, lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginX, d, BACK_CROSS, -lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginY, d, BACK_CROSS, -lineHeight, lineWidth);
-    RBX::Primitives::drawLine(cylinderOriginY, d, BACK_CROSS, -lineHeight, -lineWidth);
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, lineWidth, -lineHeight);
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, -lineHeight);
+    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, lineWidth);
+    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, -lineWidth);
     
     glTranslatef(0.0f, 0.0f, -0.01f);
-
+    glPopMatrix();
 }
 
 float RBX::getAffectedFormFactor(RBX::PVInstance* pv)
@@ -338,9 +341,9 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
         CoordinateFrame center, partCenter;
 
         partCenter = getCFrame();
-        center = getSurfaceCenter(face, getSize(), getWorldExtents());
+        center = getSurfaceCenter(face, getSize(), getLocalExtents());
 
-        d->setObjectToWorldMatrix(center);
+        d->setObjectToWorldMatrix(partCenter);
 
         switch (type)
         {

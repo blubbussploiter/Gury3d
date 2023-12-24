@@ -1,25 +1,47 @@
-#ifndef BRICKCOLOR_H
-#define BRICKCOLOR_H
+
+#pragma once
+
+#include <map>
 #include <G3DAll.h>
 
 namespace RBX
 {
 	class BrickColor
 	{
-	private:
-		int number;
-		Color3* color;
 	public:
-		Color3* getColor();
-
-		int getNumber() { return number; }
-		static BrickColor* fromNumber(int number);
-
-		BrickColor()
+		class Number
 		{
-			color = 0;
-			number = 0;
-		}
+		public:
+			std::string name;
+			int number;
+		};
+
+		class BrickMap
+		{
+		public:
+
+			std::map<Number, Color3> colors;
+
+			Color3 fromNumber(int number);
+			Color3 fromName(std::string name);
+
+			void insert(std::string name, int number, Color3 color);
+
+			static BrickMap* singleton();
+
+			BrickMap();
+		};
+
+	public:
+
+		Number number;
+		Color3 color;
+
+		BrickColor() {}
 	};
+
+	static bool operator<(const RBX::BrickColor::Number& x, const RBX::BrickColor::Number& y)
+	{
+		return x.number < y.number;
+	}
 }
-#endif

@@ -22,7 +22,7 @@ namespace RBX
 		std::map<HopperBin*, BackpackItem*> items;
 	public:
 		void keypress(G3D::UserInput* ui);
-		void updateGui(RenderDevice* rd, G3D::UserInput* ui);
+		void updateGui();
 		void removeBackpackItem(HopperBin* b) { items.erase(b); }
 		BackpackItem* getBackpackItem(HopperBin* b) { return items[b]; }
 		BackpackItem* createBackpackItem(HopperBin* item);

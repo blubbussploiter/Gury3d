@@ -12,6 +12,7 @@ RTTR_REGISTRATION
 {
 	rttr::registration::class_ <RBX::ModelInstance>("Model")
 		 .constructor<>()
+		 .property("primaryPart", &RBX::ModelInstance::getPrimaryPart, &RBX::ModelInstance::setPrimaryPart)(rttr::metadata("Type", RBX::Behavior))
 		 .property("ControllerType", &RBX::ModelInstance::getController, &RBX::ModelInstance::setController)(rttr::metadata("Type", RBX::Behavior));
 	rttr::registration::enumeration<RBX::ControllerTypes>("ControllerType")
 		(

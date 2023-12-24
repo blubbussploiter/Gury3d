@@ -9,8 +9,6 @@
 
 #include "ChildFrm.h"
 
-
-
 // CChildFrame
 
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWndEx)

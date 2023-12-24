@@ -130,6 +130,13 @@ void CClassView::AddInstance(RBX::Instance* instance)
 	items[instance] = instanceItem;
 }
 
+void CClassView::RemoveInstance(RBX::Instance* instance)
+{
+	HTREEITEM item = GetInstance(instance);
+	m_wndClassView.DeleteItem(item);
+	items[instance] = 0;
+}
+
 void CClassView::SelectInstance(RBX::Instance* i)
 {
 	m_wndClassView.SelectInstance(i);
@@ -175,6 +182,8 @@ void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndClassView;
 	ASSERT_VALID(pWndTree);
+
+	SetFocus();
 
 	if (pWnd != pWndTree)
 	{

@@ -94,7 +94,7 @@ void RBX::Camera::update(UserInput* input)
 {
 
     Vector3 pos;
-    float lerp = 0.41f;
+    float lerp = 0.30f;
 
     isUsingRightMouse = input->keyDown(SDL_RIGHT_MOUSE_KEY);
 
@@ -114,7 +114,7 @@ void RBX::Camera::update(UserInput* input)
         if (oldMouse.x != 0 && oldMouse.y != 0)
         {
             GetCursorPos(&mouse);
-            pan(&cframe, (mouse.x - oldMouse.x) / 100.f, (mouse.y - oldMouse.y) / 100.f, 1, lerp);
+            pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f, 1, lerp);
             SetCursorPos(oldMouse.x, oldMouse.y);
         }
     }

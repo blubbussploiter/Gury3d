@@ -20,6 +20,11 @@ static void makeKeyEvent(int vkCode, int lParam, GEvent& e) {
         e.key.keysym.sym = (SDLKey)(extended ? SDLK_RSHIFT : SDLK_LSHIFT);
 
     }
+    else if (vkCode == VK_SPACE) {
+
+        e.key.keysym.sym = (SDLKey)(SDLK_SPACE);
+
+    }
     else if (vkCode == VK_CONTROL) {
 
         e.key.keysym.sym = (SDLKey)(extended ? SDLK_RCTRL : SDLK_LCTRL);

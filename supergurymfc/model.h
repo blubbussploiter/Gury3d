@@ -44,6 +44,7 @@ namespace RBX
 		RBX::PartInstance* getPrimaryPartInternal();
 
 		RBX::PartInstance* getPrimaryPart();
+		void setPrimaryPart(RBX::PartInstance* part) { primaryPart = part; }
 
 		virtual RBX::ModelInstance* getModel() { return this; }
 		virtual RBX::Extents computeCameraOwnerExtents();

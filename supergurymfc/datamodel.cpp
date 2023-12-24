@@ -53,8 +53,13 @@ void RBX::Datamodel::onDescendentAdded(RBX::Instance* i)
 {
     if (i->parent != this)
     {
-        CMainFrame::mainFrame->m_wndClassView.AddInstance(i);
+        addToExplorerWindow(i);
     }
+}
+
+void RBX::Datamodel::onDescendentRemoved(RBX::Instance* i)
+{
+    removeFromExplorerWindow(i);
 }
 
 void RBX::Datamodel::fillExplorerWindow()
@@ -76,6 +81,11 @@ void RBX::Datamodel::addToExplorerWindow(RBX::Instance* i)
     CMainFrame::mainFrame->m_wndClassView.AddInstance(i);
 }
 
+void RBX::Datamodel::removeFromExplorerWindow(RBX::Instance* i)
+{
+    CMainFrame::mainFrame->m_wndClassView.RemoveInstance(i);
+}
+
 void RBX::Datamodel::open()
 {
     workspace = new Workspace();
@@ -87,10 +97,10 @@ void RBX::Datamodel::open()
     thumbnailGenerator = new ThumbnailGenerator();
     scriptContext = new ScriptContext();
     soundService = new SoundService();
-    yieldingThreads = new Lua::YieldingThreads(scriptContext);
     players = new RBX::Network::Players();
     guiRoot = Gui::singleton();
     runService->scriptContext = scriptContext;
+    yieldingThreads = new Lua::YieldingThreads(scriptContext);
 
     fillExplorerWindow();
 

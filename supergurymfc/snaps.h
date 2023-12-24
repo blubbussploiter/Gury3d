@@ -38,7 +38,6 @@ namespace RBX
 			part0 = 0;
 			part1 = 0;
 			_shape = 0;
-			isAffectedByPhysics = 1;
 			hasBeenCalledBroken = 0;
 			setClassName("Snap");
 			setName("Snap");

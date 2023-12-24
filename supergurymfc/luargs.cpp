@@ -5,12 +5,15 @@ void RBX::LuaArguments::thunk(lua_State* L, int idx, rttr::parameter_info info)
 {
 	if (info.get_type() == rttr::type::get<int>())
 	{
-		int i = static_cast<int>(lua_tonumber(L, idx));
-		arguments.push_back(rttr::argument(i));
+		int i = lua_tonumber(L, idx);
+		rttr::variant var(i);
+		arguments.push_back(rttr::argument(var));
 	}
 	if (info.get_type() == rttr::type::get<std::string>())
 	{
-		rttr::argument arg(rttr::variant(std::string(lua_tostring(L, idx))));
+		std::string str = std::string(lua_tostring(L, idx));
+		rttr::variant var = rttr::variant(str);
+		rttr::argument arg(var);
 		arguments.push_back(arg);
 	}
 }

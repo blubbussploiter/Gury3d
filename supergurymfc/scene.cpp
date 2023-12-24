@@ -4,6 +4,7 @@
 #include "datamodel.h"
 
 #include "stdout.h"
+#include "mesh.h"
 
 RBX::Scene* RBX::Scene::singleton()
 {
@@ -22,17 +23,17 @@ std::vector<RBX::Render::Renderable*> RBX::Scene::getArrayOfObjects()
 
 bool opaqueRule(RBX::Render::Renderable* r)
 {
-	return (r->isRenderable && !r->transparency && !r->localTransparency && !r->renderedLast);
+	return (!r->transparency && !r->localTransparency && !r->renderedLast);
 }
 
 bool transparentRule(RBX::Render::Renderable* r)
 {
-	return (r->isRenderable && !r->renderedLast && r->transparency > 0 && !r->localTransparency);
+	return (!r->renderedLast && r->transparency > 0 && !r->localTransparency);
 }
 
 bool localTransparencyRule(RBX::Render::Renderable* r)
 {
-	return (r->isRenderable && !r->renderedLast && r->localTransparency > 0);
+	return (!r->renderedLast && r->localTransparency > 0);
 }
 
 bool lastRenderRule(RBX::Render::Renderable* r)
@@ -42,7 +43,7 @@ bool lastRenderRule(RBX::Render::Renderable* r)
 
 bool physicsRule(RBX::Render::Renderable* r)
 {
-	return r->isAffectedByPhysics;
+	return RBX::IsA<RBX::PVInstance>(r);
 }
 
 bool darkRule(RBX::Render::Renderable* r)
@@ -93,7 +94,7 @@ void RBX::Scene::baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderabl
 	for (unsigned int i = 0; i < renderObjects.size(); i++)
 	{
 		RBX::Render::Renderable* r = renderObjects.at(i);
-		if (rule(r) && !r->isSpecialShape)
+		if (rule(r) && !RBX::IsA<RBX::Render::SpecialMesh>(r))
 		{
 			render(r, rd);
 		}
@@ -140,16 +141,14 @@ void RBX::Scene::lastPass(RenderDevice* rd)
 
 void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)
 {
-	if (descendent->isRenderable
-		|| steppableRule(descendent))
+	if (RBX::IsA<RBX::Render::Renderable>(descendent) || steppableRule(descendent))
 	{
-
 		RBX::Render::Renderable* r = dynamic_cast<RBX::Render::Renderable*>(descendent);
 
-		if (r->isSpecialShape)
+		if (RBX::IsA<RBX::Render::SpecialMesh>(r))
 		{
-			RBX::Render::Renderable* p = (RBX::Render::Renderable*)r->getParent();
-			if (p->isRenderable)
+			RBX::Render::Renderable* p = dynamic_cast<RBX::Render::Renderable*>(r->getParent());
+			if (p)
 			{
 				p->specialShape = r;
 			}

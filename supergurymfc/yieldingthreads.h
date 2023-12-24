@@ -41,7 +41,7 @@ namespace RBX
 						{
 							int oldTop = lua_gettop(t->thread);
 							lua_pushnumber(t->thread, t->elapsedTime);
-							context->resume(t->thread, 1);
+							context->resume(t->thread, 0);
 							lua_settop(t->thread, oldTop);
 							waitingThreads.erase(std::remove(waitingThreads.begin(), waitingThreads.end(), t));
 						}

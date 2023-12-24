@@ -62,9 +62,9 @@ void RBX::AppManager::initOneTimeAppliances()
 	/* Playerlist */
 
 	playerList = new RBX::Gui::GuiList();
-	playerList->position = Vector2(130, 10);
+	playerList->position = Vector2(150, 10);
 	playerList->listTitle = "Player List";
-	playerList->size = Vector2(130, 0);
+	playerList->size = Vector2(150, 0);
 	playerList->visible = false;
 	playerList->alignRight = true;
 

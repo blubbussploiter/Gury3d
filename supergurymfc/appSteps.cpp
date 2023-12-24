@@ -66,7 +66,6 @@ void RBX::Experimental::Application::onSimulation(RealTime rdt, SimTime sdt, Sim
 
 void RBX::Experimental::Application::onLogic()
 {
-
 	if (userInput->keyPressed(SDLK_o))
 	{
 		RBX::Camera::singleton()->cam_zoom(0);
@@ -96,6 +95,8 @@ void RBX::Experimental::Application::onLogic()
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
 	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
+
+	RBX::Network::getPlayers()->onStep();
 
 	Selection::update(userInput);
 }
@@ -135,8 +136,11 @@ void RBX::Experimental::Application::onInit()
 	RBX::ScriptContext* context = getDatamodel()->scriptContext;
 	context->openState();
 
-	if(!rbxlFile.empty())
+	if (!rbxlFile.empty())
+	{
+		getDatamodel()->name = RBX::AppManager::singleton()->fileName;
 		getDatamodel()->loadContent(rbxlFile);
+	}
 
 	//RBX::Network::NetworkClient* client = new RBX::Network::NetworkClient();
 	//client->connect("10.0.0.186", 800, 1);

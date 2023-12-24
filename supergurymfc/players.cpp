@@ -19,11 +19,17 @@ RTTR_REGISTRATION
 	rttr::registration::class_<RBX::Network::Players>("Players")
 		.constructor<>()
 		.property_readonly("LocalPlayer", &RBX::Network::Players::getLocalPlayer)
+		.property("maxPlayers", &RBX::Network::Players::getMaxPlayers, &RBX::Network::Players::setMaxPlayers)(rttr::metadata("Type", RBX::Data))
+		.property_readonly("numPlayers", &RBX::Network::Players::getNumPlayers)(rttr::metadata("Type", RBX::Data))
 		.method("createLocalPlayer", &RBX::Network::Players::createLocalPlayer);
 	rttr::registration::class_<RBX::Network::Player>("Player")
-	.constructor<>()
-	.method("loadCharacter", &RBX::Network::Player::loadCharacter)
-	.method("LoadCharacter", &RBX::Network::Player::loadCharacter);
+		.constructor<>()
+		.property("userId", &RBX::Network::Player::getUserId, &RBX::Network::Player::setUserId)(rttr::metadata("Type", RBX::Data))
+		.property("AdminMode", &RBX::Network::Player::getAdminMode, &RBX::Network::Player::setAdminMode)(rttr::metadata("Type", RBX::Data))
+		.property_readonly("Character", &RBX::Network::Player::getCharacter)
+		.property_readonly("Backpack", &RBX::Network::Player::getBackpack)
+		.method("loadCharacter", &RBX::Network::Player::loadCharacter)
+		.method("LoadCharacter", &RBX::Network::Player::loadCharacter);
 }
 
 
@@ -95,6 +101,10 @@ void Player::setAsController()
 	}
 }
 
+void RBX::Network::Player::render(RenderDevice* rd)
+{
+}
+
 void Players::createLocalPlayer(int userId)
 {
 	Player* player;
@@ -155,6 +165,14 @@ void Players::updatePlayerList()
 		{
 			lbl->title = p->getName();
 		}
+	}
+}
+
+void RBX::Network::Players::onStep()
+{
+	if (localPlayer)
+	{
+		localPlayer->backpack->updateGui();
 	}
 }
 

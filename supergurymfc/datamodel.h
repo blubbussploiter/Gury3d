@@ -49,6 +49,7 @@ namespace RBX
 		void setMessageBrickCount() { uiBrickcount = !uiBrickcount; }
 
 		void onDescendentAdded(RBX::Instance* i);
+		void onDescendentRemoved(RBX::Instance* i);
 
 		bool messageBrickCount() { return uiBrickcount; }
 
@@ -56,6 +57,7 @@ namespace RBX
 		void emptyExplorerWindow();
 
 		void addToExplorerWindow(RBX::Instance* i);
+		void removeFromExplorerWindow(RBX::Instance* i);
 
 		void open();
 		void close();

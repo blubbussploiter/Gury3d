@@ -17,6 +17,7 @@ RTTR_REGISTRATION
 		 .property("archivable", &RBX::Instance::getArchivable, &RBX::Instance::setArchivable)(rttr::metadata("Type", RBX::Behavior))
 		 .property("Parent", &RBX::Instance::getParent,
 			 &RBX::Instance::setParent)
+		.method("remove", &RBX::Instance::remove)
 		.method("children", &RBX::Instance::getChildren)
 		.method("findFirstChild", &RBX::Instance::findFirstChild);
 }

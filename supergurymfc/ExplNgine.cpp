@@ -11,6 +11,8 @@
 #pragma comment(lib, "/bullet/BulletDynamics.lib")
 #pragma comment(lib, "/bullet/LinearMath.lib")
 
+#define ENGINE_Y_BOUNDS 400
+
 void myTickCallback(btDynamicsWorld* dynamicsWorld, btScalar timeStep) {
 
 	int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -164,6 +166,15 @@ void RBX::XplicitNgine::updateBody(RBX::PVInstance* part)
 	part->velocity = Vector3(linVel.x(), linVel.y(), linVel.z());
 	part->rotVelocity = Vector3(angVel.x(), angVel.y(), angVel.z());
 
+	computeLinearVerticalAccelerationRestitution(part);
+
+	btVector3 origin = transform.getOrigin();
+
+	if (origin.y() > ENGINE_Y_BOUNDS)
+	{
+		part->remove();
+	}
+
 	if (connector)
 	{
 		switch (connector->type)
@@ -190,7 +201,7 @@ void RBX::XplicitNgine::checkBodies(RBX::Instances* PVInstances)
 	{
 		part = dynamic_cast<RBX::PVInstance*>(PVInstances->at(i));
 
-		if (part && part->isAffectedByPhysics)
+		if (part)
 		{
 			createBody(part);
 		}
@@ -201,6 +212,17 @@ void RBX::XplicitNgine::checkBodies(RBX::Instances* PVInstances)
 void RBX::XplicitNgine::updateAnchor(RBX::PVInstance* part)
 {
 
+}
+
+void RBX::XplicitNgine::computeLinearVerticalAccelerationRestitution(RBX::PVInstance* p)
+{
+	btVector3 lin;
+	float length;
+
+	lin = p->body->_body->getLinearVelocity();
+	length = lin.length();
+
+	p->body->_body->setRestitution(0.05f * ((abs(length) / 2)));
 }
 
 bool RBX::XplicitNgine::isTouching(RBX::PVInstance* part, bool ignoreSiblings)

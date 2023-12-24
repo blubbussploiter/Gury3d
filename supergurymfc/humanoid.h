@@ -40,6 +40,8 @@ namespace RBX
 		bool jointsBuilt;
 		float elapsedClimb, climbHeight;
 
+		float jumpClock, jumpTimer;
+
 	public:
 
 		RBX::PVInstance* humanoidRootPart, * humanoidHead, *rightLeg, *leftLeg, *rightArm, *leftArm;
@@ -50,14 +52,18 @@ namespace RBX
 		bool isDead;
 		bool isJumping;
 		bool isClimbing;
+		bool canJump;
 
 		Humanoid()
 		{
 			health = 100.0f;
 			maxHealth = 100.0f;
+			jumpTimer = 0.6f;
+			jumpClock = 0.0f;
 			setClassName("Humanoid");
 			setName("Humanoid");
-			isSteppable = 1;
+			isJumping = 0;
+			canJump = 1;
 			renderedLast = 1;
 		}
 
@@ -68,12 +74,14 @@ namespace RBX
 
 		bool limbsCheck(); /* double check checkHumanoidAttributes, returns result of second check, if not second check, return false indefinitely (until limbs appear) */
 
-		bool checkHumanoidAttributes() { return (humanoidHead && humanoidRootPart && (humanoidRootPart->body && humanoidHead->body)); }
+		bool checkHumanoidAttributes() 
+		{ 
+			return (humanoidHead && humanoidRootPart && (humanoidRootPart->body->_body && humanoidHead->body->_body));
+		}
 
 		void climb();
 
 		void onDied();
-		void computeFallRestitution();
 
 		/* corrects humanoidRootPart and humanoidHead */
 		void correctHumanoidAttributes();
@@ -90,7 +98,10 @@ namespace RBX
 
 		void onStep();
 
+		void jumpTimeStep();
 		void updateHumanoidState();
+
+		void balance();
 
 		void render(RenderDevice* rd);
 		void drawHealthbar(RenderDevice* rd, CoordinateFrame center, float distance);
