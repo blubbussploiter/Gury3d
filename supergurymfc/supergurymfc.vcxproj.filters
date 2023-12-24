@@ -408,6 +408,9 @@
     <ClInclude Include="basescript.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
+    <ClInclude Include="StartView.h">
+      <Filter>Header Files\studio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -757,6 +760,9 @@
     </ClCompile>
     <ClCompile Include="basescript.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StartView.cpp">
+      <Filter>Source Files\rbx\studio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
