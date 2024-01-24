@@ -34,12 +34,11 @@ namespace RBX
 		void onDescendentRemoved(RBX::Instance* descendent);
 
 		Camera* getCurrentCamera();
-		void setCurrentCamera(Camera* camera);
 
 		bool setImageServerView();
-		Box getBoundingBox()
+		SelectableBox getBoundingBox()
 		{
-			return Box(Vector3::zero(), Vector3::zero());
+			return SelectableBox();
 		}
 
 		virtual RBX::ModelInstance* getModel() { return this; }

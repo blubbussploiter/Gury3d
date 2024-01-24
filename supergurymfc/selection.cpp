@@ -60,9 +60,10 @@ void RBX::Selection::renderDragBox(RenderDevice* rd)
 
 void RBX::Selection::renderSelected(RenderDevice* rd, ISelectable* selection)
 {
-	AABox b;
-	selection->getBoundingBox().getBounds(b);
-	drawOutline(b.low(), b.high(), rd);
+	ISelectable::SelectableBox box;
+	box = selection->getBoundingBox();
+	rd->setObjectToWorldMatrix(box.cframe);
+	drawOutline(-box.size, box.size, rd);
 }
 
 void RBX::Selection::renderSelection(RenderDevice* rd)

@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -110,14 +110,17 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\include;..\include\studio;..\include\include;..\include\fmod\inc;..\include\fmod\studio;..\include\bullet;..\include\bullet\vectormathlibrary\include\vectormath\scalar\cpp\;..\include\lua</AdditionalIncludeDirectories>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>..\lib;</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -148,6 +151,13 @@
       <AdditionalLibraryDirectories>..\lib;</AdditionalLibraryDirectories>
       <AdditionalDependencies>Advapi32.lib;</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <StackReserveSize>8388608</StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
+      <HeapReserveSize>
+      </HeapReserveSize>
+      <HeapCommitSize>
+      </HeapCommitSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -188,16 +198,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="basescript.h" />
+    <ClInclude Include="body.h" />
     <ClInclude Include="CCommandBar.h" />
     <ClInclude Include="cframebridge.h" />
     <ClInclude Include="CInsertObjectDlg.h" />
     <ClInclude Include="decode.h" />
+    <ClInclude Include="effectsetting.h" />
     <ClInclude Include="encode.h" />
     <ClInclude Include="application.h" />
     <ClInclude Include="backpack.h" />
     <ClInclude Include="bitstreamHelp.h" />
     <ClInclude Include="brickcolor.h" />
-    <ClInclude Include="bthelp.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="classes.h" />
     <ClInclude Include="clonebin.h" />
@@ -212,7 +223,6 @@
     <ClInclude Include="gametool.h" />
     <ClInclude Include="guid.h" />
     <ClInclude Include="GuiRoot.h" />
-    <ClInclude Include="hinge.h" />
     <ClInclude Include="hopperbin.h" />
     <ClInclude Include="humanoid.h" />
     <ClInclude Include="ICameraOwner.h" />
@@ -222,17 +232,19 @@
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="ISelectable.h" />
     <ClInclude Include="ISteppable.h" />
-    <ClInclude Include="joints.h" />
-    <ClInclude Include="jointservice.h" />
+    <ClInclude Include="jointsservice.h" />
+    <ClInclude Include="kernel.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="lighting.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="luabridge.h" />
+    <ClInclude Include="motor.h" />
+    <ClInclude Include="primitive.h" />
+    <ClInclude Include="snap.h" />
     <ClInclude Include="surfaceFactory.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="motor.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="networkclient.h" />
     <ClInclude Include="oscontext.h" />
@@ -251,20 +263,25 @@
     <ClInclude Include="runservice.h" />
     <ClInclude Include="scene.h" />
     <ClCompile Include="basescript.cpp" />
+    <ClCompile Include="body.cpp" />
     <ClCompile Include="brickmap.cpp" />
     <ClCompile Include="CCommandBar.cpp" />
     <ClCompile Include="cframemt.cpp" />
     <ClCompile Include="CInsertObjectDlg.cpp" />
+    <ClCompile Include="connector.cpp" />
     <ClCompile Include="contentprovider.cpp" />
+    <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="iobfix.cpp" />
+    <ClCompile Include="jointsservice.cpp" />
+    <ClCompile Include="kernel.cpp" />
     <ClCompile Include="md5.cpp" />
-    <ClCompile Include="physbody.cpp" />
+    <ClCompile Include="motor.cpp" />
+    <ClCompile Include="primitive.cpp" />
     <ClCompile Include="serializer.h" />
     <ClInclude Include="scriptcontext.h" />
     <ClInclude Include="selection.h" />
     <ClInclude Include="service.h" />
-    <ClInclude Include="snaps.h" />
     <ClInclude Include="sounds.h" />
     <ClInclude Include="soundservice.h" />
     <ClInclude Include="stdout.h" />
@@ -305,7 +322,6 @@
     <ClCompile Include="crashreporter.cpp" />
     <ClCompile Include="datamodel.cpp" />
     <ClCompile Include="decal.cpp" />
-    <ClCompile Include="ExplNgine.cpp" />
     <ClCompile Include="gametool.cpp" />
     <ClCompile Include="GuiBox.cpp" />
     <ClCompile Include="GuiButton.cpp" />
@@ -321,7 +337,6 @@
     <ClCompile Include="idserializer.cpp" />
     <ClCompile Include="instance.cpp" />
     <ClCompile Include="instancemt.cpp" />
-    <ClCompile Include="jointservice.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="lighting.cpp" />
     <ClCompile Include="log.cpp" />
@@ -329,7 +344,6 @@
     <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
-    <ClCompile Include="motor.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="networkclient.cpp" />
     <ClCompile Include="oscontext.cpp" />
@@ -346,13 +360,14 @@
     <ClCompile Include="scriptcontext.cpp" />
     <ClCompile Include="selection.cpp" />
     <ClCompile Include="serializer.cpp" />
-    <ClCompile Include="snaps.cpp" />
+    <ClCompile Include="snap.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdout.cpp" />
     <ClCompile Include="surfaceFactory.cpp" />
     <ClCompile Include="surfaces.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
+    <ClCompile Include="ToneMap.cpp" />
     <ClCompile Include="valuebridge.cpp" />
     <ClCompile Include="vector3mt.cpp" />
     <ClCompile Include="view.cpp" />

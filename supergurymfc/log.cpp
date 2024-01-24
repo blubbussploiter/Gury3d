@@ -1,4 +1,6 @@
 
+#include <fstream>
+
 #include "pch.h"
 #include "framework.h"
 #include "MainFrm.h"

@@ -1,7 +1,6 @@
 #include "model.h"
 
 #include "runservice.h"
-#include "jointservice.h"
 
 #include "workspace.h"
 #include "stdout.h"
@@ -220,7 +219,7 @@ RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
 
 void RBX::ModelInstance::buildJoints()
 {
-	RBX::JointService::singleton()->buildJoints();
+
 }
 
 void RBX::ModelInstance::breakJoints()

@@ -7,10 +7,7 @@
 #include "ray.h"
 
 #include "players.h"
-#include "jointservice.h"
-
 #include "GuiRoot.h"
-#include "bthelp.h"
 
 RBX::Sound* whoosh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/button.wav"));
 RBX::Sound* uuhhh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/uuhhh.wav"));
@@ -45,10 +42,10 @@ void RBX::Humanoid::setLocalTransparency(float transparency)
 {
     ::setLocalTransparency(humanoidHead, transparency);
     ::setLocalTransparency(humanoidRootPart, transparency);
-    //::setLocalTransparency(getRightArm(), transparency);
-    //::setLocalTransparency(getLeftArm(), transparency);
-    //::setLocalTransparency(getRightLeg(), transparency);
-   // ::setLocalTransparency(getLeftLeg(), transparency);
+    ::setLocalTransparency(getRightArm(), transparency);
+    ::setLocalTransparency(getLeftArm(), transparency);
+    ::setLocalTransparency(getRightLeg(), transparency);
+    ::setLocalTransparency(getLeftLeg(), transparency);
 }
 
 void RBX::Humanoid::setHumanoidAttributes()
@@ -61,58 +58,37 @@ void RBX::Humanoid::setHumanoidAttributes()
 
 }
 
-void RBX::Humanoid::correctHumanoidAttributes()
+bool RBX::Humanoid::checkHumanoidAttributes()
 {
-    if (checkHumanoidAttributes())
-        return;
-
-    setHumanoidAttributes();
+    return 0;
 }
+
 
 void RBX::Humanoid::buildJoints()
 {
-    if (!limbsCheck()) return;
-
-    snap(humanoidHead, humanoidRootPart);
-
-    if (getRightLeg())
-        snap(humanoidRootPart, getRightLeg());
-
-     if (getLeftLeg())
-        snap(humanoidRootPart, getLeftLeg());
-
-     if (getRightArm())
-        snap(humanoidRootPart, getRightArm());
-
-     if (getLeftArm())
-        snap(humanoidRootPart, getLeftArm());
-
-    humanoidRootPart->body->_body->setRestitution(0.0f);
-    humanoidRootPart->body->_body->setSleepingThresholds(0.1f, 0.1f);
-   // humanoidRootPart->body->_body->setAngularFactor(1);
-
     jointsBuilt = 1;
 }
 
 bool RBX::Humanoid::isFalling()
 {
-    return (humanoidRootPart->body->_body->getLinearVelocity().y() <= -0.1);
+    //return (humanoidRootPart->body->body->getLinearVelocity().y() <= -0.1);
+    return 0;
 }
 
 bool RBX::Humanoid::isInAir()
 {
-    return (humanoidRootPart->body->_body->getLinearVelocity().y() > 0.1);
+   //return (humanoidRootPart->body->_body->getLinearVelocity().y() > 0.1);
+    return 0;
 }
 
 bool RBX::Humanoid::isJoined()
 {
-    return (checkHumanoidAttributes() && RBX::JointService::singleton()->areJointed(humanoidHead, humanoidRootPart));
+    return (checkHumanoidAttributes());
 }
 
 bool RBX::Humanoid::limbsCheck()
 {
-    if (!checkHumanoidAttributes()) correctHumanoidAttributes();
-    return checkHumanoidAttributes();
+    return 0;
 }
 
 bool RBX::Humanoid::isGrounded()
@@ -120,10 +96,10 @@ bool RBX::Humanoid::isGrounded()
     if (rightLeg && leftLeg)
     {
 
-        bool bottomCollide = rightLeg->body->isColliding(BOTTOM) || leftLeg->body->isColliding(BOTTOM);
-        bool backCollide = rightLeg->body->isColliding(BACK) || leftLeg->body->isColliding(BACK);
-        bool frontCollide = rightLeg->body->isColliding(FRONT) || leftLeg->body->isColliding(FRONT);
-        return bottomCollide || frontCollide || backCollide;
+       // bool bottomCollide = rightLeg->body->isColliding(BOTTOM) || leftLeg->body->isColliding(BOTTOM);
+       // bool backCollide = rightLeg->body->isColliding(BACK) || leftLeg->body->isColliding(BACK);
+       // bool frontCollide = rightLeg->body->isColliding(FRONT) || leftLeg->body->isColliding(FRONT);
+       // return bottomCollide || frontCollide || backCollide;
 
     }
 
@@ -169,42 +145,6 @@ void RBX::Humanoid::balance()
 
 void RBX::Humanoid::climb()
 {
-    btDynamicsWorld* btWorld = RBX::RunService::singleton()->getPhysics()->_world;
-
-    Vector3 look = getRightLeg()->getCFrame().lookVector();
-    Vector3 pos = getRightLeg()->getPosition();
-    Vector3 to = pos + look;
-
-    btVector3 btFrom(pos.x, pos.y, pos.z);
-    btVector3 btTo(to.x, to.y, to.z);
-
-    btCollisionWorld::ClosestRayResultCallback res(btFrom, btTo);
-
-    btWorld->rayTest(btFrom, btTo, res);
-
-    if (res.hasHit())
-    {
-        btVector3 world = res.m_hitPointWorld;
-        const btCollisionObject* obj = res.m_collisionObject;
-
-        isClimbing = (world.distance(btFrom) < 1);
-        if (obj)
-        {
-            const btCollisionShape* shape = obj->getCollisionShape();
-            if (shape)
-            {
-                btVector3 min, max;
-                shape->getAabb(obj->getWorldTransform(), min, max);
-                climbHeight = max.y() - min.y();
-            }
-        }
-    }
-    else
-    {
-        humanoidState = Running;
-        isClimbing = (elapsedClimb >= climbHeight);
-    }
-
 }
 
 void RBX::Humanoid::onDied()
@@ -220,25 +160,27 @@ void RBX::Humanoid::jumpTimeStep()
 {
     if (!canJump && jumpClock >= jumpTimer)
     {
-        RBX::StandardOut::print(RBX::MESSAGE_INFO, "can jump.. again");
         canJump = 1;
         jumpClock = 0;
     }
     else
     {
         if (!canJump)
-            jumpClock += 0.001f;
+            jumpClock += 0.01f;
     }
 }
 
 void RBX::Humanoid::turn()
 {
-    PhysBody* body = humanoidRootPart->body;
-  
-    CoordinateFrame frame = humanoidRootPart->getCFrame();
-    Vector3 lookVector = frame.lookVector();
+   // PhysBody* body = humanoidRootPart->body;
+    CoordinateFrame origin = humanoidRootPart->getCFrame(), frame = origin;
 
-    walkRotationVelocity = lookVector.cross(walkDirection);
+    frame.lookAt(origin.translation + walkDirection);
+
+    float Y;
+    frame.rotation.toAxisAngle(Vector3(0, 1, 0), Y);
+
+    walkRotationVelocity = Vector3(0, Y / 2, 0);
 }
 
 void RBX::Humanoid::onStep()
@@ -262,8 +204,7 @@ void RBX::Humanoid::onStep()
 
     updateHumanoidState();
 
-    btRigidBody* body = humanoidRootPart->body->_body;
-
+    /*
     switch (walkMode)
     {
     case DIRECTION_MOVE:
@@ -276,7 +217,7 @@ void RBX::Humanoid::onStep()
             body->activate(1);
             turn();
 
-            if (humanoidState == Running || isClimbing) /* only play when on ground, but do movement off ground too :) */
+            if (humanoidState == Running || isClimbing)
             {
                 if (isFalling()) break;
 
@@ -292,21 +233,19 @@ void RBX::Humanoid::onStep()
                 }
 
             }
-            /*
+
             if (walkRotationVelocity)
             {
                 btVector3 vel = body->getTotalTorque();
-                btVector3 torque = btVector3(walkRotationVelocity.x, walkRotationVelocity.y, walkRotationVelocity.z) - vel;
-
+                btVector3 torque = btVector3(0, walkRotationVelocity.y, 0) - vel;
+                
                 body->setAngularFactor(btVector3(0, 1, 0));
-                if (vel.y() < 1)
+                if (vel.y() < 0.001f)
                 {
-                    body->applyTorque(torque / 0.03f);
+                    body->applyTorque(torque * 0.001f);
                 }
-
-                walkRotationVelocity = Vector3::zero();
             }
-            */
+
             climb();
 
         }
@@ -316,7 +255,7 @@ void RBX::Humanoid::onStep()
     {
         bsls_steps->stop();
         walkRotationVelocity = Vector3::zero();
-       // body->setAngularFactor(btVector3(0, 0, 0));
+        body->setAngularVelocity(btVector3(0, 0, 0));
         break;
     }
     default: break;
@@ -340,8 +279,9 @@ void RBX::Humanoid::onStep()
                 bsls_steps->stop();
 
                 body->activate(1);
-                body->setRestitution(0.8f); /* jump bounciness */
+                body->setRestitution(0.8f);
 
+                body->setAngularVelocity(btVector3(0,0,0));
                 body->setLinearVelocity(newVelocity);
 
                 jumpClock = 0;
@@ -357,11 +297,13 @@ void RBX::Humanoid::onStep()
         onDied();
         getParent()->remove();
     }
+    */
 }
 
 void RBX::Humanoid::updateHumanoidState()
 {
-    btRigidBody* body = humanoidRootPart->body->_body;
+
+    //btRigidBody* body = humanoidRootPart->body->_body;
 
     if (isGrounded())
     {
@@ -379,8 +321,7 @@ void RBX::Humanoid::updateHumanoidState()
     if (isGrounded() && (humanoidState == Falling || humanoidState == Jumping))
     {
         humanoidState = Landed;
-        body->setRestitution(0.0f);
-        body->applyTorque(btVector3(0, 0, 0));
+        //body->setRestitution(0.0f);
     }
 }
 
@@ -394,7 +335,6 @@ void RBX::Humanoid::render(RenderDevice* rd)
 
     if (!checkHumanoidAttributes())
     {
-        correctHumanoidAttributes();
         return;
     }
 
@@ -450,12 +390,6 @@ void RBX::Humanoid::drawHealthbar(RenderDevice* rd, CoordinateFrame center, floa
 
 }
 
-void RBX::Humanoid::snap(PVInstance* p0, PVInstance* p1)
-{
-    RBX::SnapJoint* snap = new RBX::SnapJoint();
-    snap->make(p0, p1);
-    snap->createJoint();
-}
 
 RBX::PVInstance* RBX::Humanoid::getRightArm()
 {

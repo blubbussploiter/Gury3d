@@ -7,6 +7,15 @@ namespace RBX
 	class ISelectable
 	{
 	public:
-		virtual Box getBoundingBox() { return Box(); };
+		class SelectableBox
+		{
+		public:
+			CoordinateFrame cframe;
+			Vector3 size;
+			SelectableBox() {}
+			SelectableBox(CoordinateFrame cframe, Vector3 size) : cframe(cframe), size(size) {}
+		};
+	public:
+		virtual SelectableBox getBoundingBox() { return SelectableBox(); };
 	};
 }

@@ -1,5 +1,4 @@
 
-#include "pvinstance.h"
 #include "lighting.h"
 #include "part.h"
 #include "mesh.h"
@@ -32,20 +31,14 @@ void RBX::PartInstance::render(RenderDevice* rd)
 	if (!specialShape)
 	{
 		PVInstance::render(rd);
-		if (shape == part)
-		{
-			renderDecals(rd, this);
-		}
 	}
 	else
 	{
-		rd->setObjectToWorldMatrix(cframe);
-		rd->setShininess(50.0f);
+		rd->setObjectToWorldMatrix(pv->position);
+		rd->setShininess(25.0f);
 
-		glColor(color.r, color.g, color.b, alpha);
+		rd->setColor(Color4(color, alpha));
 
 		specialShape->render(rd);
-
-		renderDecals(rd, specialShape);
 	}
 }

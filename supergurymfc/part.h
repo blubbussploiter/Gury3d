@@ -38,8 +38,8 @@ namespace RBX
 
 			shape = Shape::part;
 
-			setTopSurface(Studs);
-			setBottomSurface(Inlet);
+			//setTopSurface(Studs);
+			//setBottomSurface(Inlet);
 
 		}
 

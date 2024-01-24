@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -12,21 +8,6 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\rbx">
-      <UniqueIdentifier>{11277c6d-a300-45d7-9367-e21ab33ee195}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\studio">
-      <UniqueIdentifier>{c470f4f4-2be3-4028-b7eb-47417b33c46a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game">
-      <UniqueIdentifier>{b7122695-6c7a-4dbd-84d8-1de9c0e0eaf7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services">
-      <UniqueIdentifier>{b7045f35-4a3f-449e-a96b-ea83423fa635}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\network">
-      <UniqueIdentifier>{a0f957b7-38c9-481a-be8c-8cb636d39a58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\studio">
       <UniqueIdentifier>{263114d9-0cff-4255-835f-7b52eb881f1f}</UniqueIdentifier>
@@ -100,11 +81,60 @@
     <Filter Include="Header Files\game\app">
       <UniqueIdentifier>{b2aeb5ff-e4b0-441d-884b-8ff3ecc02f45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game\physics">
+      <UniqueIdentifier>{7438efc6-ba59-4865-b131-c32c05b6f18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\world">
+      <UniqueIdentifier>{9e62f621-253f-41f0-af10-3a70013a3f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\service">
+      <UniqueIdentifier>{0da217a2-76f9-4dc7-95de-40b4422e168a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\connectors">
+      <UniqueIdentifier>{83e747fa-0b33-41c9-930e-2d1f743ae062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\rbx">
+      <UniqueIdentifier>{11277c6d-a300-45d7-9367-e21ab33ee195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\studio">
+      <UniqueIdentifier>{c470f4f4-2be3-4028-b7eb-47417b33c46a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game">
+      <UniqueIdentifier>{b7122695-6c7a-4dbd-84d8-1de9c0e0eaf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services">
+      <UniqueIdentifier>{b7045f35-4a3f-449e-a96b-ea83423fa635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\network">
+      <UniqueIdentifier>{a0f957b7-38c9-481a-be8c-8cb636d39a58}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\rbx\game\services\hopperbins">
       <UniqueIdentifier>{c4a48fe5-909f-4b70-8202-5a22b5b76684}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game\services\reflection">
       <UniqueIdentifier>{15252e7c-327d-48bc-89a5-febe87d9b3c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\physics">
+      <UniqueIdentifier>{5b880678-d947-43ce-8bb0-3604436bfbe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\rendering">
+      <UniqueIdentifier>{65a65464-efd3-4391-a150-c76e702581b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\rendering\offscreen">
+      <UniqueIdentifier>{6ec0497e-4cd7-474a-bc53-ebf03a1c3f18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\thinkers">
+      <UniqueIdentifier>{0ee9eb15-ef6a-4b9a-a7b3-f9c1d2fee311}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\thinkers\world">
+      <UniqueIdentifier>{18efd9f6-fa38-4f8f-9b1a-aabe420c3713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\services\thinkers\ctrl">
+      <UniqueIdentifier>{563c6af2-5632-49dd-95af-b215063c17db}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game\menus">
       <UniqueIdentifier>{2f1fcc1c-9039-4d3b-91e6-3e3871b5dbc0}</UniqueIdentifier>
@@ -115,35 +145,29 @@
     <Filter Include="Source Files\rbx\game\app">
       <UniqueIdentifier>{b167a5ac-8deb-461a-beca-626dbdedccad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\physics">
-      <UniqueIdentifier>{5b880678-d947-43ce-8bb0-3604436bfbe9}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\app\window">
+      <UniqueIdentifier>{0f0acf1e-4670-4c7b-9d77-37d8152390e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game\lua">
       <UniqueIdentifier>{82e0181b-c35e-4543-8b70-ab69074e7fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics">
+      <UniqueIdentifier>{e7994c0f-eec4-4377-8ffd-7cd8077cfca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\world">
+      <UniqueIdentifier>{f384756d-b40d-421e-abe9-285c7dbacdf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\objects">
+      <UniqueIdentifier>{6036e0a9-75cc-4f1b-af91-d150eb4e3bc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\connectors">
+      <UniqueIdentifier>{2a1ac9f4-fb7b-4b6d-ad72-85c2e601a1ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\dep">
       <UniqueIdentifier>{9a90b68d-4341-4b20-a34d-d290743f734d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\dep\lua">
       <UniqueIdentifier>{cf23b88f-72e6-4da8-942a-b2d02ad0fb01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\rendering">
-      <UniqueIdentifier>{65a65464-efd3-4391-a150-c76e702581b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\thinkers">
-      <UniqueIdentifier>{0ee9eb15-ef6a-4b9a-a7b3-f9c1d2fee311}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\rendering\offscreen">
-      <UniqueIdentifier>{6ec0497e-4cd7-474a-bc53-ebf03a1c3f18}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\app\window">
-      <UniqueIdentifier>{0f0acf1e-4670-4c7b-9d77-37d8152390e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\thinkers\world">
-      <UniqueIdentifier>{18efd9f6-fa38-4f8f-9b1a-aabe420c3713}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\thinkers\ctrl">
-      <UniqueIdentifier>{563c6af2-5632-49dd-95af-b215063c17db}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -200,18 +224,6 @@
     </ClInclude>
     <ClInclude Include="networkclient.h">
       <Filter>Header Files\game\network</Filter>
-    </ClInclude>
-    <ClInclude Include="joints.h">
-      <Filter>Header Files\game\objects\joints</Filter>
-    </ClInclude>
-    <ClInclude Include="motor.h">
-      <Filter>Header Files\game\objects\joints</Filter>
-    </ClInclude>
-    <ClInclude Include="snaps.h">
-      <Filter>Header Files\game\objects\joints</Filter>
-    </ClInclude>
-    <ClInclude Include="hinge.h">
-      <Filter>Header Files\game\objects\joints</Filter>
     </ClInclude>
     <ClInclude Include="gametool.h">
       <Filter>Header Files\game\objects\hopperbins</Filter>
@@ -288,9 +300,6 @@
     <ClInclude Include="humanoid.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
-    <ClInclude Include="jointservice.h">
-      <Filter>Header Files\game\services</Filter>
-    </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
@@ -354,9 +363,6 @@
     <ClInclude Include="bitstreamHelp.h">
       <Filter>Header Files\dep</Filter>
     </ClInclude>
-    <ClInclude Include="bthelp.h">
-      <Filter>Header Files\dep</Filter>
-    </ClInclude>
     <ClInclude Include="classes.h">
       <Filter>Header Files\game</Filter>
     </ClInclude>
@@ -399,12 +405,6 @@
     <ClInclude Include="surfaceFactory.h">
       <Filter>Header Files\game\rendering\decals</Filter>
     </ClInclude>
-    <ClInclude Include="CInsertObjectDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CCommandBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="basescript.h">
       <Filter>Header Files\game\services</Filter>
     </ClInclude>
@@ -413,6 +413,33 @@
     </ClInclude>
     <ClInclude Include="vector3bridge.h">
       <Filter>Header Files\game\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="effectsetting.h">
+      <Filter>Header Files\game\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="CCommandBar.h">
+      <Filter>Header Files\studio</Filter>
+    </ClInclude>
+    <ClInclude Include="CInsertObjectDlg.h">
+      <Filter>Header Files\studio</Filter>
+    </ClInclude>
+    <ClInclude Include="body.h">
+      <Filter>Header Files\game\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="primitive.h">
+      <Filter>Header Files\game\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="jointsservice.h">
+      <Filter>Header Files\game\physics\service</Filter>
+    </ClInclude>
+    <ClInclude Include="snap.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel.h">
+      <Filter>Header Files\game\physics\world</Filter>
+    </ClInclude>
+    <ClInclude Include="motor.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -530,12 +557,6 @@
     <ClCompile Include="crashreporter.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="ExplNgine.cpp">
-      <Filter>Source Files\rbx\game\services\physics</Filter>
-    </ClCompile>
-    <ClCompile Include="jointservice.cpp">
-      <Filter>Source Files\rbx\game\services\physics</Filter>
-    </ClCompile>
     <ClCompile Include="instance.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
@@ -641,9 +662,6 @@
     <ClCompile Include="MenuBar.cpp">
       <Filter>Source Files\rbx\game\menus</Filter>
     </ClCompile>
-    <ClCompile Include="motor.cpp">
-      <Filter>Source Files\rbx\game\services\physics</Filter>
-    </ClCompile>
     <ClCompile Include="decal.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
@@ -701,9 +719,6 @@
     <ClCompile Include="plr_controller.cpp">
       <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
     </ClCompile>
-    <ClCompile Include="snaps.cpp">
-      <Filter>Source Files\rbx\game\services\physics</Filter>
-    </ClCompile>
     <ClCompile Include="runservice.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
@@ -746,9 +761,6 @@
     <ClCompile Include="workspace.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="physbody.cpp">
-      <Filter>Source Files\rbx\game\services\physics</Filter>
-    </ClCompile>
     <ClCompile Include="contentprovider.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
@@ -775,6 +787,33 @@
     </ClCompile>
     <ClCompile Include="cframemt.cpp">
       <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="ToneMap.cpp">
+      <Filter>Source Files\dep</Filter>
+    </ClCompile>
+    <ClCompile Include="kernel.cpp">
+      <Filter>Source Files\rbx\game\physics\world</Filter>
+    </ClCompile>
+    <ClCompile Include="effectsetting.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="jointsservice.cpp">
+      <Filter>Source Files\rbx\game\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="body.cpp">
+      <Filter>Source Files\rbx\game\physics\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="primitive.cpp">
+      <Filter>Source Files\rbx\game\physics\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="connector.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="snap.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="motor.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,6 @@ namespace RBX
 		void onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent);
 		void onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent);
 
-		void updatePhysicsObjects();
 		void updateSteppables();
 
 		void baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
@@ -29,6 +28,8 @@ namespace RBX
 		void darkPass(RenderDevice* rd);
 
 		void lastPass(RenderDevice* rd);
+		
+		void initializeKernel();
 
 		static bool isRenderable(RBX::Instance* instance) { return dynamic_cast<RBX::Render::Renderable*>(instance) != 0; }
 

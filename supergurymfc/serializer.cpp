@@ -14,7 +14,6 @@
 #include "content.h"
 
 rapidxml::xml_document<> doc;
-
 static std::map<std::string, int> xml_tokens =
 {
 	{ "Vector3", 0},
@@ -127,82 +126,73 @@ RBX::Content getContent(rapidxml::xml_node<>* node)
 
 void setProperty(rapidxml::xml_node<>* node, RBX::Instance* instance, std::string propertyType, std::string propertyValue, std::string propertyName)
 {
-	int token;
+	rttr::type global_type = rttr::type::get_by_name(instance->getClassName());
 
-	rttr::type type = rttr::type::get_by_name(instance->getClassName());
-	rttr::property property = type.get_property(propertyName);
+	rttr::property property = global_type.get_property(propertyName);
+	rttr::type type = property.get_type();
 
-	if (property
-		&& !propertyType.empty())
+	if (property)
 	{
-		if (xml_tokens.find(propertyType) != xml_tokens.end())
+		if (type == rttr::type::get<Vector3>())
 		{
-			token = xml_tokens[propertyType];
-			switch (token)
-			{
-			case 0: /* vector3 */
-			{
-				property.set_value(instance, readVector3(node));
-				break;
-			}
-			case 1:
-			case 2: /* cframe */
-			{
-				property.set_value(instance, readCFrame(node));
-				break;
-			}
-			case 3: /* color3 */
-			{
-				property.set_value(instance, readColor3(node));
-				break;
-			}
-			case 4: /* string */
-			{
-				property.set_value(instance, propertyValue);
-				break;
-			}
-			case 5: /* token */
-			{
-				int value = std::stoi(propertyValue);
-				if (property.is_enumeration())
-				{
-					rttr::enumeration en = property.get_enumeration();
+			property.set_value(instance, readVector3(node));
+		}
+		if (type == rttr::type::get<CoordinateFrame>())
+		{
+			property.set_value(instance, readCFrame(node));
+		}
+		if (type == rttr::type::get<Color3>())
+		{
+			property.set_value(instance, readColor3(node));
+		}
+		if (type == rttr::type::get<std::string>())
+		{
+			property.set_value(instance, propertyValue);
+		}
+		if (type == rttr::type::get<int>())
+		{
+			int i = std::stoi(propertyValue);
+			property.set_value(instance, i);
+		}
+		if (type == rttr::type::get<float>())
+		{
+			property.set_value(instance, std::stof(propertyValue));
+		}
+		if (type == rttr::type::get<bool>())
+		{
+			property.set_value(instance, propertyValue == "true");
+		}
+		if (type == rttr::type::get<RBX::Content>())
+		{
+			property.set_value(instance, getContent(node));
+		}
 
-					rttr::variant var = value;
-					const rttr::type enumType = en.get_type();
+		if (type.is_enumeration())
+		{
+			rttr::enumeration enumeration = type.get_enumeration();
+			const rttr::type enumType = enumeration.get_type();
 
-					if (var.convert(enumType))
-					{
-						property.set_value(instance, var);
-					}
-				}
-				else
-				{
-					property.set_value(instance, value);
-				}
-			}
-			case 6:/* int */
+			rttr::variant value;
+
+			if (propertyType == "string")
 			{
-				int i = std::stoi(propertyValue);
-				property.set_value(instance, i);
-				break;
+				value = propertyValue;
 			}
-			case 7: /* float */
+
+			if (propertyType == "int")
 			{
-				property.set_value(instance, std::stof(propertyValue));
-				break;
+				value = std::stoi(propertyValue);
 			}
-			case 8: /* bool */
+
+			if (propertyType == "token")
 			{
-				property.set_value(instance, propertyValue == "true");
-				break;
+				try { value = std::stoi(propertyValue); }
+				catch (...) { value = propertyValue; }
 			}
-			case 9: /* content */
+
+			if (value.convert(enumType))
 			{
-				property.set_value(instance, getContent(node));
-				break;
-			}
-			default: break;
+				property.set_value(instance, value);
 			}
 		}
 	}

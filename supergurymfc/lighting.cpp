@@ -1,4 +1,5 @@
 
+
 #include "rbx.h"
 #include "lighting.h"
 #include "datamodel.h"
@@ -20,70 +21,18 @@ RBX::Lighting* RBX::Lighting::singleton()
     return RBX::Datamodel::getDatamodel()->lighting;
 }
 
-void RBX::Lighting::begin(RenderDevice* device)
-{
-
-    LightingParameters lighting;
-    Color3 ambientColor, dynamicTop, dynamicBottom;
-    
-    lighting = getParameters();
-
-    device->enableLighting();
-    device->setSpecularCoefficient(1.0f);
-
-    ambientColor = (bottom_ambient + top_ambient) / 2.0f;
-    device->setColorClearValue(clear_color);
-    
-    //bool renderDiffuse = ((spotLight_color.r * 255) <= 220);
-    bool renderDiffuse = ((spotLight_color.r * 255) <= 220);
-    int n = 0;
-
-    device->setLight(n++, GLight::directional(lighting.lightDirection, spotLight_color * 0.9f, 1, renderDiffuse)); /* places with spotlightcolors greater than 220, 220, 220 render SUPER bright (or just weirdly), and places with less than that render SUPER dark. so disable if its not so */
-
-    if (top_ambient != ambientColor)
-    {
-        Color3 ambient = top_ambient - (ambientColor);
-        if (!renderDiffuse)
-        {
-            device->setLight(n++, GLight::directional(Vector3::unitY(), ambient, 0, 1));
-        }
-    }
-
-    if (bottom_ambient != ambientColor)
-    {
-        Color3 ambient = bottom_ambient - ambientColor;
-        device->setLight(n++, GLight::directional(toLight, ambient, 0, 1));
-    }
-
-    device->setAmbientLightColor(ambientColor);
-}
-
-void RBX::Lighting::end(RenderDevice* device)
-{
-    device->disableLighting();
-}
-
-LightingParameters RBX::Lighting::getParameters()
-{
-    if (!params)
-    {
-        params = new LightingParameters();
-
-        params->setLatitude(latitude);
-        params->setTime(timeOfDay);
-
-    }
-
-    return *params;
-}
-
 GameTime RBX::Time::fromString(const char* c)
 {
     int hour = 0, minute = 0, second = 0;
+    AMPM ampm;
 
     sscanf(c, "%d:%d:%d", &hour, &minute, &second);
+    if (hour < 12)
+        ampm = AM;
+    else
+        ampm = PM;
 
-    return toSeconds(hour, minute, second, PM);
+    return toSeconds(hour, minute, second, ampm);
 }
 
 std::string RBX::Time::toString(int seconds)

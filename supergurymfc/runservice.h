@@ -1,8 +1,6 @@
-#ifndef RUNSERVICE_H
-#define RUNSERVICE_H
+#pragma once
 
 #include <G3DAll.h>
-#include "btBulletDynamicsCommon.h"
 
 #include "instance.h"
 #include "service.h"
@@ -20,69 +18,11 @@ namespace RBX
 namespace RBX
 {
 
-	class XplicitNgine
-	{
-	public:
-
-		btBroadphaseInterface* _broadphase;
-		btDefaultCollisionConfiguration* _collisionConfiguration;
-		btCollisionDispatcher* _dispatcher;
-		btSequentialImpulseConstraintSolver* _solver;
-		btDiscreteDynamicsWorld* _world;
-
-		void update(float stepSize=0.1f);
-
-		void init();
-		void close();
-
-		void checkBodies(RBX::Instances* PVInstances);
-		void createBody(RBX::PVInstance* part);
-
-		void removeBody(RBX::PVInstance* part);
-		void resetBody(RBX::PVInstance* part);
-
-		void updateBody(RBX::PVInstance* part);
-		void updateBodyCFrame(CoordinateFrame cf, RBX::PVInstance* p);
-		void updateAnchor(RBX::PVInstance* part);
-
-		void computeLinearVerticalAccelerationRestitution(RBX::PVInstance* p);
-
-		bool isTouching(RBX::PVInstance* part, bool ignoreSiblings=0);
-		bool areColliding(RBX::PVInstance* part1, RBX::PVInstance* part2);
-
-		int getNumberOfGeoms() {
-			if (_world)
-			{
-				return _world->getNumCollisionObjects();
-			}
-			return 0;
-		}
-
-		int getNumberOfConstraints() {
-			if (_world)
-			{
-				return _world->getNumConstraints();
-			}
-			return 0;
-		}
-
-		XplicitNgine()
-		{
-			_broadphase = new btDbvtBroadphase();
-			_collisionConfiguration = new btDefaultCollisionConfiguration();
-			_dispatcher = new btCollisionDispatcher(_collisionConfiguration);
-			_solver = new btSequentialImpulseConstraintSolver();
-			_world = new btDiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
-			_world->setGravity(btVector3(0, -9.8f, 0));
-		}
-	};
-
 	class RunService :
 		public RBX::Instance,
 		public RBX::Service<RunService>
 	{
 	private:
-		XplicitNgine* physics;
 		RBX::Instances* steppers;
 	public:
 
@@ -98,21 +38,16 @@ namespace RBX
 
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 
-		XplicitNgine* getPhysics() { return physics; }
 		/* deprecated, use Datamodel->runService */
 		static RunService* singleton();
 		RunService()
 		{
 			setClassName("RunService");
-			setName("RunService");
+			setName("Run Service");
 			isRunning = 0;
 			steppers = new RBX::Instances();
-			physics = new XplicitNgine();
-			physics->init();
 		}
 		RTTR_ENABLE(RBX::Instance);
 	};
 
 }
-
-#endif

@@ -49,7 +49,11 @@ RBX::ISelectable* RBX::World::getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld,
 
 		if (child)
 		{
-			Box b = child->getBoundingBox();
+			ISelectable::SelectableBox sb = child->getBoundingBox();
+			Box b;
+
+			b = child->getCFrame().toWorldSpace(Box(-sb.size, sb.size));
+
 			if (ignore)
 			{
 				if (std::find(ignore->begin(), ignore->end(), child) != ignore->end())

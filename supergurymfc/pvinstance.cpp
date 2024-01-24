@@ -19,12 +19,15 @@ RTTR_REGISTRATION
          .property("Position", &RBX::PVInstance::getPosition, &RBX::PVInstance::setPosition)(rttr::metadata("Type", RBX::Data))
          .property("Velocity", &RBX::PVInstance::getVelocity, &RBX::PVInstance::setVelocity)(rttr::metadata("Type", RBX::Data))
          .property("RotVelocity", &RBX::PVInstance::getRotVelocity, &RBX::PVInstance::setRotVelocity)(rttr::metadata("Type", RBX::Data))
+         .property("Color", &RBX::PVInstance::getColor, &RBX::PVInstance::setColor)
          .property("CFrame", &RBX::PVInstance::getCFrame, &RBX::PVInstance::setCFrame)
+         .property("CoordinateFrame", &RBX::PVInstance::getCFrame, &RBX::PVInstance::setCFrame)
          .property("Elasticity", &RBX::PVInstance::getElasticity, &RBX::PVInstance::setElasticity)(rttr::metadata("Type", RBX::Part))
          .property("Friction", &RBX::PVInstance::getFriction, &RBX::PVInstance::setFriction)(rttr::metadata("Type", RBX::Part))
          .property("Shape", &RBX::PVInstance::getShape, &RBX::PVInstance::setShape)(rttr::metadata("Type", RBX::Part))
          .property("shape", &RBX::PVInstance::getShape, &RBX::PVInstance::setShape)
          .property("size", &RBX::PVInstance::getSizeExternal, &RBX::PVInstance::setSize)(rttr::metadata("Type", RBX::Part))
+         .property("Size", &RBX::PVInstance::getSizeExternal, &RBX::PVInstance::setSize)
          .property("FrontSurface", &RBX::PVInstance::getFrontSurface, &RBX::PVInstance::setFrontSurface)(rttr::metadata("Type", RBX::Surface))
          .property("BackSurface", &RBX::PVInstance::getBackSurface, &RBX::PVInstance::setBackSurface)(rttr::metadata("Type", RBX::Surface))
          .property("TopSurface", &RBX::PVInstance::getTopSurface, &RBX::PVInstance::setTopSurface)(rttr::metadata("Type", RBX::Surface))
@@ -97,8 +100,7 @@ void RBX::PVInstance::initFace(unsigned int& f, SurfaceType s)
 {
     if (f == -1)
     {
-        if(s != Smooth)
-            f = RBX::RenderSurfaceFactory::getSurfaceTexture(s);
+        f = RBX::RenderSurfaceFactory::getSurfaceTexture(s);
     }
 }
 
@@ -106,7 +108,7 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
 {
     if (!specialShape)
     {
-        glColor(1, 1, 1, 1 - (color.r * 0.25f));
+        glColor(1, 1, 1, 1 - (color.r * 0.5f));
 
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
@@ -149,7 +151,7 @@ void RBX::PVInstance::render(RenderDevice* d)
     {
 
         d->setObjectToWorldMatrix(getCFrame());
-        d->setShininess(25.0f);
+        d->setShininess(50.0f);
 
         glColor(color.r, color.g, color.b, alpha);
 
@@ -170,13 +172,11 @@ void RBX::PVInstance::render(RenderDevice* d)
         }
         case ball:
         {
-            d->setShininess(50.0f);
             RBX::Primitives::drawBall(d, this);
             break;
         }
         case cylinder:
         {
-            d->setShininess(50.0f);
             RBX::Primitives::drawCylinder(d, this);
             drawCylinderPluses(d);
 
@@ -313,7 +313,7 @@ void RBX::PVInstance::calculateCylinderOffsets()
 {
     float radius, scale;
 
-    radius = getSize().x;
+    radius = getSize().z;
     scale = radius * 0.1f;
 
     cylinderOriginX = Vector2(0, scale / 2);
@@ -338,12 +338,18 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
     if (type != SurfaceType::Smooth)
     {
 
-        CoordinateFrame center, partCenter;
+        CoordinateFrame center, world;
+        Vector3 worldSpace;
+        Matrix3 worldRotation;
 
-        partCenter = getCFrame();
         center = getSurfaceCenter(face, getSize(), getLocalExtents());
 
-        d->setObjectToWorldMatrix(partCenter);
+        worldSpace = pv->position.pointToWorldSpace(center.translation);
+        worldRotation = pv->position.rotation * center.rotation;
+
+        world = CoordinateFrame(worldRotation, worldSpace);
+
+        d->setObjectToWorldMatrix(world);
 
         switch (type)
         {
@@ -356,11 +362,8 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
         case SurfaceType::Motor:
         {
 
-            RBX::Primitives::rawCylinderAlongX(Color3::gray(), 0.4f, 0.2f, 6);
+            RBX::Primitives::rawCylinderAlongX(Color3::gray(), 0.4f, 0.2f, 6); /* change for controller type in the future.... YES!!!! */
             RBX::Primitives::rawCylinderAlongX(Color3::yellow(), 0.2f, 1.0f, 6);
-
-            //Draw::cylinder(Cylinder(center.translation - center.lookVector() * 0.5f, center.translation + center.lookVector() * 0.5f, 0.2f), d, Color3::yellow(), Color4::clear());
-            //Draw::cylinder(Cylinder(center.translation, center.translation + center.lookVector() * 0.1f, 0.5f), d, Color3::gray(), Color4::clear());
 
             break;
         }
@@ -403,4 +406,51 @@ RBX::SurfaceType RBX::PVInstance::getSurface(NormalId face)
     }
     }
     return Smooth;
+}
+
+void RBX::PVInstance::initializeForKernel()
+{
+
+    body->createBody(size);
+    primitive->createPrimitive(shape, size);
+
+    body->attachPrimitive(primitive);
+    primitive->modifyUserdata(this);
+
+    setAnchored(getAnchored());
+    setCanCollide(getCanCollide());
+
+    Kernel::get()->addPrimitive(primitive);
+}
+
+RBX::PVInstance::PVInstance()
+{
+    size = Vector3(4.f, 1.2f, 2.f);
+    color = Color3(0.639216f, 0.635294f, 0.643137f);
+
+    setClassName("PVInstance");
+    setName("PVInstance");
+
+    setFormFactor(FormFactor::Symmetric);
+
+    idFront = -1;
+    idBack = -1;
+    idTop = -1;
+    idBottom = -1;
+    idRight = -1;
+    idLeft = -1;
+
+    elasticity = 0.5f;
+    friction = 0.300000012f;
+
+    canCollide = true;
+    anchored = false;
+
+    alpha = 1;
+    shape = part;
+
+    body = new Body();
+    primitive = new Primitive(body);
+
+    pv = primitive->pv;
 }

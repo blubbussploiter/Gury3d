@@ -50,8 +50,8 @@ TextureRef RBX::getSurface(RBX::SurfaceType s)
 
 CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents extents)
 {
-	CoordinateFrame center = CoordinateFrame();
-	Vector3 extentsCenter, positionCenter;
+	CoordinateFrame center;
+	Vector3 extentsCenter;
 
 	extentsCenter = extents.getCenter();
 
@@ -59,40 +59,39 @@ CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents exten
 	{
 		case NormalId::FRONT:
 		{
-			positionCenter = extentsCenter + Vector3(0,0, -size.z);
+			center = extentsCenter + Vector3(0,0, -size.z);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), toRadians(90));
 			break;
 		}
 		case NormalId::BACK:
 		{
-			positionCenter = extentsCenter + Vector3(0, 0, size.z);
+			center = extentsCenter + Vector3(0, 0, size.z);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), toRadians(90));
 			break;
 		}
 		case NormalId::LEFT:
 		{
-			positionCenter = extentsCenter + Vector3(-size.x, 0, 0);
+			center = extentsCenter + Vector3(-size.x, 0, 0);
 			break;
 		}
 		case NormalId::RIGHT:
 		{
-			positionCenter = extentsCenter + Vector3(size.x, 0, 0);
+			center = extentsCenter + Vector3(size.x, 0, 0);
 			break;
 		}
 		case NormalId::TOP:
 		{
-			positionCenter = extentsCenter + Vector3(0, size.y, 0);
+			center = extentsCenter + Vector3(0, size.y, 0);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitZ(), toRadians(90));
 			break;
 		}
 		case NormalId::BOTTOM:
 		{
-			positionCenter = extentsCenter + Vector3(0, -size.y, 0);
+			center = extentsCenter + Vector3(0, -size.y, 0);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitZ(), toRadians(90));
 			break;
 		}
 	}
 
-	CoordinateFrame lookAt;
-
-	lookAt = extentsCenter;
-	//lookAt.lookAt(positionCenter);
-
-	return CoordinateFrame(Matrix3::identity(), positionCenter);
+	return center;
 }

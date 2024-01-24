@@ -39,7 +39,7 @@ namespace RBX
 
 		ScriptContext()
 		{
-			setName("ScriptContext");
+			setName("Script Context");
 			setClassName("ScriptContext");
 		}
 		RTTR_ENABLE(RBX::Instance);

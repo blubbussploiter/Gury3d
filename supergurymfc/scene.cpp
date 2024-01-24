@@ -59,6 +59,12 @@ bool steppableRule(RBX::Render::Renderable* r)
 	return steppable;
 }
 
+bool isPvInstance(RBX::Render::Renderable* r)
+{
+	RBX::Instance* i = dynamic_cast<RBX::Instance*>(r);
+	return RBX::IsA<RBX::PVInstance>(i);
+}
+
 void renderRenderable(RBX::Render::Renderable* r, RenderDevice* rd)
 {
 	r->render(rd);
@@ -69,15 +75,6 @@ void render3DSurface(RBX::Render::Renderable* r, RenderDevice* rd)
 	r->render3DSurfaces(rd);
 }
 
-void update3DObject(RBX::Render::Renderable* r, RenderDevice* rd)
-{
-	RBX::PVInstance* pv = dynamic_cast<RBX::PVInstance*>(r);
-	if (pv && pv->body)
-	{
-		RBX::RunService::singleton()->getPhysics()->createBody(pv);
-	}
-}
-
 void stepStepper(RBX::Render::Renderable* r, RenderDevice* rd)
 {
 	RBX::ISteppable* steppable;
@@ -86,6 +83,15 @@ void stepStepper(RBX::Render::Renderable* r, RenderDevice* rd)
 	if (steppable)
 	{
 		steppable->onStep();
+	}
+}
+
+void initializePVInstance(RBX::Render::Renderable* r, RenderDevice* rd)
+{
+	RBX::PVInstance* pvInstance = dynamic_cast<RBX::PVInstance*>(r);
+	if (pvInstance)
+	{
+		pvInstance->initializeForKernel();
 	}
 }
 
@@ -104,11 +110,6 @@ void RBX::Scene::baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderabl
 void RBX::Scene::updateSteppables()
 {
 	baseRender(0, steppableRule, stepStepper);
-}
-
-void RBX::Scene::updatePhysicsObjects()
-{
-	baseRender(0, physicsRule, update3DObject);
 }
 
 void RBX::Scene::opaquePass(RenderDevice* rd)
@@ -137,6 +138,11 @@ void RBX::Scene::darkPass(RenderDevice* rd)
 void RBX::Scene::lastPass(RenderDevice* rd)
 {
 	baseRender(rd, lastRenderRule, renderRenderable);
+}
+
+void RBX::Scene::initializeKernel()
+{
+	baseRender(0, isPvInstance, initializePVInstance);
 }
 
 void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)

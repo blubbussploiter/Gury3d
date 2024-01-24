@@ -50,22 +50,9 @@ namespace RBX
 		virtual RBX::Extents computeCameraOwnerExtents();
 		RBX::Extents computeVisibleExtents();
 
-		Box getBoundingBox()
+		SelectableBox getBoundingBox()
 		{
-			Vector3 low, high;
-			for (RBX::Instance* i : *getChildren())
-			{
-				RBX::ISelectable* s = dynamic_cast<RBX::ISelectable*>(i);
-				if (s)
-				{
-					Box b = s->getBoundingBox();
-					AABox ab;
-
-					b.getBounds(ab);
-
-				}
-			}
-			return Box(low, high);
+			return SelectableBox();
 		}
 
 		ModelInstance()

@@ -1,28 +1,11 @@
-#include "stdout.h"
-#include "pvinstance.h"
 #include "motor.h"
 
-void RBX::MotorJoint::createJoint()
+void RBX::MotorConnector::build()
 {
-	checkJoint();
+	if (!body0 || !body1 
+		|| (body0 && !body0->body) || (body1 && !body1->body)) return;
 
-	if (constraint) return;
+	motor = dJointCreateAMotor(Kernel::get()->world, JointsService::singleton()->joints);
 
-	RBX::StandardOut::print(RBX::MESSAGE_INFO, "Creating Motor for '%s' and '%s'", part0->getName().c_str(), part1->getName().c_str());
-
-	btTransform bc0, bc1;
-
-	bc0 = part0->body->_body->getWorldTransform().inverse();
-	bc1 = part1->body->_body->getWorldTransform().inverse();
-
-	isCreated = 1;
-
-	btGeneric6DofConstraint* motorConstraint = new btGeneric6DofConstraint(*part0->body->_body, *part1->body->_body, bc0, bc1, 0);
-
-	motorConstraint->setAngularLowerLimit(btVector3(-SIMD_EPSILON, -SIMD_EPSILON, -SIMD_EPSILON));
-	motorConstraint->setAngularUpperLimit(btVector3(SIMD_EPSILON, SIMD_EPSILON, SIMD_EPSILON));
-
-	constraint = motorConstraint;
-	RBX::RunService::singleton()->getPhysics()->_world->addConstraint(constraint, 1);
-
+	dJointAttach(motor, body0->body, body1->body);
 }

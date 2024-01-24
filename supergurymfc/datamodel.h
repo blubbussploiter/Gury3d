@@ -1,7 +1,7 @@
-#ifndef DATAMODEL_H
-#define DATAMODEL_H
+#pragma once
 
 #include "GuiRoot.h"
+#include "kernel.h"
 
 namespace RBX
 {
@@ -12,8 +12,8 @@ namespace RBX
 	class ScriptContext;
 	class Lighting;
 	class Scene;
-	class JointService;
 	class SoundService;
+	class JointsService;
 
 	namespace Network { class Players; }
 	namespace Lua { class YieldingThreads; }
@@ -25,7 +25,7 @@ namespace RBX
 
 		Workspace* workspace;
 		RunService* runService;
-		JointService* jointService;
+		JointsService* jointService;
 		ControllerService* controllerService;
 		ThumbnailGenerator* thumbnailGenerator;
 		ScriptContext* scriptContext;
@@ -76,5 +76,3 @@ namespace RBX
 		RTTR_ENABLE(RBX::Instance)
 	};
 }
-
-#endif

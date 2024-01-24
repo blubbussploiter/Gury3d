@@ -2,7 +2,6 @@
 #define HUMANOID_H
 
 #include "part.h"
-#include "snaps.h"
 
 #include "ISteppable.h"
 
@@ -58,13 +57,13 @@ namespace RBX
 		{
 			health = 100.0f;
 			maxHealth = 100.0f;
-			jumpTimer = 0.6f;
+			jumpTimer = 0.1f;
 			jumpClock = 0.0f;
-			setClassName("Humanoid");
-			setName("Humanoid");
 			isJumping = 0;
 			canJump = 1;
 			renderedLast = 1;
+			setClassName("Humanoid");
+			setName("Humanoid");
 		}
 
 		bool isGrounded();
@@ -74,20 +73,13 @@ namespace RBX
 
 		bool limbsCheck(); /* double check checkHumanoidAttributes, returns result of second check, if not second check, return false indefinitely (until limbs appear) */
 
-		bool checkHumanoidAttributes() 
-		{ 
-			return (humanoidHead && humanoidRootPart && (humanoidRootPart->body->_body && humanoidHead->body->_body));
-		}
+		bool checkHumanoidAttributes();
 
 		void climb();
 
 		void onDied();
 
-		/* corrects humanoidRootPart and humanoidHead */
-		void correctHumanoidAttributes();
 		void buildJoints();
-		/* get Humanoid from model if its a character (has humanoid) */
-		static Humanoid* modelIsCharacter(RBX::Instance* testModel);
 		/* sets humanoidRootPart and humanoidHead accordingly */
 		void setLocalTransparency(float transparency);
 		void setHumanoidAttributes();
@@ -106,7 +98,8 @@ namespace RBX
 		void render(RenderDevice* rd);
 		void drawHealthbar(RenderDevice* rd, CoordinateFrame center, float distance);
 
-		void snap(PVInstance* p0, PVInstance* p1);
+		/* get Humanoid from model if its a character (has humanoid) */
+		static Humanoid* modelIsCharacter(RBX::Instance* testModel);
 
 		RBX::PVInstance* getRightArm();
 		RBX::PVInstance* getLeftArm();

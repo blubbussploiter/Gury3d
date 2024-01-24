@@ -103,13 +103,12 @@ void RBX::Experimental::Application::setWindowLong()
 RBX::Experimental::Application::Application(HWND wnd)
 {
 	GAppSettings _settings;
-	fps = 30.0f;
 
 	_settings.window.resizable = false;
 	_settings.window.framed = false;
+	_settings.window.stereo = false;
 	_settings.dataDir = ConFileInPath("\\content\\");
 
-	isThinking = false;
 	parent = wnd;
 
 	window = Win32Window::create(_settings.window, parent);
@@ -122,5 +121,8 @@ RBX::Experimental::Application::Application(HWND wnd)
 
 	sky = Sky::create(renderDevice, _settings.dataDir + "sky/");
 	resizeWithParent();
+
+	fps = 30.0f;
+	isThinking = false;
 
 }

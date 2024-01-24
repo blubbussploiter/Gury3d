@@ -3,8 +3,8 @@
 #include "scene.h"
 #include "workspace.h"
 
-#include "jointservice.h"
 #include "scriptcontext.h"
+#include "jointsservice.h"
 
 #include "datamodel.h"
 #include "players.h"
@@ -31,7 +31,7 @@ void RBX::RunService::run()
 
     if (scriptContext)
     {
-        scriptContext->runScripts();
+        //scriptContext->runScripts();
     }
 
     isRunning = true;
@@ -44,19 +44,19 @@ void RBX::RunService::stop()
 
 void RBX::RunService::reset()
 {
-    RBX::Scene::singleton()->updatePhysicsObjects();
+    RBX::Scene::singleton()->initializeKernel();
+    RBX::JointsService::singleton()->buildGlobalJoints();
+    RBX::JointsService::singleton()->buildConnectors();
 }
 
 void RBX::RunService::update()
 {
     RBX::Scene::singleton()->updateSteppables();
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 8; i++)
     {
-        physics->update(1.50f);
+         Kernel::get()->step(0.025f);
     }
-
-    RBX::Scene::singleton()->updatePhysicsObjects();
 }
 
 void RBX::RunService::heartbeat()
@@ -74,6 +74,7 @@ void RBX::RunService::updateSteppers()
 
 void RBX::RunService::onWorkspaceDescendentAdded(RBX::Instance* descendent)
 {
+
 }
 
 RBX::RunService* RBX::RunService::singleton()

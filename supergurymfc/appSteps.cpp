@@ -43,13 +43,11 @@ void RBX::Experimental::Application::doUserInput()
 
 	while (pollEvent(e))
 	{
-
 		msg.message = 0;
 		msg.wParam = 0;
 		msg.lParam = 0;
 
 		userInput->processEvent(e);
-
 	}
 
 	window->pollEvent(e);
@@ -59,9 +57,9 @@ void RBX::Experimental::Application::doUserInput()
 
 void RBX::Experimental::Application::onSimulation(RealTime rdt, SimTime sdt, SimTime idt)
 {
+	SoundService::singleton()->update();
 	getDatamodel()->step();
 	getDatamodel()->heartbeat(idt);
-	SoundService::singleton()->update();
 }
 
 void RBX::Experimental::Application::onLogic()
@@ -75,42 +73,24 @@ void RBX::Experimental::Application::onLogic()
 		RBX::Camera::singleton()->cam_zoom(1);
 	}
 
-	if (userInput->anyKeyPressed())
-	{
-		if (GetForegroundWindow() != parent || !inFocus)
-		{
-			SetActiveWindow(parent);
-			SetForegroundWindow(parent);
-			SendMessage(parent, WM_SETFOCUS, 0, 0);
-		}
-	}
-
-	if (inFocus)
-	{
-		RBX::Mouse::render(renderDevice);
-	}
-
 	getCamera()->update(userInput);
+	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
+	RBX::Network::getPlayers()->onStep();
+
+	//RBX::Mouse::render(renderDevice);
 	RBX::Mouse::update(userInput);
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
-	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
-
-	RBX::Network::getPlayers()->onStep();
-
-	Selection::update(userInput);
+	RBX::Selection::update(userInput);
 }
 
 void RBX::Experimental::Application::onFocus()
 {
-
-	window->makeCurrent();
-	getDatamodel()->workspace->setCurrentCamera(getCamera());
-
 	inFocus = 1;
 	justReceivedFocus = 1;
 
-	ShowCursor(FALSE);
+	//ShowCursor(FALSE);
+	window->makeCurrent();
 }
 
 void RBX::Experimental::Application::onKillFocus()
@@ -118,7 +98,7 @@ void RBX::Experimental::Application::onKillFocus()
 	inFocus = 0;
 	justReceivedFocus = 0;
 
-	ShowCursor(TRUE);
+	//ShowCursor(TRUE);
 }
 
 void RBX::Experimental::Application::onInit()
@@ -141,21 +121,6 @@ void RBX::Experimental::Application::onInit()
 		getDatamodel()->name = RBX::AppManager::singleton()->fileName;
 		getDatamodel()->loadContent(rbxlFile);
 	}
-
-	//RBX::Network::NetworkClient* client = new RBX::Network::NetworkClient();
-	//client->connect("10.0.0.186", 800, 1);
-
-	//getDatamodel()->setMessage("gury");
-
-	//getDatamodel()->setMessageBrickCount();
-	//getDatamodel()->players->createLocalPlayer(1);
-
-	//getDatamodel()->loadContent(GetFileInPath("\\gury.rbxl"));
-	//getDatamodel()->loadContent("D:\\hq.rbxl");
-	//getCamera()->zoomExtents();
-
-	//getDatamodel()->players->createLocalPlayer(0);
-	//getDatamodel()->players->localPlayer->loadCharacter();
 
 }
 
@@ -187,8 +152,6 @@ void RBX::Experimental::Application::mainProcessStep()
 		onSimulation(rdt, sdt, idt);
 
 		now = System::time();
-
-		// Compute accumulated time
 
 		System::sleep(max(0.0, desiredFrameDuration - (now - lastWaitTime)));
 		lastWaitTime = System::time();

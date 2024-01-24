@@ -76,11 +76,6 @@ void RBX::Camera::characterFade()
 
 void RBX::Camera::cam_zoom(bool inout)
 {
-    if (cameraType == Follow)
-    {
-        characterFade();
-    }
-
     if (inout)
     {
         Zoom(1);
@@ -90,7 +85,7 @@ void RBX::Camera::cam_zoom(bool inout)
     Zoom(-1);
 }
 
-void RBX::Camera::update(UserInput* input)
+void RBX::Camera::update(UserInput* input) /* jesus fucking christ CLEAN UP THIS CODE */
 {
 
     Vector3 pos;
@@ -116,6 +111,10 @@ void RBX::Camera::update(UserInput* input)
             GetCursorPos(&mouse);
             pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f, 1, lerp);
             SetCursorPos(oldMouse.x, oldMouse.y);
+        }
+        if (cameraType == Follow)
+        {
+            characterFade();
         }
     }
 

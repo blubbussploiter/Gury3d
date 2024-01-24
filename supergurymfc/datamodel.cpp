@@ -5,17 +5,18 @@
 
 #include "scene.h"
 #include "workspace.h"
-#include "jointservice.h"
 #include "thumbnailGenerator.h"
 #include "yieldingthreads.h"
 #include "controller.h"
 #include "lighting.h"
 #include "players.h"
-#include "soundservice.h"
 
 #include "appmanager.h"
 #include "serializer.h"
 #include "stdout.h"
+
+#include "jointsservice.h"
+#include "soundservice.h"
 
 RTTR_REGISTRATION
 {
@@ -44,7 +45,6 @@ void RBX::Datamodel::loadContent(std::string contentId)
 void RBX::Datamodel::close()
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel::close()");
-    RBX::RunService::singleton()->getPhysics()->close();
     RBX::Scene::singleton()->close();
     emptyExplorerWindow();
 }
@@ -90,17 +90,18 @@ void RBX::Datamodel::open()
 {
     workspace = new Workspace();
     runService = new RunService();
-    jointService = new JointService();
     lighting = new Lighting();
     scene = new Scene();
     controllerService = new ControllerService();
     thumbnailGenerator = new ThumbnailGenerator();
     scriptContext = new ScriptContext();
     soundService = new SoundService();
-    players = new RBX::Network::Players();
+    players = new RBX::Network::Players();   
+    jointService = new JointsService();
     guiRoot = Gui::singleton();
     runService->scriptContext = scriptContext;
     yieldingThreads = new Lua::YieldingThreads(scriptContext);
+
 
     fillExplorerWindow();
 
