@@ -27,12 +27,10 @@ void RBX::View::presetLighting()
 void RBX::View::turnOnLights(RenderDevice* device)
 {
 	Color3 ambientColor;
-	Vector3 toLight;
 
-	int n = 0;
+	int n = 1;
 	
 	ambientColor = (lighting->ambientBottom + lighting->ambientTop) / 2.0f;
-	toLight = Vector3(0.4f, -1.0f, 0.1f);
 
 	device->setSpecularCoefficient(1.0f);
 	device->setColorClearValue(colorClearValue);
@@ -47,20 +45,21 @@ void RBX::View::turnOnLights(RenderDevice* device)
 		device->setLight(n++, lighting->shadowedLightArray[i]);
 	}
 
-	device->setLight(n++, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
-
 	device->setAmbientLightColor(ambientColor);
 
-	if (lighting->ambientBottom != ambientColor)
+	if (effectSettings->_hemisphereLighting)
 	{
-		Color3 ambient = lighting->ambientBottom - ambientColor;
-		device->setLight(n++, GLight::directional(toLight, ambient, 0, 1));
-	}
+		if (lighting->ambientBottom != ambientColor)
+		{
+			Color3 ambient = lighting->ambientBottom - ambientColor;
+			device->setLight(n++, GLight::directional(Vector3(0.4f, -1.0f, 0.1f), ambient, 0, 1));
+		}
 
-	if (lighting->ambientTop != ambientColor)
-	{
-		Color3 ambient = lighting->ambientTop - ambientColor;
-		device->setLight(n++, GLight::directional(Vector3::unitY(), ambient, 0, 1));
+		if (lighting->ambientTop != ambientColor)
+		{
+			Color3 ambient = lighting->ambientTop - ambientColor;
+			device->setLight(n++, GLight::directional(Vector3::unitY(), ambient, 0, 1));
+		}
 	}
 }
 
@@ -74,6 +73,8 @@ void RBX::View::renderScene(RenderDevice* rd)
 	rd->pushState();
 	rd->enableLighting();
 
+	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
+
 	turnOnLights(rd);
 
 	RBX::Scene::singleton()->opaquePass(rd);
@@ -82,6 +83,7 @@ void RBX::View::renderScene(RenderDevice* rd)
 	rd->disableLighting();
 
 	RBX::Scene::singleton()->darkPass(rd);
+	//RBX::Scene::singleton()->reflectancePass(rd);
 	RBX::Scene::singleton()->lastPass(rd);
 
 	rd->popState();
@@ -105,6 +107,8 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	renderDevice->clear();
 	renderDevice->setProjectionAndCameraMatrix(*projection->getCamera());
 
+	renderDevice->setStencilConstant(0);
+	renderDevice->setStencilClearValue(0);
 	renderDevice->setShadeMode(RenderDevice::ShadeMode::SHADE_SMOOTH);
 
 	if (!sky.isNull())

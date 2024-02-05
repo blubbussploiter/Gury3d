@@ -59,7 +59,7 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 			contact[i].surface.slip1 = 0.0f;
 			contact[i].surface.slip2 = 0.0f;
 			contact[i].surface.soft_erp = 0.8f;
-			contact[i].surface.soft_cfm = 0.005f;
+			contact[i].surface.soft_cfm = 0.001f;
 
 			dJointID c = dJointCreateContact(
 				Kernel::get()->world,

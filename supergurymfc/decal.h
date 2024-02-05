@@ -15,7 +15,7 @@ namespace RBX
 
 	namespace Render
 	{
-		void rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, int sfactor= 0, int dfactor = 0, bool repeat=1);
+		void rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, bool repeat=1);
 	}
 
 	class Decal : 

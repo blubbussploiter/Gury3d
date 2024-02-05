@@ -51,53 +51,36 @@ void RBX::Network::PlayerController::move()
 	o = camera->cframe;
 	look = o.lookVector();
 
-	switch (dir())
+	for (unsigned int i = 0; i < directions.size(); i++)
 	{
-	/* vertical */
-	case RBX::Forward:
-	{
-		mov = normalize(o.lookVector());
-		break;
-	}
-	case RBX::Backwards:
-	{
-		mov = normalize(-o.lookVector());
-		break;
-	}
-	/* horizontal */
-	case RBX::Right:
-	{
-		mov = normalize(o.rightVector());
-		break;
-	}
-	case RBX::Left:
-	{
-		mov = normalize(-o.rightVector());
-		break;
-	}
-	/* vertical + horizontal.. */
-	case RBX::ForwardRight:
-	{
-		mov += o.getLookVector() + o.rightVector();
-		break;
-	}
-	case RBX::ForwardLeft:
-	{
-		mov += o.getLookVector() - o.rightVector();
-		break;
-	}
-	case RBX::BackwardsRight:
-	{
-		mov -= o.getLookVector() - o.rightVector();
-		break;
-	}
-	case RBX::BackwardsLeft:
-	{
-		mov -= o.getLookVector() + o.rightVector();
-		break;
-	}
-	case RBX::Jump: { humanoid->setJump(); setdir(Idle); return; }
-	case RBX::Idle: { return; }
+		MovementDirections dir = directions.at(i);
+		switch (dir)
+		{
+			/* vertical */
+		case RBX::Forward:
+		{
+			mov = normalize(o.lookVector());
+			break;
+		}
+		case RBX::Backwards:
+		{
+			mov = normalize(-o.lookVector());
+			break;
+		}
+		/* horizontal */
+		case RBX::Right:
+		{
+			mov = normalize(o.rightVector());
+			break;
+		}
+		case RBX::Left:
+		{
+			mov = normalize(-o.rightVector());
+			break;
+		}
+		case RBX::Jump: { humanoid->setJump(); setdir(Idle); return; }
+		case RBX::Idle: { return; }
+		}
 	}
 
 	humanoid->setWalkDirection(mov);

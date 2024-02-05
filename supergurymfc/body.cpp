@@ -59,13 +59,8 @@ void RBX::Body::modifyMass(dMass mass)
 
 void RBX::Body::modifySize(Vector3 size)
 {
-	dMass mass;
-	mass.setBox(0.7f, sqrt(size.x * 2), sqrt(size.y * 2), sqrt(size.z * 2));
-
-	if (body)
-	{
-		dBodySetMass(body, &mass);
-	}
+	destroyBody();
+	createBody(size);
 }
 
 void RBX::Body::step()
@@ -103,7 +98,7 @@ void RBX::Body::createBody(Vector3 size)
 	this->size = size;
 
 	dMass mass;
-	mass.setBox(0.7f, sqrt(size.x * 2), sqrt(size.y * 2), sqrt(size.z * 2));
+	mass.setBox(0.01f, sqrt(size.x * 2), sqrt(size.y * 2), sqrt(size.z * 2));
 
 	body = dBodyCreate(Kernel::get()->world);
 	dBodySetMass(body, &mass);

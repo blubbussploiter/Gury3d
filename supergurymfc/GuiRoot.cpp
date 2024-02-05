@@ -1,4 +1,5 @@
 #include "GuiRoot.h"
+#include "Mouse.h"
 
 RBX::Gui::GuiRoot* root;
 
@@ -30,6 +31,21 @@ void RBX::Gui::GuiRoot::render(RenderDevice* d)
 void RBX::Gui::GuiRoot::doButtonLogic(G3D::UserInput* ui, RenderDevice* d)
 {
 	for (unsigned int i = 0; i < objects.size(); i++)
-		if (objects.at(i)->isButton)
-			((GuiButton*)(objects.at(i)))->handleMouse(ui);
+			objects.at(i)->handleMouse(ui);
+}
+
+bool RBX::Gui::GuiObject::mouseIn(Vector2 mouse)
+{
+	return (mouse.x >= position.x && mouse.y >= position.y && (mouse.x < position.x + size.x && mouse.y < position.y + size.y));
+
+}
+
+void RBX::Gui::GuiObject::updateMouse(UserInput* ui)
+{
+	hoveringUI = mouseIn(ui->mouseXY());
+}
+
+void RBX::Gui::GuiObject::handleMouse(UserInput* ui)
+{
+	updateMouse(ui);
 }

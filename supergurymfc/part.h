@@ -27,7 +27,6 @@ namespace RBX
 			return brickColor.number.number;
 		}
 
-		void renderDecals(RenderDevice* rd, Render::Renderable* base);
 		virtual void render(RenderDevice* rd);
 		virtual ~PartInstance() {}
 

@@ -8,11 +8,10 @@
 void RBX::JointsService::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 {
 	dContact contact[4];
+	RBX::PVInstance* pv0, * pv1;
 
 	int i;
-	int numc = dCollide(o1, o2, 4, &contact[0].geom, sizeof(dContactGeom));
-
-	RBX::PVInstance* pv0, * pv1;
+	int numc = dCollide(o1, o2, 0, &contact[0].geom, sizeof(dContactGeom));
 
 	pv0 = static_cast<PVInstance*>(dGeomGetData(o1));
 	pv1 = static_cast<PVInstance*>(dGeomGetData(o2));
@@ -56,6 +55,7 @@ RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Pr
 	{
 		return new MotorConnector(prim0, prim1);
 	}
+	case Welded:
 	case Snapped:
 	{
 		return new SnapConnector(prim0, prim1);
@@ -64,7 +64,7 @@ RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Pr
 	return 0;
 }
 
-RBX::NormalId RBX::JointsService::fromNormal(Vector3 normal)
+RBX::NormalId RBX::JointsService::fromNormal(Vector3 normal)	
 {
 	if (normal.y == 1)
 		return TOP;
@@ -97,7 +97,7 @@ bool RBX::JointsService::areConnectedBodies(Body* body0, Body* body1)
 bool RBX::JointsService::bodyIsConnector(Body* body)
 {
 	if (!body) return 0;
-	SnapConnector* data = (SnapConnector*)dBodyGetData(body->body);
+	Connector* data = (Connector*)dBodyGetData(body->body);
 	return data != 0;
 }
 
@@ -105,6 +105,7 @@ RBX::Linkage RBX::JointsService::makeLinkage(SurfaceType s0, SurfaceType s1)
 {
 	if ((s0 == Studs || s1 == Studs) && (s0 == Inlet || s1 == Inlet)) return Snapped;
 	if (s0 == Motor || s1 == Motor) return Motored;
+	if (s0 == Weld || s1 == Weld) return Welded;
 	return NotLinked;
 }
 

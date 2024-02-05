@@ -273,6 +273,7 @@
     <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="iobfix.cpp" />
+    <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="jointsservice.cpp" />
     <ClCompile Include="kernel.cpp" />
     <ClCompile Include="md5.cpp" />

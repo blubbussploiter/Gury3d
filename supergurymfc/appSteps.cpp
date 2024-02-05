@@ -41,11 +41,16 @@ void RBX::Experimental::Application::doUserInput()
 
 	userInput->beginEvents();
 
-	while (pollEvent(e))
+	while (pollEvent(mouse, e) || pollEvent(key, e))
 	{
-		msg.message = 0;
-		msg.wParam = 0;
-		msg.lParam = 0;
+
+		mouse.message = 0;
+		mouse.wParam = 0;
+		mouse.lParam = 0;
+
+		key.message = 0;
+		key.wParam = 0;
+		key.lParam = 0;
 
 		userInput->processEvent(e);
 	}
@@ -73,7 +78,7 @@ void RBX::Experimental::Application::onLogic()
 		RBX::Camera::singleton()->cam_zoom(1);
 	}
 
-	getCamera()->update(userInput);
+	getCamera()->update(userInput->keyDown(SDL_RIGHT_MOUSE_KEY));
 	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
 	RBX::Network::getPlayers()->onStep();
 
@@ -81,7 +86,7 @@ void RBX::Experimental::Application::onLogic()
 	RBX::Mouse::update(userInput);
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
-	RBX::Selection::update(userInput);
+//	RBX::Selection::update(userInput);
 }
 
 void RBX::Experimental::Application::onFocus()
@@ -97,6 +102,14 @@ void RBX::Experimental::Application::onKillFocus()
 {
 	inFocus = 0;
 	justReceivedFocus = 0;
+
+	mouse.message = 0;
+	mouse.wParam = 0;
+	mouse.lParam = 0;
+
+	key.message = 0;
+	key.wParam = 0;
+	key.lParam = 0;
 
 	//ShowCursor(TRUE);
 }
@@ -138,7 +151,7 @@ void RBX::Experimental::Application::mainProcessStep()
 
 		lastTime = now;
 		RealTime timeStep = now - lastTime;
-
+		
 		doUserInput();
 		onLogic();
 

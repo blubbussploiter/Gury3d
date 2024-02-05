@@ -47,7 +47,7 @@ CMainFrame::CMainFrame() noexcept
 {
 	// TODO: add member initialization code here
 	m_bAutoMenuEnable = 0;
-	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2005);
+	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_WIN_2000);
 }
 
 CMainFrame::~CMainFrame()

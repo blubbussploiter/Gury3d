@@ -44,10 +44,6 @@ BOOL CALLBACK documentWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			app->getCamera()->cam_zoom(d > 0);
 			break;
 		}
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-		case WM_SYSKEYUP:
-		case WM_KEYUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
 		case WM_LBUTTONDOWN:
@@ -55,10 +51,21 @@ BOOL CALLBACK documentWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case WM_RBUTTONDOWN:
 		case WM_RBUTTONUP:
 		{
-			app->msg.hwnd = hwnd;
-			app->msg.message = uMsg;
-			app->msg.wParam = wParam;
-			app->msg.lParam = lParam;
+			app->mouse.hwnd = hwnd;
+			app->mouse.message = uMsg;
+			app->mouse.wParam = wParam;
+			app->mouse.lParam = lParam;
+			break;
+		}
+		case WM_SYSKEYDOWN:
+		case WM_SYSKEYUP:
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		{
+			app->key.hwnd = hwnd;
+			app->key.message = uMsg;
+			app->key.wParam = wParam;
+			app->key.lParam = lParam;
 			break;
 		}
 		default:
@@ -125,4 +132,9 @@ RBX::Experimental::Application::Application(HWND wnd)
 	fps = 30.0f;
 	isThinking = false;
 
+}
+
+SkyRef RBX::getGlobalSky()
+{
+	return AppManager::singleton()->getApplication()->sky;
 }

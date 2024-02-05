@@ -14,6 +14,8 @@ namespace RBX
 
 			ToneMapRef toneMap;
 
+			bool _hemisphereLighting;
+
 			void applyEffects(RenderDevice* rd, LightingParameters& pout, LightingRef& lout);
 			void polish(RenderDevice* rd, const LightingParameters& pin, LightingParameters& pout, const LightingRef& lin, LightingRef& lout);
 

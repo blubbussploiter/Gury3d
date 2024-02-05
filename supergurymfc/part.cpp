@@ -12,20 +12,6 @@ RTTR_REGISTRATION
 		 .property("BrickColor", &RBX::PartInstance::getBrickColor, &RBX::PartInstance::setBrickColor);
 }
 
-void RBX::PartInstance::renderDecals(RenderDevice* rd, Render::Renderable* base)
-{
-	auto c = getChildren();
-	for (unsigned int i = 0; i < c->size(); i++)
-	{
-		RBX::Instance* ic = c->at(i);
-		RBX::Decal* decal = dynamic_cast<RBX::Decal*>(ic);
-		if (decal)
-		{
-			decal->render(rd, base);
-		}
-	}
-}
-
 void RBX::PartInstance::render(RenderDevice* rd)
 {
 	if (!specialShape)
@@ -40,5 +26,8 @@ void RBX::PartInstance::render(RenderDevice* rd)
 		rd->setColor(Color4(color, alpha));
 
 		specialShape->render(rd);
+
+		//rd->setColor(Color4(1,1,1, 1)); /* revert */
+		//specialShape->renderDecals(rd, this);
 	}
 }

@@ -6,25 +6,18 @@
 #include "ray.h"
 #include "strings.h"
 
-unsigned int Rendering::mouse_glid;
-bool Rendering::isOverGuiObject;
-
 Vector3 RBX::Mouse::dir = Vector3::zero();
 Vector3 RBX::Mouse::hitWorld = Vector3::zero();
 
 RBX::PVInstance* RBX::Mouse::target = 0;
-TextureRef Rendering::cursor_custom = 0;
+
+bool RBX::hoveringUI = 0;
 
 TextureRef cursor_far;
 TextureRef cursor_close;
 
 float szx = 150, szy = 150;
 float cx, cy, x, y;
-
-bool Rendering::shouldRenderAsFar()
-{
-	return cursor_custom.isNull();
-}
 
 RBX::PVInstance* RBX::Mouse::getTarget(RBX::PVInstance* ignorePart) /* ignore part for dragger tool */
 {
@@ -35,7 +28,7 @@ RBX::PVInstance* RBX::Mouse::getTarget(RBX::PVInstance* ignorePart) /* ignore pa
 	ray = camera->camera->worldRay(x, y, RBX::AppManager::singleton()->getApplication()->getViewport());
 
 	selected = RBX::World::getPartFromG3DRay(ray, hitWorld);
-	target = dynamic_cast<RBX::PVInstance*>(selected);
+	target = (RBX::PVInstance*)(selected);
 
 	return target;
 }
@@ -43,7 +36,7 @@ RBX::PVInstance* RBX::Mouse::getTarget(RBX::PVInstance* ignorePart) /* ignore pa
 void RBX::Mouse::update(UserInput* ui)
 {
 	RBX::Camera* camera = RBX::Camera::singleton();
-	if (camera->isUsingRightMouse || camera->isInFirstPerson) return;
+	if (ui->keyDown(SDL_RIGHT_MOUSE_KEY)) return;
 	x = ui->getMouseX();
 	y = ui->getMouseY();
 	cx = x - szx / 2;

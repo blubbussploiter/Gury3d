@@ -41,10 +41,11 @@ void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)
 {
 	Vector2 mousePos;
 
+	mousePos = ui->mouseXY();
+	hoveringUI = mouseIn(mousePos);
+
 	if (disabled)
 		return;
-
-	mousePos = ui->mouseXY();
 
 	if (!mouseIn(mousePos))
 	{
@@ -69,9 +70,4 @@ void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)
 	}
 	else
 		clicked = false;
-}
-
-bool RBX::Gui::GuiButton::mouseIn(Vector2 mosPos)
-{
-	return(mosPos.x >= position.x && mosPos.y >= position.y && (mosPos.x < position.x + size.x && mosPos.y < position.y + size.y));
 }

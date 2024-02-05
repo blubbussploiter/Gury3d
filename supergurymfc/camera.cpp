@@ -85,26 +85,30 @@ void RBX::Camera::cam_zoom(bool inout)
     Zoom(-1);
 }
 
-void RBX::Camera::update(UserInput* input) /* jesus fucking christ CLEAN UP THIS CODE */
+void RBX::Camera::follow()
+{
+    if (focusPart &&
+        focusPosition != focusPart->getPosition())
+    {
+        focusPosition = focusPart->getPosition() + Vector3(0, 0.25f, 0);
+    }
+    focusPosition += Vector3(0, 0.25f, 0);
+}
+
+void RBX::Camera::update(bool rightMouseDown)
 {
 
     Vector3 pos;
     float lerp = 0.30f;
 
-    isUsingRightMouse = input->keyDown(SDL_RIGHT_MOUSE_KEY);
-
     if (cameraType == Follow)
     {
-        if (focusPart &&
-            focusPosition != focusPart->getPosition())
-        {
-            focusPosition = focusPart->getPosition() + Vector3(0, 0.25f, 0);
-        }
-        focusPosition += Vector3(0, 0.25f, 0);
         lerp = 0.95f;
+        characterFade();
+        follow();
     }
 
-    if (isUsingRightMouse)
+    if (rightMouseDown)
     {
         if (oldMouse.x != 0 && oldMouse.y != 0)
         {
@@ -112,16 +116,12 @@ void RBX::Camera::update(UserInput* input) /* jesus fucking christ CLEAN UP THIS
             pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f, 1, lerp);
             SetCursorPos(oldMouse.x, oldMouse.y);
         }
-        if (cameraType == Follow)
-        {
-            characterFade();
-        }
     }
-
-    GetCursorPos(&oldMouse);
 
     pan(&cframe, 0, 0, 1, lerp);
     camera->setCoordinateFrame(cframe);
+
+    GetCursorPos(&oldMouse);
 
 }
 
@@ -130,31 +130,31 @@ void RBX::Camera::move()
     if (!moving())
         return;
 
-    switch (dir())
+    for (unsigned int i = 0; i < directions.size(); i++)
     {
-        case RBX::Forward:
-        {
-            cframe.translation += cframe.lookVector() * getSpeed();
-            break;
-        }
-        case RBX::Backwards:
-        {
-            cframe.translation -= cframe.lookVector() * getSpeed();
-            break;
-        }
-        case RBX::BackwardsRight:
-        case RBX::ForwardRight:
-        case RBX::Right:
-        {
-            cframe.translation += cframe.rightVector() * getSpeed();
-            break;
-        }
-        case RBX::BackwardsLeft:
-        case RBX::ForwardLeft:
-        case RBX::Left:
-        {
-            cframe.translation -= cframe.rightVector() * getSpeed();
-            break;
+        MovementDirections dir = directions.at(i);
+        switch (dir)
+            {
+            case RBX::Forward:
+            {
+                cframe.translation += cframe.lookVector() * getSpeed();
+                break;
+            }
+            case RBX::Backwards:
+            {
+                cframe.translation -= cframe.lookVector() * getSpeed();
+                break;
+            }
+            case RBX::Right:
+            {
+                cframe.translation += cframe.rightVector() * getSpeed();
+                break;
+            }
+            case RBX::Left:
+            {
+                cframe.translation -= cframe.rightVector() * getSpeed();
+                break;
+            }
         }
     }
 

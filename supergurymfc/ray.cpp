@@ -45,7 +45,7 @@ RBX::ISelectable* RBX::World::getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld,
 	for (unsigned int i = 0; i < instances.size(); i++)
 	{
 		RBX::Instance* instance = dynamic_cast<RBX::Instance*>(instances.at(i));
-		RBX::PVInstance* child = dynamic_cast<RBX::PVInstance*>(instance);
+		RBX::PVInstance* child = toInstance<PVInstance>(instance);
 
 		if (child)
 		{

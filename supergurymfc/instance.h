@@ -35,6 +35,12 @@ namespace RBX
 
 		bool isAncestorOf(RBX::Instance* i);
 
+		template <typename T>
+		inline T* findFirstChild(std::string name)
+		{
+			return (T*)findFirstChild(name);
+		}
+
 		template<typename T>
 		inline T* findFirstChildOfClass(std::string name)
 		{
@@ -98,6 +104,12 @@ namespace RBX
 	bool IsA(RBX::Instance* i)
 	{
 		return (i && dynamic_cast<Type*>(i) != 0);
+	}
+
+	template <class Type>
+	Type* toInstance(Instance* i)
+	{
+		return dynamic_cast<Type*>(i);
 	}
 
 }

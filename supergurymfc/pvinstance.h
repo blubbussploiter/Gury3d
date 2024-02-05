@@ -67,6 +67,8 @@ namespace RBX
 		bool anchored;
 		bool locked;
 
+		float fauxTransparency; /* the version set by reflection */
+
 		Shape shape;
 
 	public:
@@ -206,10 +208,11 @@ namespace RBX
 		Vector3 getPosition() { return pv->position.translation; }
 
 		void setPosition(Vector3 p) 
-		{ 
+		{
 			pv->position.translation = p;
 			primitive->modifyPosition(pv->position);
 		}
+
 		CoordinateFrame getCFrame() { return pv->position; }
 
 		void setCFrame(CoordinateFrame cf) 
@@ -226,8 +229,31 @@ namespace RBX
 
 		SurfaceType getSurface(NormalId face);
 
-		float getTransparency() { return transparency; }
-		void setTransparency(float f) { transparency = f; alpha = 1 - transparency; }
+		float getFauxTransparency()
+		{
+			return fauxTransparency;
+		}
+
+		float getTransparency()
+		{ 
+			return transparency;
+		}
+		void setTransparency(float f)
+		{
+			transparency = f; 
+			alpha = 1 - transparency;
+			fauxTransparency = f;
+		}
+
+		float getReflectance()
+		{
+			return reflectance;
+		}
+
+		void setReflectance(float r)
+		{
+			reflectance = r;
+		}
 
 		Vector3 getVelocity() { return pv->velocity.linear; }
 		Vector3 getRotVelocity() { return pv->velocity.rotational; }

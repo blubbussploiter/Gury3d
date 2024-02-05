@@ -15,9 +15,11 @@ namespace RBX
 		public:
 
 			bool unaffectedByLight, renderedLast;
-			float alpha, transparency, localTransparency;
+			float alpha, transparency, reflectance;
 
 			Renderable* specialShape;
+
+			void renderDecals(RenderDevice* rd, Instance* parent=0);
 
 			virtual void render(RenderDevice* rd) {};
 			virtual void renderSurfaces(RenderDevice* rd) {};

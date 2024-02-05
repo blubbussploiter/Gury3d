@@ -291,3 +291,4 @@ RBX::Instances* RBX::Serializer::loadInstances(std::string fileName)
 
 	return i;
 }
+

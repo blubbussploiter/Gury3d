@@ -35,8 +35,9 @@ namespace RBX
 			dWorldSetAutoDisableFlag(world, 1);
 			dWorldSetAutoDisableLinearThreshold(world, 0.5f);
 			dWorldSetAutoDisableAngularThreshold(world, 0.5f);
-			dWorldSetCFM(world, 1^-6);
-			dWorldSetERP(world, 1);
+			dWorldSetContactSurfaceLayer(world, 0.00001f);
+			dWorldSetCFM(world, 1^-10);
+			dWorldSetERP(world, 0.8f);
 			dWorldSetAutoDisableSteps(world, 20);
 		}
 	};

@@ -6,6 +6,8 @@
 #include "stdout.h"
 #include "mesh.h"
 
+#include "appmanager.h"
+
 RBX::Scene* RBX::Scene::singleton()
 {
 	return RBX::Datamodel::getDatamodel()->scene;
@@ -23,22 +25,22 @@ std::vector<RBX::Render::Renderable*> RBX::Scene::getArrayOfObjects()
 
 bool opaqueRule(RBX::Render::Renderable* r)
 {
-	return (!r->transparency && !r->localTransparency && !r->renderedLast);
+	return (!r->transparency && !r->renderedLast);
+}
+
+bool reflectanceRule(RBX::Render::Renderable* r)
+{
+	return (r->reflectance > 0);
 }
 
 bool transparentRule(RBX::Render::Renderable* r)
 {
-	return (!r->renderedLast && r->transparency > 0 && !r->localTransparency);
-}
-
-bool localTransparencyRule(RBX::Render::Renderable* r)
-{
-	return (!r->renderedLast && r->localTransparency > 0);
+	return (!r->renderedLast && r->transparency > 0);
 }
 
 bool lastRenderRule(RBX::Render::Renderable* r)
 {
-	return r->renderedLast && !r->transparency && !r->localTransparency;
+	return r->renderedLast && !r->transparency;
 }
 
 bool physicsRule(RBX::Render::Renderable* r)
@@ -117,13 +119,26 @@ void RBX::Scene::opaquePass(RenderDevice* rd)
 	baseRender(rd, opaqueRule, renderRenderable);
 }
 
+void RBX::Scene::reflectancePass(RenderDevice* rd) /* keep working on this sometime idkf */
+{
+	rd->pushState();
+	rd->disableLighting();
+
+	rd->configureReflectionMap(0, getGlobalSky()->getEnvironmentMap());
+	rd->setDepthWrite(0);
+
+	baseRender(rd, reflectanceRule, renderRenderable);
+	
+	rd->popState();
+
+}
+
 void RBX::Scene::transparentPass(RenderDevice* rd)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	baseRender(rd, transparentRule, renderRenderable);
-	baseRender(rd, localTransparencyRule, renderRenderable);
 
 	glBlendFunc(GL_ONE, GL_ONE);
 	glDisable(GL_BLEND);
@@ -149,14 +164,22 @@ void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)
 {
 	if (RBX::IsA<RBX::Render::Renderable>(descendent) || steppableRule(descendent))
 	{
-		RBX::Render::Renderable* r = dynamic_cast<RBX::Render::Renderable*>(descendent);
+		RBX::Render::Renderable* r = toInstance<RBX::Render::Renderable>(descendent);
 
 		if (RBX::IsA<RBX::Render::SpecialMesh>(r))
 		{
-			RBX::Render::Renderable* p = dynamic_cast<RBX::Render::Renderable*>(r->getParent());
+			RBX::Render::Renderable* p = toInstance<RBX::Render::Renderable>(r->getParent());
 			if (p)
 			{
 				p->specialShape = r;
+			}
+		}
+
+		if (RBX::IsA<PVInstance>(r))
+		{
+			if (RunService::singleton()->isRunning)
+			{
+				toInstance<PVInstance>(r)->initializeForKernel();
 			}
 		}
 

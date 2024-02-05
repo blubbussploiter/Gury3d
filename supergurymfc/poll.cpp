@@ -127,84 +127,83 @@ static void mouseButton(bool down, int keyEvent, DWORD flags, GEvent& e) {
     e.key.keysym.mod = (SDLMod)mod;
 }
 
-bool RBX::Experimental::Application::pollEvent(GEvent& e)
+bool RBX::Experimental::Application::pollEvent(MSG msg, GEvent& e)
 {
-	if (msg.message != WM_QUIT)
-	{
-		if (msg.hwnd == parent) {
-			switch (msg.message) {
-			    case WM_KEYDOWN:
-			    case WM_SYSKEYDOWN:
-                {
+    if (msg.message != WM_QUIT)
+    {
+        if (msg.hwnd == parent) {
+            switch (msg.message) {
+            case WM_KEYDOWN:
+            case WM_SYSKEYDOWN:
+            {
 
-                    e.key.type = SDL_KEYDOWN;
-                    e.key.state = SDL_PRESSED;
+                e.key.type = SDL_KEYDOWN;
+                e.key.state = SDL_PRESSED;
 
-                    // Fix invalid repeat key flag
-                    if (justReceivedFocus) {
-                        justReceivedFocus = false;
-                        msg.lParam &= ~(0x40000000);
-                    }
-
-                    // Need the repeat messages to find LSHIFT and RSHIFT
-                    if (!((msg.lParam >> 30) & 0x01)) {
-                        // This is not an autorepeat message
-                        makeKeyEvent(msg.wParam, msg.lParam, e);
-                        _keyboardButtons[msg.wParam] = true;
-                        return true;
-                    }
-                    break;
-
+                // Fix invalid repeat key flag
+                if (justReceivedFocus) {
+                    justReceivedFocus = false;
+                    msg.lParam &= ~(0x40000000);
                 }
-			    case WM_KEYUP:
-			    case WM_SYSKEYUP:
-                {
-                    e.key.type = SDL_KEYUP;
-                    e.key.state = SDL_RELEASED;
 
+                // Need the repeat messages to find LSHIFT and RSHIFT
+                if (!((msg.lParam >> 30) & 0x01)) {
+                    // This is not an autorepeat message
                     makeKeyEvent(msg.wParam, msg.lParam, e);
-                    _keyboardButtons[msg.wParam] = false;
+                    _keyboardButtons[msg.wParam] = true;
                     return true;
                 }
-			    case WM_LBUTTONDOWN:
-                {
-                    mouseButton(true, SDL_LEFT_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[0] = true;
-                    return true;
-                }
-			    case WM_MBUTTONDOWN:
-                {
-                    mouseButton(true, SDL_MIDDLE_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[1] = true;
-                    return true;
-                }
-			    case WM_RBUTTONDOWN:
-                {
-                    mouseButton(true, SDL_RIGHT_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[2] = true;
-                    return true;
-                }
-			    case WM_LBUTTONUP:
-                {
-                    mouseButton(false, SDL_LEFT_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[0] = false;
-                    return true;
-                }
-			    case WM_MBUTTONUP:
-                {
-                    mouseButton(false, SDL_MIDDLE_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[1] = false;
-                    return true;
-                }
-			    case WM_RBUTTONUP:
-                {
-                    mouseButton(false, SDL_RIGHT_MOUSE_KEY, msg.wParam, e);
-                    _mouseButtons[2] = false;
-                    return true;
-                }
-			} // switch
-		} // if
-	}
+                break;
 
-	return false;
+            }
+            case WM_KEYUP:
+            case WM_SYSKEYUP:
+            {
+                e.key.type = SDL_KEYUP;
+                e.key.state = SDL_RELEASED;
+
+                makeKeyEvent(msg.wParam, msg.lParam, e);
+                _keyboardButtons[msg.wParam] = false;
+                return true;
+            }
+            case WM_LBUTTONDOWN:
+            {
+                mouseButton(true, SDL_LEFT_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[0] = true;
+                return true;
+            }
+            case WM_MBUTTONDOWN:
+            {
+                mouseButton(true, SDL_MIDDLE_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[1] = true;
+                return true;
+            }
+            case WM_RBUTTONDOWN:
+            {
+                mouseButton(true, SDL_RIGHT_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[2] = true;
+                return true;
+            }
+            case WM_LBUTTONUP:
+            {
+                mouseButton(false, SDL_LEFT_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[0] = false;
+                return true;
+            }
+            case WM_MBUTTONUP:
+            {
+                mouseButton(false, SDL_MIDDLE_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[1] = false;
+                return true;
+            }
+            case WM_RBUTTONUP:
+            {
+                mouseButton(false, SDL_RIGHT_MOUSE_KEY, msg.wParam, e);
+                _mouseButtons[2] = false;
+                return true;
+            }
+            } // switch
+        } // if
+    }
+    return false;
 }

@@ -50,6 +50,8 @@ namespace RBX
 		virtual RBX::Extents computeCameraOwnerExtents();
 		RBX::Extents computeVisibleExtents();
 
+		void translate(CoordinateFrame cframe);
+
 		SelectableBox getBoundingBox()
 		{
 			return SelectableBox();

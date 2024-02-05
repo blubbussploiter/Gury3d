@@ -191,6 +191,26 @@ RBX::Extents RBX::ModelInstance::computeVisibleExtents()
 			maxZ - minZ));
 }
 
+void RBX::ModelInstance::translate(CoordinateFrame cframe)
+{
+
+	CoordinateFrame frame = getPrimaryPartCFrame();
+
+	for (unsigned int i = 0; i < children->size(); i++)
+	{
+		PVInstance* pv = toInstance<PVInstance>(children->at(i));
+		if (pv)
+		{
+			CoordinateFrame pvFrame = pv->getCFrame();
+			Vector3 t = pvFrame.translation - frame.translation;
+			Vector3 l = cframe.translation + t;
+			Matrix3 r = pvFrame.rotation * cframe.rotation;
+			pv->setCFrame(CoordinateFrame(r, l));
+		}
+	}
+
+}
+
 RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
 {
 	RBX::PartInstance* result = 0;

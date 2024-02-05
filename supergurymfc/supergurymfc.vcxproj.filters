@@ -815,6 +815,9 @@
     <ClCompile Include="motor.cpp">
       <Filter>Source Files\rbx\game\physics\connectors</Filter>
     </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="supergurymfc.rc">

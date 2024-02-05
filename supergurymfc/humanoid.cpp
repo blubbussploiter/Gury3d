@@ -1,12 +1,13 @@
 #include "humanoid.h"
 #include "rbxmath.h"
-
 #include "camera.h"
-
+#include "players.h"
 #include "sounds.h"
 #include "ray.h"
 
-#include "players.h"
+#include "jointsservice.h"
+#include "snap.h"
+
 #include "GuiRoot.h"
 
 RBX::Sound* whoosh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/button.wav"));
@@ -29,23 +30,23 @@ RBX::Humanoid* RBX::Humanoid::modelIsCharacter(RBX::Instance* testModel)
         return 0;
 }
 
-void setLocalTransparency(RBX::PVInstance* part, float transparency)
-{
-    if (part)
-    {
-        part->alpha = 1 - transparency;
-        part->localTransparency = transparency;
-    }
-}
-
 void RBX::Humanoid::setLocalTransparency(float transparency)
 {
-    ::setLocalTransparency(humanoidHead, transparency);
-    ::setLocalTransparency(humanoidRootPart, transparency);
-    ::setLocalTransparency(getRightArm(), transparency);
-    ::setLocalTransparency(getLeftArm(), transparency);
-    ::setLocalTransparency(getRightLeg(), transparency);
-    ::setLocalTransparency(getLeftLeg(), transparency);
+    Instance* parent = getParent();
+
+    for (unsigned int i = 0; i < parent->children->size(); i++)
+    {
+        Instance* child = parent->children->at(i);
+        if (IsA<PVInstance>(child))
+        {
+            PVInstance* pv = toInstance<PVInstance>(child);
+            float f;
+
+            f = pv->fauxTransparency;
+            pv->setTransparency(transparency);
+            pv->fauxTransparency = f;
+        }
+    }
 }
 
 void RBX::Humanoid::setHumanoidAttributes()
@@ -53,20 +54,31 @@ void RBX::Humanoid::setHumanoidAttributes()
     if (!getParent())
         return;
 
-    humanoidHead = static_cast<RBX::PVInstance*>(getParent()->findFirstChild("Head"));
-    humanoidRootPart = static_cast<RBX::PVInstance*>(getParent()->findFirstChild("Torso"));
+    humanoidHead = getParent()->findFirstChild<PVInstance>("Head");
+    humanoidRootPart = getParent()->findFirstChild<PVInstance>("Torso");
 
 }
 
 bool RBX::Humanoid::checkHumanoidAttributes()
 {
-    return 0;
+    if (!humanoidHead || !humanoidRootPart)
+    {
+        setHumanoidAttributes();
+        return 0;
+    }
+    return 1;
 }
 
 
 void RBX::Humanoid::buildJoints()
 {
-    jointsBuilt = 1;
+    if (isJoined()) return;
+
+    snap(humanoidRootPart, humanoidHead);
+    snap(humanoidRootPart, getRightArm());
+    snap(humanoidRootPart, getLeftArm());
+    snap(humanoidRootPart, getRightLeg());
+    snap(humanoidRootPart, getLeftLeg());
 }
 
 bool RBX::Humanoid::isFalling()
@@ -83,23 +95,20 @@ bool RBX::Humanoid::isInAir()
 
 bool RBX::Humanoid::isJoined()
 {
-    return (checkHumanoidAttributes());
+    if (!checkHumanoidAttributes()) return 0;
+
+    return JointsService::areConnectedPrimitives(humanoidRootPart->primitive, humanoidHead->primitive);
 }
 
 bool RBX::Humanoid::limbsCheck()
 {
-    return 0;
+    return checkHumanoidAttributes();
 }
 
 bool RBX::Humanoid::isGrounded()
 {
     if (rightLeg && leftLeg)
     {
-
-       // bool bottomCollide = rightLeg->body->isColliding(BOTTOM) || leftLeg->body->isColliding(BOTTOM);
-       // bool backCollide = rightLeg->body->isColliding(BACK) || leftLeg->body->isColliding(BACK);
-       // bool frontCollide = rightLeg->body->isColliding(FRONT) || leftLeg->body->isColliding(FRONT);
-       // return bottomCollide || frontCollide || backCollide;
 
     }
 
@@ -136,6 +145,13 @@ void RBX::Humanoid::setWalkDirection(Vector3 value)
             walkMode = DIRECTION_MOVE;
         }
     }
+}
+
+void RBX::Humanoid::snap(PVInstance* p0, PVInstance* p1)
+{
+    if (!p0 || !p1) return;
+    SnapConnector* snap = new SnapConnector(p0->primitive, p1->primitive);
+    snap->build();
 }
 
 void RBX::Humanoid::balance()
@@ -188,11 +204,7 @@ void RBX::Humanoid::onStep()
     if (!limbsCheck()) return;
 
     jumpTimeStep();
-
-    if (!jointsBuilt)
-    {
-        buildJoints();
-    }
+    buildJoints();
 
     if (!health)
         onDied();
@@ -302,7 +314,6 @@ void RBX::Humanoid::onStep()
 
 void RBX::Humanoid::updateHumanoidState()
 {
-
     //btRigidBody* body = humanoidRootPart->body->_body;
 
     if (isGrounded())
@@ -321,7 +332,6 @@ void RBX::Humanoid::updateHumanoidState()
     if (isGrounded() && (humanoidState == Falling || humanoidState == Jumping))
     {
         humanoidState = Landed;
-        //body->setRestitution(0.0f);
     }
 }
 
@@ -395,7 +405,7 @@ RBX::PVInstance* RBX::Humanoid::getRightArm()
 {
     if (!rightArm)
     {
-        rightArm = dynamic_cast<RBX::PVInstance*>(getParent()->findFirstChild("Right Arm"));
+        rightArm = getParent()->findFirstChild<PVInstance>("Right Arm");
     }
     return rightArm;
 }
@@ -404,7 +414,7 @@ RBX::PVInstance* RBX::Humanoid::getLeftArm()
 {
     if (!leftArm)
     {
-        leftArm = dynamic_cast<RBX::PVInstance*>(getParent()->findFirstChild("Left Arm"));
+        leftArm = getParent()->findFirstChild<PVInstance>("Left Arm");
     }
     return leftArm;
 }
@@ -413,7 +423,7 @@ RBX::PVInstance* RBX::Humanoid::getRightLeg()
 {
     if (!rightLeg)
     {
-        rightLeg = dynamic_cast<RBX::PVInstance*>(getParent()->findFirstChild("Right Leg"));
+        rightLeg = getParent()->findFirstChild<PVInstance>("Right Leg");
     }
     return rightLeg;
 }
@@ -422,7 +432,7 @@ RBX::PVInstance* RBX::Humanoid::getLeftLeg()
 {
     if (!leftLeg)
     {
-        leftLeg = dynamic_cast<RBX::PVInstance*>(getParent()->findFirstChild("Left Leg"));
+        leftLeg = getParent()->findFirstChild<PVInstance>("Left Leg");
     }
     return leftLeg;
 }

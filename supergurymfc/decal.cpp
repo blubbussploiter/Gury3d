@@ -55,18 +55,16 @@ void RBX::Decal::render(RenderDevice* rd, RBX::Render::Renderable* p)
     }
     else
     {
-        glColor(1, 1, 1, 1);
-        Render::rawDecal(rd, p, face, getGLid(), GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 0);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        Render::rawDecal(rd, p, face, getGLid(), 0);
+        glBlendFunc(GL_ZERO, GL_ZERO);
+        glDisable(GL_BLEND);
     }
 }
 
-void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, int sfactor, int dfactor, bool repeat)
+void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, bool repeat)
 {
-    if (sfactor && dfactor)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(sfactor, dfactor);
-    }
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -74,9 +72,4 @@ void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalI
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
-    if (sfactor && dfactor)
-    {
-        glBlendFunc(GL_ZERO, GL_ZERO);
-        glDisable(GL_BLEND);
-    }
 }

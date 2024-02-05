@@ -74,8 +74,9 @@ namespace RBX
 		bool limbsCheck(); /* double check checkHumanoidAttributes, returns result of second check, if not second check, return false indefinitely (until limbs appear) */
 
 		bool checkHumanoidAttributes();
-
 		void climb();
+
+		void snap(PVInstance* p0, PVInstance* p1);
 
 		void onDied();
 

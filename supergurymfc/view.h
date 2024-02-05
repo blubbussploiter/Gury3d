@@ -36,6 +36,7 @@ namespace RBX
 			if (!effectSettings)
 			{
 				effectSettings = new Render::EffectSettings();
+				effectSettings->toneMap->setEnabled(0);
 			}
 			return effectSettings;
 		}

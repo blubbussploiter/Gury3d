@@ -36,7 +36,7 @@ RTTR_REGISTRATION
          .property("LeftSurface", &RBX::PVInstance::getLeftSurface, &RBX::PVInstance::setLeftSurface)(rttr::metadata("Type", RBX::Surface))
          .property("rawFormFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
          .property("formFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
-         .property("Transparency", &RBX::PVInstance::getTransparency, &RBX::PVInstance::setTransparency)(rttr::metadata("Type", RBX::Appearance));
+         .property("Transparency", &RBX::PVInstance::getFauxTransparency, &RBX::PVInstance::setTransparency)(rttr::metadata("Type", RBX::Appearance));
 }
 
 void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
@@ -109,7 +109,6 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
     if (!specialShape)
     {
         glColor(1, 1, 1, 1 - (color.r * 0.5f));
-
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
         renderSurface(rd, this, RIGHT, right, idRight);
@@ -135,23 +134,27 @@ void RBX::renderSurface(RenderDevice* rd, RBX::PVInstance* pv, NormalId n, Surfa
 {
     if (glid == -1) return;
 
-        if (pv->getTransparency() > 0) /* already blended, no need to reapply blend */
+        if (pv->transparency > 0) /* already blended, no need to reapply blend */
         {
             RBX::Render::rawDecal(rd, pv, n, glid);
         }
         else
         {
-            RBX::Render::rawDecal(rd, pv, n, glid, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            RBX::Render::rawDecal(rd, pv, n, glid);
+            glBlendFunc(GL_ZERO, GL_ZERO);
+            glDisable(GL_BLEND);
         }
 }
 
 void RBX::PVInstance::render(RenderDevice* d)
 {
-    if (transparency < 1 && localTransparency < 1)
+    if (transparency < 1)
     {
 
         d->setObjectToWorldMatrix(getCFrame());
-        d->setShininess(50.0f);
+        d->setShininess(45.0f);
 
         glColor(color.r, color.g, color.b, alpha);
 
@@ -184,7 +187,7 @@ void RBX::PVInstance::render(RenderDevice* d)
         }
         }
     }
-
+    
 }
 
 void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
@@ -312,14 +315,14 @@ float RBX::getAffectedFormFactor(RBX::PVInstance* pv)
 void RBX::PVInstance::calculateCylinderOffsets()
 {
     float radius, scale;
+    Vector3 size = getSize();
 
-    radius = getSize().z;
-    scale = radius * 0.1f;
+    scale = size.z * 0.5f;
 
     cylinderOriginX = Vector2(0, scale / 2);
     cylinderOriginY = Vector2(scale / 2, 0);
 
-    lineWidth = radius / 1.25f;
+    lineWidth = scale;
     lineHeight = scale;
 }
 
@@ -410,6 +413,8 @@ RBX::SurfaceType RBX::PVInstance::getSurface(NormalId face)
 
 void RBX::PVInstance::initializeForKernel()
 {
+    bool exists;
+    exists = body->body || primitive->geom[0];
 
     body->createBody(size);
     primitive->createPrimitive(shape, size);
@@ -453,4 +458,5 @@ RBX::PVInstance::PVInstance()
     primitive = new Primitive(body);
 
     pv = primitive->pv;
+    fauxTransparency = 0;
 }

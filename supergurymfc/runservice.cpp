@@ -19,6 +19,8 @@ RTTR_REGISTRATION
 
 void RBX::RunService::run()
 {
+    if (isRunning) return;
+
     RBX::Network::Player* localPlayer;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
@@ -53,7 +55,7 @@ void RBX::RunService::update()
 {
     RBX::Scene::singleton()->updateSteppables();
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 9; i++)
     {
          Kernel::get()->step(0.025f);
     }

@@ -47,12 +47,15 @@ void Player::loadCharacter()
 
 	if (load && load->size() > 0)
 	{
-		RBX::ModelInstance* possibleCharacter = dynamic_cast<RBX::ModelInstance*>(load->at(0));
+		RBX::ModelInstance* possibleCharacter = toInstance<ModelInstance>(load->at(0));
 		if (possibleCharacter)
 		{
 			h = RBX::Humanoid::modelIsCharacter(possibleCharacter);
-			if(h)
+			if (h)
+			{
 				character = (RBX::ModelInstance*)possibleCharacter;
+				character->translate(Vector3(0, 12, 0));
+			}
 		}
 	}
 	

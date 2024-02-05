@@ -33,9 +33,6 @@ namespace RBX
 
 		float yaw, pitch, zoom;
 
-		bool isUsingRightMouse;
-		bool isInFirstPerson;
-
 		RBX::PartInstance* focusPart;
 
 		Vector3 focusPosition;
@@ -79,7 +76,8 @@ namespace RBX
 
 		void cam_zoom(bool inout);
 
-		void update(UserInput* input);
+		void update(bool rightMouseDown);
+		void follow();
 
 		void setCamera(GCamera* c) { camera = c; }
 		GCamera* getCamera() { return camera; }
@@ -98,12 +96,10 @@ namespace RBX
 
 		Camera() : focusPosition(Vector3(0, 0, 0)), yaw(0.f), pitch(0.f), zoom(14.f)
 		{
-			setSpeed(2.4f);
 			cameraType = CameraType::Fixed;
 			focusPart = 0;
-			isInFirstPerson = 0;
-			isUsingRightMouse = 0;
 			isParentLocked = 1;
+			setSpeed(2.4f);
 			setClassName("Camera");
 			setName("Camera");
 		}

@@ -23,7 +23,7 @@ namespace RBX
 		void baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
 
 		void opaquePass(RenderDevice* rd);
-
+		void reflectancePass(RenderDevice* rd);
 		void transparentPass(RenderDevice* rd);
 		void darkPass(RenderDevice* rd);
 

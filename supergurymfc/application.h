@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stack>
+
 #include "workspace.h"
 #include "datamodel.h"
 
@@ -21,7 +23,6 @@ namespace RBX
 			Datamodel* datamodel;
 
 			Camera* camera; /* main viewport */
-			SkyRef sky;
 
 			bool                 _mouseButtons[3];
 			bool                 _keyboardButtons[0xFF];
@@ -30,11 +31,13 @@ namespace RBX
 
 		public:
 
+			SkyRef sky;
+
 			bool justReceivedFocus, inFocus;
 			float fps;
 
 			WNDPROC wndProc;
-			MSG msg;
+			MSG key, mouse; /* jank but it works :D */
 
 			RenderDevice* renderDevice;
 			G3D::UserInput* userInput;
@@ -57,7 +60,7 @@ namespace RBX
 			void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 			void doUserInput();
 
-			bool pollEvent(GEvent& e);
+			bool pollEvent(MSG msg, GEvent& e);
 
 			/* Application stuff */
 
@@ -92,4 +95,6 @@ namespace RBX
 			Application(HWND wnd);
 		};
 	}
+
+	extern SkyRef getGlobalSky();
 }

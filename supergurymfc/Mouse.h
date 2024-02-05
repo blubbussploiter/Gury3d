@@ -4,14 +4,6 @@
 #include <G3DAll.h>
 #include "pvinstance.h"
 
-namespace Rendering
-{
-	extern TextureRef cursor_custom;
-	extern unsigned int mouse_glid;
-	extern bool isOverGuiObject;
-	extern bool shouldRenderAsFar();
-}
-
 namespace RBX
 {
 	class Mouse
@@ -29,5 +21,7 @@ namespace RBX
 		static void update(UserInput* ui);
 		static void render(RenderDevice* rd);
 	};
+
+	extern bool hoveringUI;
 }
 #endif

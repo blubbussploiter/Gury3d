@@ -99,7 +99,6 @@ void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool shoul
 
 	frame->translation = pos;
 	if(shouldLerp) frame->translation = lerp(_old, pos, lerpTime);
-	//occlude();
 
 	frame->lookAt(focusPosition);
 }

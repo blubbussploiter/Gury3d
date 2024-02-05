@@ -97,7 +97,7 @@ void RBX::Selection::update(UserInput* ui)
 	
 	multiSelect = (down && !clicked || ctrlShift);
 
-	if (down || clicked)
+	if (down || clicked && !hoveringUI)
 	{
 		if (target)
 		{
@@ -114,7 +114,6 @@ void RBX::Selection::update(UserInput* ui)
 					return;
 				}
 			}
-			//else return;
 		}
 		if (clicked)
 		{
