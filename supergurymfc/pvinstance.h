@@ -32,13 +32,12 @@ namespace RBX
 	{
 		RBX::RenderSurfaceFactory::initSurfaces();
 	}
-
+	 
 	class PVInstance :
 		public Render::Renderable, public RBX::ISelectable
 	{
 		friend class RBX::PartInstance;
 	private:
-
 
 		float elasticity, friction, erp, cfm;
 		float lineWidth, lineHeight;
@@ -46,6 +45,8 @@ namespace RBX
 
 		Vector2 cylinderOriginX, cylinderOriginY,
 			uv0, uv1, uv2;
+
+		PV* startPV;
 
 		unsigned int idFront, idBack, idTop, idBottom, idRight, idLeft;
 
@@ -72,6 +73,13 @@ namespace RBX
 		Shape shape;
 
 	public:
+
+		void resetPV()
+		{
+			setCFrame(startPV->position);
+			setVelocity(startPV->velocity.linear);
+			setRotVelocity(startPV->velocity.rotational);
+		}
 
 		void setShape(Shape s) 
 		{
@@ -105,6 +113,12 @@ namespace RBX
 		void setVelocity(Vector3 newVelocity)
 		{
 			pv->velocity.linear = newVelocity;
+
+			if (!startPV->velocity.linear)
+			{
+				startPV->velocity.linear = newVelocity;
+			}
+
 			if (primitive->body)
 			{
 				primitive->body->modifyVelocity(pv->velocity);
@@ -114,6 +128,12 @@ namespace RBX
 		void setRotVelocity(Vector3 newVelocity)
 		{
 			pv->velocity.rotational = newVelocity;			
+
+			if (!startPV->velocity.rotational)
+			{
+				startPV->velocity.rotational = newVelocity;
+			}
+
 			if (primitive->body)
 			{
 				primitive->body->modifyVelocity(pv->velocity);
@@ -209,8 +229,7 @@ namespace RBX
 
 		void setPosition(Vector3 p) 
 		{
-			pv->position.translation = p;
-			primitive->modifyPosition(pv->position);
+			setCFrame(CoordinateFrame(pv->position.rotation, p));
 		}
 
 		CoordinateFrame getCFrame() { return pv->position; }
@@ -219,6 +238,10 @@ namespace RBX
 		{
 			pv->position = cf;
 			primitive->modifyPosition(pv->position);
+			if (startPV->position.isIdentity())
+			{
+				startPV->position = pv->position;
+			}
 		}
 
 		Color3 getColor() { return color; }

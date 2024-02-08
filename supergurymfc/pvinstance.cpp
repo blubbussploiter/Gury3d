@@ -458,5 +458,7 @@ RBX::PVInstance::PVInstance()
     primitive = new Primitive(body);
 
     pv = primitive->pv;
+    startPV = new PV();
+
     fauxTransparency = 0;
 }

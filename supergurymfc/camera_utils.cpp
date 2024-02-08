@@ -82,7 +82,7 @@ void RBX::Camera::refreshZoom(const CoordinateFrame& frame)
 	setFrame(zoomFrame);
 }
 
-void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool shouldLerp, float lerpTime)
+void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY)
 {
 	Vector3 pos;
 	Vector3 _old;
@@ -98,8 +98,6 @@ void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool shoul
 	pos = Vector3(sin(-yaw) * zoom * cos(pitch), sin(pitch) * zoom, cos(-yaw) * zoom * cos(pitch)) + focusPosition;
 
 	frame->translation = pos;
-	if(shouldLerp) frame->translation = lerp(_old, pos, lerpTime);
-
 	frame->lookAt(focusPosition);
 }
 

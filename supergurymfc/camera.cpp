@@ -27,13 +27,13 @@ RTTR_REGISTRATION
 
 void RBX::Camera::tiltUp(double deg, bool enactedByZoom)
 {
-    pan(&cframe, 0, toRadians(deg), 1, 0.41f);
+    pan(&cframe, 0, toRadians(deg));
     if(!enactedByZoom) switch3->play();
 }
 
 void RBX::Camera::tiltDown(double deg, bool enactedByZoom)
 {
-    pan(&cframe, 0, toRadians(-deg), 1, 0.41f);
+    pan(&cframe, 0, toRadians(-deg));
     if (!enactedByZoom) switch3->play();
 }
 
@@ -85,6 +85,12 @@ void RBX::Camera::cam_zoom(bool inout)
     Zoom(-1);
 }
 
+void RBX::Camera::reset()
+{
+    setCoordinateFrame(startFrame);
+    setFocus(startFocus);
+}
+
 void RBX::Camera::follow()
 {
     if (focusPart &&
@@ -93,19 +99,29 @@ void RBX::Camera::follow()
         focusPosition = focusPart->getPosition() + Vector3(0, 0.25f, 0);
     }
     focusPosition += Vector3(0, 0.25f, 0);
+    pan(&cframe, 0, 0);
 }
 
 void RBX::Camera::update(bool rightMouseDown)
 {
 
     Vector3 pos;
-    float lerp = 0.30f;
-
-    if (cameraType == Follow)
+    float smoothness;
+    
+    switch (cameraType)
     {
-        lerp = 0.95f;
+    case Follow:
+    {
+        smoothness = 0.95f;
         characterFade();
         follow();
+        break;
+    }
+    default: 
+    {
+        smoothness = 0.55f;
+        break;
+    }
     }
 
     if (rightMouseDown)
@@ -113,15 +129,15 @@ void RBX::Camera::update(bool rightMouseDown)
         if (oldMouse.x != 0 && oldMouse.y != 0)
         {
             GetCursorPos(&mouse);
-            pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f, 1, lerp);
+            pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f);
             SetCursorPos(oldMouse.x, oldMouse.y);
         }
     }
 
-    pan(&cframe, 0, 0, 1, lerp);
-    camera->setCoordinateFrame(cframe);
-
     GetCursorPos(&oldMouse);
+
+    CoordinateFrame current = camera->getCoordinateFrame();
+    camera->setCoordinateFrame(current.lerp(cframe, smoothness));
 
 }
 

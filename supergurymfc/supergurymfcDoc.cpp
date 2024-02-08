@@ -11,6 +11,7 @@
 #endif
 
 #include "supergurymfcDoc.h"
+#include "MainFrm.h"
 
 #include <propkey.h>
 
@@ -46,11 +47,10 @@ BOOL CsupergurymfcDoc::OnNewDocument()
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
 
+
+
 	return TRUE;
 }
-
-
-
 
 // CsupergurymfcDoc serialization
 
@@ -133,6 +133,3 @@ void CsupergurymfcDoc::Dump(CDumpContext& dc) const
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
-
-
-// CsupergurymfcDoc commands

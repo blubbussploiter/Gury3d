@@ -48,6 +48,7 @@ namespace RBX
 
 		virtual RBX::ModelInstance* getModel() { return this; }
 		virtual RBX::Extents computeCameraOwnerExtents();
+
 		RBX::Extents computeVisibleExtents();
 
 		void translate(CoordinateFrame cframe);

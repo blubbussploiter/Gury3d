@@ -38,6 +38,7 @@ void RBX::SnapConnector::build()
 
 	isAnchored = (body0 == 0) || (body1 == 0) ||
 				 (connector0 && connector0->isAnchored) || (connector1 && connector1->isAnchored);
+
 	if (connector0)
 	{
 		connector = connector0->connector;
@@ -79,6 +80,9 @@ void RBX::SnapConnector::build()
 			dBodyGetMass(body1->body, &mass1);
 
 			dMassAdd(&mass0, &mass1);
+
+			body0->setDisabled(1);
+			body1->setDisabled(1);
 			
 			connector->modifyPosition(pos);
 			connector->modifyMass(mass0);
@@ -101,8 +105,33 @@ void RBX::SnapConnector::build()
 
 			}
 		}
-
 		connector->modifyUserdata(this);
 	}
 
+}
+
+void RBX::SnapConnector::unlink()
+{
+	if (!connector || !prim0->geom[0] || !prim1->geom[0]) return;
+
+	RBX::StandardOut::print(RBX::MESSAGE_INFO, "yeah man");
+		
+	connector->detachPrimitive(prim0);
+	connector->detachPrimitive(prim1);
+	connector->destroyBody();
+
+	dGeomClearOffset(prim0->geom[0]);
+	dGeomClearOffset(prim1->geom[0]);
+
+	if (body0)
+	{
+		body0->setDisabled(0);
+		body0->attachPrimitive(prim0);
+	}
+
+	if (body1)
+	{
+		body1->setDisabled(0);
+		body1->attachPrimitive(prim1);
+	}
 }

@@ -38,6 +38,8 @@ public:
 		afx_msg void OnExecuteScript();
 		afx_msg void OnLoadCharacter();
 		afx_msg void OnRunRunService();
+		afx_msg void OnPauseRunService();
+		afx_msg void OnResetRunService();
 };
 
 extern CsupergurymfcApp theApp;

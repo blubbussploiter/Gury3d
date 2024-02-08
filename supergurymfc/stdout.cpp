@@ -23,7 +23,7 @@ void RBX::StandardOut::print(MessageType type, const char* format, ...)
 	RBX::Log::writeEntry(MESSAGE_PRINT, date.c_str());
 
 	RBX::Log::writeEntry(type, _fmt.c_str());
-	RBX::Log::writeEntry(type, "\n");
+	RBX::Log::writeEntry(type, "\r\n");
 
 	va_end(argPtr);
 }

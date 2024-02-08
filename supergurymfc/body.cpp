@@ -19,6 +19,12 @@ dMass RBX::Body::getMass()
 	return mass;
 }
 
+void* RBX::Body::getUserdata()
+{
+	if (!body) return 0;
+	return dBodyGetData(body);
+}
+
 void RBX::Body::modifyUserdata(void* data)
 {
 	if (!body) return;
@@ -84,7 +90,14 @@ void RBX::Body::setDisabled(bool disabled)
 	this->disabled = disabled;
 	if (body)
 	{
-		dBodyDisable(body);
+		if (disabled)
+		{
+			dBodyDisable(body);
+		}
+		else
+		{
+			dBodyEnable(body);
+		}
 	}
 }
 

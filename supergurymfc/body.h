@@ -46,6 +46,8 @@ namespace RBX
 
 		dMass getMass();
 
+		void* getUserdata();
+
 		void modifyUserdata(void* data);
 
 		void modifyVelocity(Velocity velocity);

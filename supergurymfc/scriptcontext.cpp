@@ -166,18 +166,18 @@ void RBX::ScriptContext::runScript(RBX::BaseScript* script)
 
 void RBX::ScriptContext::runScripts()
 {
-	for (unsigned int i = 0; i < scripts.size(); i++)
+	try
 	{
-		RBX::BaseScript* script = scripts.at(i);
-		if (!script) continue;
-		try
+		for (unsigned int i = 0; i < scripts.size(); i++)
 		{
-			runScript(script);
+			RBX::BaseScript* script = scripts.at(i);
+			if (!script) continue;
+				runScript(script);
 		}
-		catch (std::runtime_error err)
-		{
-			RBX::StandardOut::print(RBX::MESSAGE_ERROR, err.what());
-		}
+	}
+	catch (std::runtime_error err)
+	{
+		RBX::StandardOut::print(RBX::MESSAGE_ERROR, err.what());
 	}
 }
 

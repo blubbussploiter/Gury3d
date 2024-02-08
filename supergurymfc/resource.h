@@ -13,6 +13,7 @@
 #define IDS_TOOLBAR_STANDARD            124
 #define IDS_TOOLBAR_CUSTOMIZE           125
 #define ID_VIEW_CUSTOMIZE               126
+#define IDS_TOOLBAR_TEST                126
 #define IDR_MAINFRAME                   128
 #define IDR_MAINFRAME_256               129
 #define IDR_supergurymfcTYPE            130
@@ -56,7 +57,6 @@
 #define IDB_EXPLORER_24                 170
 #define IDR_SORT                        171
 #define IDB_SORT_24                     172
-#define IDR_POPUP_SORT                  173
 #define IDR_POPUP_EXPLORER              174
 #define IDB_FILE_VIEW                   175
 #define IDB_FILE_VIEW_24                176
@@ -90,8 +90,9 @@
 #define IDB_BITMAP1                     316
 #define IDR_TOOLBAR1                    317
 #define IDR_RUNSERVICE                  317
+#define IDR_RUNSERVICEB                 317
 #define IDR_TOOLBAR2                    319
-#define IDR_MENU1                       321
+#define RUNSERVICE                      328
 #define ID_CLASSINSERT                  1000
 #define ID_INSERT_MODEL                 32772
 #define ID_INSERT_OBJECT                32773
@@ -109,18 +110,17 @@
 #define ID_TOOLS_LOADCHARACTER          32785
 #define ID_FORMAT                       32786
 #define ID_FORMAT_SIOMETHING            32787
-#define ID_RUNSRV_RUN                   32788
-#define ID_RUNSRV_PAUSE                 32789
-#define ID_RUNSRV_RESET                 32790
 #define ID_TOOLS_RUNRUNSERVICE          32791
-#define ID_CUT_COPY                     32792
+#define IDR_RUN                         32793
+#define IDR_PAUSE                       32795
+#define IDR_RESET                       32796
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
-#define _APS_NEXT_COMMAND_VALUE         32793
+#define _APS_NEXT_RESOURCE_VALUE        331
+#define _APS_NEXT_COMMAND_VALUE         32798
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

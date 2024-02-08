@@ -102,7 +102,6 @@ void RBX::Datamodel::open()
     runService->scriptContext = scriptContext;
     yieldingThreads = new Lua::YieldingThreads(scriptContext);
 
-
     fillExplorerWindow();
 
     /* if not server */
@@ -111,10 +110,7 @@ void RBX::Datamodel::open()
 
 void RBX::Datamodel::step()
 {
-    if (runService->isRunning)
-    {
-        runService->heartbeat();
-    }
+    runService->heartbeat();
 }
 
 void RBX::Datamodel::heartbeat(double step)

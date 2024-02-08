@@ -82,11 +82,10 @@ void RBX::Experimental::Application::onLogic()
 	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
 	RBX::Network::getPlayers()->onStep();
 
-	//RBX::Mouse::render(renderDevice);
 	RBX::Mouse::update(userInput);
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
-//	RBX::Selection::update(userInput);
+	RBX::Selection::update(userInput);
 }
 
 void RBX::Experimental::Application::onFocus()

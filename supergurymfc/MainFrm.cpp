@@ -8,6 +8,8 @@
 
 #include "MainFrm.h"
 
+#include "appmanager.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -31,6 +33,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_VS_2005, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_WM_SETTINGCHANGE()
 	ON_UPDATE_COMMAND_UI(AFX_IDP_SQL_NO_POSITIONED_UPDATES, &CMainFrame::OnUpdateCommandId)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(IDR_RUN, &CMainFrame::OnUpdateRunServiceIsntRunningButton)
+	ON_UPDATE_COMMAND_UI(IDR_PAUSE, &CMainFrame::OnUpdateRunServiceIsRunningButton)
+	ON_UPDATE_COMMAND_UI(IDR_RESET, &CMainFrame::OnUpdateRunServiceIsRunningButton)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -47,7 +53,6 @@ CMainFrame::CMainFrame() noexcept
 {
 	// TODO: add member initialization code here
 	m_bAutoMenuEnable = 0;
-	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_WIN_2000);
 }
 
 CMainFrame::~CMainFrame()
@@ -80,24 +85,37 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+	if (!m_wndMainTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndMainTools.LoadToolBar(IDR_MAINFRAME))
 	{
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
 
+	if (!m_wndRunServiceTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndRunServiceTools.LoadToolBar(RUNSERVICE))
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
 
 	CString strToolBarName;
 	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
+	ASSERT(bNameValid);
+
+	CString strRunServiceToolbarName;
+	bNameValid = strRunServiceToolbarName.LoadString(IDS_TOOLBAR_TEST);
 	ASSERT(bNameValid);
 
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 	ASSERT(bNameValid);
 
-	m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
-	m_wndToolBar.SetWindowText(strToolBarName);
+	m_wndMainTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
+	m_wndMainTools.SetWindowText(strToolBarName);
+
+	m_wndRunServiceTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize); 
+	m_wndRunServiceTools.SetWindowText(strRunServiceToolbarName);
 
 	// Allow user-defined toolbars operations:
 	InitUserToolbars(nullptr, uiFirstUserToolBarId, uiLastUserToolBarId);
@@ -111,10 +129,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndMainTools.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndRunServiceTools.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndMenuBar);
-	DockPane(&m_wndToolBar);
+	DockPane(&m_wndMainTools);
+	DockPane(&m_wndRunServiceTools);
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
@@ -191,7 +211,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// improves the usability of the taskbar because the document name is visible with the thumbnail.
 	ModifyStyle(0, FWS_PREFIXTITLE);
 
-	SetWindowText("Gury3D Beta");
+	SetWindowText("Gury3D");
 
 	return 0;
 }
@@ -426,4 +446,37 @@ void CMainFrame::OnUpdateCommandId(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 
+}
+
+
+void CMainFrame::OnUpdateToolbarButton(CCmdUI* pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	pCmdUI->Enable(RBX::AppManager::singleton()->getApplication() != 0);
+}
+
+void CMainFrame::OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI)
+{
+	if (!RBX::Datamodel::getDatamodel()) {
+		pCmdUI->Enable(0);
+		return;
+	}
+	RBX::RunService* runService = RBX::RunService::singleton();
+	if(runService)
+	{
+		pCmdUI->Enable(!runService->isRunning);
+	}
+}
+
+void CMainFrame::OnUpdateRunServiceIsRunningButton(CCmdUI* pCmdUI)
+{
+	if (!RBX::Datamodel::getDatamodel()) {
+		pCmdUI->Enable(0);
+		return;
+	}
+	RBX::RunService* runService = RBX::RunService::singleton();
+	if (runService)
+	{
+		pCmdUI->Enable(runService->isRunning);
+	}
 }

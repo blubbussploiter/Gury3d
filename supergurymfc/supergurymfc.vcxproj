@@ -451,6 +451,7 @@
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\toolbar2.bmp" />
     <Image Include="res\Toolbar256.bmp" />
+    <Image Include="res\toolbar3.bmp" />
     <Image Include="res\userimages.bmp" />
   </ItemGroup>
   <ItemGroup>

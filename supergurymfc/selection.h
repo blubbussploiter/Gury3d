@@ -17,6 +17,7 @@ namespace RBX
 	public:
 
 		static Vector2 selectionDragBoxStart, selectionDragBoxEnd;
+		static Vector2 worldSelectStart, worldSelectEnd;
 
 		static bool clicked, down;
 		static bool canSelect, multiSelect;
@@ -28,8 +29,11 @@ namespace RBX
 		static void renderSelected(RenderDevice* rd, ISelectable* i);
 		static void renderSelection(RenderDevice* d);
 
+		static void dragSelect();
+
 		static void update(UserInput* ui);
 
+		static bool select(PVInstance* p, bool multiSelect);
 		static void deselect(RBX::ISelectable* pv)
 		{
 			if (pv)

@@ -126,15 +126,20 @@ IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
-IDR_RUNSERVICE          BITMAP                  "res\\Runservice.bmp"
-
-IDR_RUNSERVICEBAR       BITMAP                  "res\\Runservice.bmp"
+RUNSERVICE              BITMAP                  "res\\runservice.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
+
+RUNSERVICE TOOLBAR 16, 16
+BEGIN
+    BUTTON      IDR_RUN
+    BUTTON      IDR_PAUSE
+    BUTTON      IDR_RESET
+END
 
 IDR_MAINFRAME_256 TOOLBAR 16, 15
 BEGIN
@@ -188,13 +193,6 @@ BEGIN
     BUTTON      ID_EDIT_PASTE
 END
 
-IDR_RUNSERVICEBAR TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_RUNSRV_RUN
-    BUTTON      ID_RUNSRV_PAUSE
-    BUTTON      ID_RUNSRV_RESET
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -235,33 +233,10 @@ BEGIN
     BEGIN
         MENUITEM "Execute Script",              ID_TOOLS_EXECUTESCRIPT
         MENUITEM "Load Character",              ID_TOOLS_LOADCHARACTER
-        MENUITEM "Run Runservice",              ID_TOOLS_RUNRUNSERVICE
     END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About supergurymfc...",      ID_APP_ABOUT
-    END
-END
-
-IDR_POPUP_SORT MENU
-BEGIN
-    POPUP "Sorting"
-    BEGIN
-        MENUITEM "&Sort Alphabeticaly",         ID_SORTING_SORTALPHABETIC
-        MENUITEM "Sort by &Type",               ID_SORTING_SORTBYTYPE
-        MENUITEM "Sort by Acc&ess",             ID_SORTING_SORTBYACCESS
-        MENUITEM "Group by t&ype",              ID_SORTING_GROUPBYTYPE
-    END
-END
-
-IDR_OUTPUT_POPUP MENU
-BEGIN
-    POPUP "Popup"
-    BEGIN
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Clear",                      ID_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
     END
 END
 
@@ -279,11 +254,14 @@ BEGIN
     MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
 END
 
-IDR_MENU1 MENU
+IDR_OUTPUT_POPUP MENU
 BEGIN
-    POPUP "Cut"
+    POPUP "Popup"
     BEGIN
-        MENUITEM "Copy",                        ID_CUT_COPY
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Clear",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
     END
 END
 
@@ -322,7 +300,7 @@ CAPTION "About Gury3d"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "Gury3d, Version 3.6",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Gury3d, Version 4.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2023",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
@@ -544,6 +522,7 @@ BEGIN
     IDS_STATUS_PANE2        "Pane 2"
     IDS_TOOLBAR_STANDARD    "Standard"
     IDS_TOOLBAR_CUSTOMIZE   "Customize..."
+    IDS_TOOLBAR_TEST        "Test"
 END
 
 STRINGTABLE

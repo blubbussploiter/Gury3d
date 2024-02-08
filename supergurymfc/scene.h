@@ -20,7 +20,7 @@ namespace RBX
 
 		void updateSteppables();
 
-		void baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
+		void iterate(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
 
 		void opaquePass(RenderDevice* rd);
 		void reflectancePass(RenderDevice* rd);

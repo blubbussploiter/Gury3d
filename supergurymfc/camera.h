@@ -26,6 +26,9 @@ namespace RBX
 		public RBX::Controller
 	{
 		RTTR_ENABLE(RBX::Controller)
+	private:
+		CoordinateFrame startFrame;
+		Vector3 startFocus;
 	public:
 
 		GCamera* camera;
@@ -54,17 +57,25 @@ namespace RBX
 
 		void setCoordinateFrame(CoordinateFrame cf)
 		{
+			if (startFrame.isIdentity())
+			{
+				startFrame = cf;
+			}
 			cframe = cf;
 		}
 
 		void setFocus(CoordinateFrame cf)
 		{
+			if (!startFocus)
+			{
+				startFocus = cf.translation;
+			}
 			focusPosition = cf.translation;
 		}
 
 		void refreshZoom(const CoordinateFrame& frame);
 
-		void pan(CoordinateFrame* frame, float spdX, float spdY, bool lerp = 0, float lerpTime = 0.69999998f);
+		void pan(CoordinateFrame* frame, float spdX, float spdY);
 		void panLock(CoordinateFrame* frame, float spdX, float spdY);
 
 		void Zoom(short delta);
@@ -75,6 +86,8 @@ namespace RBX
 		void tiltDown(double deg = 25, bool enactedByZoom = 0);
 
 		void cam_zoom(bool inout);
+
+		void reset();
 
 		void update(bool rightMouseDown);
 		void follow();

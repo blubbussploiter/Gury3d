@@ -37,7 +37,8 @@ public:
 public:  // control bar embedded members
 
 	CMFCMenuBar       m_wndMenuBar;
-	CMFCToolBar       m_wndToolBar;
+	CMFCToolBar       m_wndMainTools;
+	CMFCToolBar       m_wndRunServiceTools;
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
 	CClassView        m_wndClassView;
@@ -62,6 +63,10 @@ protected:
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
 public:
 	afx_msg void OnUpdateCommandId(CCmdUI* pCmdUI);
+
+	afx_msg void OnUpdateToolbarButton(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateRunServiceIsRunningButton(CCmdUI* pCmdUI);
 };
 
 

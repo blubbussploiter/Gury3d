@@ -24,7 +24,11 @@ void RBX::RunService::run()
     RBX::Network::Player* localPlayer;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
-    reset();
+    if (!hasStarted)
+    {
+        reset();
+        hasStarted = 1;
+    }
 
     if (localPlayer)
     {
@@ -33,7 +37,7 @@ void RBX::RunService::run()
 
     if (scriptContext)
     {
-        //scriptContext->runScripts();
+        scriptContext->runScripts();
     }
 
     isRunning = true;
@@ -46,19 +50,40 @@ void RBX::RunService::stop()
 
 void RBX::RunService::reset()
 {
-    RBX::Scene::singleton()->initializeKernel();
-    RBX::JointsService::singleton()->buildGlobalJoints();
-    RBX::JointsService::singleton()->buildConnectors();
+    if (!hasStarted)
+    {
+        Scene::singleton()->initializeKernel();
+        JointsService::singleton()->buildGlobalJoints();
+        JointsService::singleton()->buildConnectors();
+    }
+    else
+    {
+        stop();
+        shouldReset = 1;
+    }
 }
 
 void RBX::RunService::update()
 {
-    RBX::Scene::singleton()->updateSteppables();
 
-    for (int i = 0; i < 9; i++)
+    if (isRunning)
     {
-         Kernel::get()->step(0.025f);
+        RBX::Scene::singleton()->updateSteppables();
+
+        for (int i = 0; i < 4; i++)
+        {
+            Kernel::get()->step(0.05f);
+        }
     }
+
+    /* reset pvs */
+
+    if (shouldReset)
+    {
+        resetPvs();
+        shouldReset = 0;
+    }
+
 }
 
 void RBX::RunService::heartbeat()
@@ -71,6 +96,17 @@ void RBX::RunService::updateSteppers()
     for (unsigned int i = 0; i < steppers->size(); i++)
     {
         steppers->at(i)->onStep();
+    }
+}
+
+void RBX::RunService::resetPvs()
+{
+    std::vector<Render::Renderable*> scene = Scene::singleton()->getArrayOfObjects();
+    for (unsigned int i = 0; i < scene.size(); i++)
+    {
+        PVInstance* pv = toInstance<PVInstance>(scene.at(i));
+        if (pv)
+            pv->resetPV();
     }
 }
 

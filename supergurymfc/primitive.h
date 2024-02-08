@@ -33,6 +33,8 @@ namespace RBX
 
 		void modifyOffsetWorldCoordinateFrame(CoordinateFrame offset);
 
+		void setDisabled(bool disabled);
+
 		void reset();
 
 		void createPrimitive(RBX::Shape primitive, Vector3 size);

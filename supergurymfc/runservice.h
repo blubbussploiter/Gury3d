@@ -29,6 +29,9 @@ namespace RBX
 		ScriptContext* scriptContext;
 
 		bool isRunning;
+		bool hasStarted; /* qnd fix for an error */
+		bool shouldReset; /* queued for after collision steps */
+
 		void run();
 		void stop();
 		void reset();
@@ -36,10 +39,12 @@ namespace RBX
 		void heartbeat();
 		void updateSteppers();
 
+		void resetPvs();
+
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 
-		/* deprecated, use Datamodel->runService */
 		static RunService* singleton();
+
 		RunService()
 		{
 			setClassName("RunService");

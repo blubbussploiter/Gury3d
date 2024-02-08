@@ -41,7 +41,9 @@ BEGIN_MESSAGE_MAP(CsupergurymfcApp, CWinAppEx)
 	ON_COMMAND(ID_INSERT_MODEL, &CsupergurymfcApp::OnInsertModel)
 	ON_COMMAND(ID_TOOLS_EXECUTESCRIPT, &CsupergurymfcApp::OnExecuteScript)
 	ON_COMMAND(ID_TOOLS_LOADCHARACTER, &CsupergurymfcApp::OnLoadCharacter)
-	ON_COMMAND(ID_TOOLS_RUNRUNSERVICE, &CsupergurymfcApp::OnRunRunService)
+	ON_COMMAND(IDR_RUN, &CsupergurymfcApp::OnRunRunService)
+	ON_COMMAND(IDR_PAUSE, &CsupergurymfcApp::OnPauseRunService)
+	ON_COMMAND(IDR_RESET, &CsupergurymfcApp::OnResetRunService)
 END_MESSAGE_MAP()
 
 
@@ -84,7 +86,6 @@ BOOL CsupergurymfcApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
-
 	EnableTaskbarInteraction();
 
 	// AfxInitRichEdit2() is required to use RichEdit control
@@ -99,7 +100,6 @@ BOOL CsupergurymfcApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
-
 
 	InitContextMenuManager();
 
@@ -344,6 +344,20 @@ void CsupergurymfcApp::OnRunRunService()
 	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
 	if (!datamodel) return;
 	datamodel->runService->run();
+}
+
+void CsupergurymfcApp::OnPauseRunService()
+{
+	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
+	if (!datamodel) return;
+	datamodel->runService->stop();
+}
+
+void CsupergurymfcApp::OnResetRunService()
+{
+	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
+	if (!datamodel) return;
+	datamodel->runService->reset();
 }
 
 // CsupergurymfcApp customization load/save methods

@@ -97,7 +97,7 @@ void initializePVInstance(RBX::Render::Renderable* r, RenderDevice* rd)
 	}
 }
 
-void RBX::Scene::baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*))
+void RBX::Scene::iterate(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*))
 {
 	for (unsigned int i = 0; i < renderObjects.size(); i++)
 	{
@@ -111,12 +111,12 @@ void RBX::Scene::baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderabl
 
 void RBX::Scene::updateSteppables()
 {
-	baseRender(0, steppableRule, stepStepper);
+	iterate(0, steppableRule, stepStepper);
 }
 
 void RBX::Scene::opaquePass(RenderDevice* rd)
 {
-	baseRender(rd, opaqueRule, renderRenderable);
+	iterate(rd, opaqueRule, renderRenderable);
 }
 
 void RBX::Scene::reflectancePass(RenderDevice* rd) /* keep working on this sometime idkf */
@@ -127,7 +127,7 @@ void RBX::Scene::reflectancePass(RenderDevice* rd) /* keep working on this somet
 	rd->configureReflectionMap(0, getGlobalSky()->getEnvironmentMap());
 	rd->setDepthWrite(0);
 
-	baseRender(rd, reflectanceRule, renderRenderable);
+	iterate(rd, reflectanceRule, renderRenderable);
 	
 	rd->popState();
 
@@ -138,7 +138,7 @@ void RBX::Scene::transparentPass(RenderDevice* rd)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	baseRender(rd, transparentRule, renderRenderable);
+	iterate(rd, transparentRule, renderRenderable);
 
 	glBlendFunc(GL_ONE, GL_ONE);
 	glDisable(GL_BLEND);
@@ -146,18 +146,18 @@ void RBX::Scene::transparentPass(RenderDevice* rd)
 
 void RBX::Scene::darkPass(RenderDevice* rd)
 {
-	baseRender(rd, opaqueRule, render3DSurface);
-	baseRender(rd, darkRule, renderRenderable);
+	iterate(rd, opaqueRule, render3DSurface);
+	iterate(rd, darkRule, renderRenderable);
 }
 
 void RBX::Scene::lastPass(RenderDevice* rd)
 {
-	baseRender(rd, lastRenderRule, renderRenderable);
+	iterate(rd, lastRenderRule, renderRenderable);
 }
 
 void RBX::Scene::initializeKernel()
 {
-	baseRender(0, isPvInstance, initializePVInstance);
+	iterate(0, isPvInstance, initializePVInstance);
 }
 
 void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)

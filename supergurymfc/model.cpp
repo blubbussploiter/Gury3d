@@ -1,6 +1,7 @@
 #include "model.h"
 
 #include "runservice.h"
+#include "jointsservice.h"
 
 #include "workspace.h"
 #include "stdout.h"
@@ -12,7 +13,8 @@ RTTR_REGISTRATION
 	rttr::registration::class_ <RBX::ModelInstance>("Model")
 		 .constructor<>()
 		 .property("primaryPart", &RBX::ModelInstance::getPrimaryPart, &RBX::ModelInstance::setPrimaryPart)(rttr::metadata("Type", RBX::Behavior))
-		 .property("ControllerType", &RBX::ModelInstance::getController, &RBX::ModelInstance::setController)(rttr::metadata("Type", RBX::Behavior));
+		 .property("ControllerType", &RBX::ModelInstance::getController, &RBX::ModelInstance::setController)(rttr::metadata("Type", RBX::Behavior))
+		 .method("breakJoints", &RBX::ModelInstance::breakJoints);
 	rttr::registration::enumeration<RBX::ControllerTypes>("ControllerType")
 		(
 			rttr::value("None", RBX::None),
@@ -244,5 +246,19 @@ void RBX::ModelInstance::buildJoints()
 
 void RBX::ModelInstance::breakJoints()
 {
-	/* update for jointservice */
+	Instances* instances = new Instances();
+	getPVInstances(getChildren(), instances);
+
+	for (unsigned int i = 0; i < instances->size(); i++)
+	{
+		PVInstance* pv = toInstance<PVInstance>(instances->at(i));
+		Body* body = pv->primitive->body;
+
+		if (body)
+		{
+			void* ud = body->getUserdata();
+			Connector* connector = (Connector*)(ud);
+			if(connector) connector->unlink();
+		}
+	}
 }

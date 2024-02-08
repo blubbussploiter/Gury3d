@@ -26,6 +26,8 @@ namespace RBX
 		Primitive* prim0, * prim1;
 
 		virtual void build() {};
+		virtual void unlink() {};
+
 		bool connected();
 
 		Connector(Primitive* prim0, Primitive* prim1) : prim0(prim0), prim1(prim1)

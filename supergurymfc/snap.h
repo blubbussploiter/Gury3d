@@ -13,11 +13,13 @@ namespace RBX
 		Body* connector;
 
 		bool isAnchored;
+
 	public:
 
 		SnapConnector* getConnectingSnap(Primitive* prim);
 
 		void build();
+		void unlink();
 
 		SnapConnector(Primitive* prim0, Primitive* prim1) : Connector(prim0, prim1)
 		{

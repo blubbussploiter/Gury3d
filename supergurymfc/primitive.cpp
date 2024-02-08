@@ -77,6 +77,11 @@ void RBX::Primitive::modifyOffsetWorldCoordinateFrame(CoordinateFrame offset)
 	dGeomSetOffsetWorldRotation(geom[0], dRotation);
 }
 
+void RBX::Primitive::setDisabled(bool disabled)
+{
+	modifyCollisions(!disabled);
+}
+
 void RBX::Primitive::reset()
 {
 	if (!geom[0]) return;
