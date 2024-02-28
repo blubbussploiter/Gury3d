@@ -12,9 +12,8 @@ namespace RBX
 {
 	class Selection : public RBX::Instance
 	{
-	private:
-		static std::vector<RBX::ISelectable*> selection;
 	public:
+		static std::vector<RBX::ISelectable*> selection;
 
 		static Vector2 selectionDragBoxStart, selectionDragBoxEnd;
 		static Vector2 worldSelectStart, worldSelectEnd;

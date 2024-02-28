@@ -81,7 +81,7 @@ namespace RBX
 			void renderFace(RenderDevice* d, NormalId face);
 			void render(RenderDevice* d);
 
-			void renderSpecialMesh();
+			void renderSpecialMesh(RenderDevice* d);
 			void renderWedgeFace(NormalId face);
 
 			SpecialMesh()

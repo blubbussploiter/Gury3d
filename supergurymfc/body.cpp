@@ -19,6 +19,16 @@ dMass RBX::Body::getMass()
 	return mass;
 }
 
+float RBX::Body::getFMass()
+{
+	return getMass().mass;
+}
+
+bool RBX::Body::created()
+{
+	return (body != nullptr); 
+}
+
 void* RBX::Body::getUserdata()
 {
 	if (!body) return 0;
@@ -63,10 +73,51 @@ void RBX::Body::modifyMass(dMass mass)
 
 }
 
+void RBX::Body::applyTorque(Vector3 torque)
+{
+	if (!body) return;
+	dBodyAddTorque(body, torque.x, torque.y, torque.z);
+}
+
+void RBX::Body::applyForce(Vector3 force)
+{
+	if (!body) return;
+	dBodyAddForce(body, force.x, force.y, force.z);
+}
+
+Vector3 RBX::Body::getTorque()
+{
+	if (!body) return Vector3::zero();
+	const dReal* real = dBodyGetTorque(body);
+	return Vector3(real[0], real[1], real[2]);
+}
+
+Vector3 RBX::Body::getForce()
+{
+	if (!body) return Vector3::zero();
+	const dReal* real = dBodyGetForce(body);
+	return Vector3(real[0], real[1], real[2]);
+}
+
+Matrix3 RBX::Body::getMoment()
+{
+	if (!body) return Matrix3::identity();
+
+	dMass mass = getMass();
+	dReal* moment = mass.I;
+
+	return Matrix3(moment[0], moment[1], moment[2],
+		moment[4], moment[5], moment[6],
+		moment[8], moment[9], moment[10]);
+}
+
 void RBX::Body::modifySize(Vector3 size)
 {
-	destroyBody();
-	createBody(size);
+	if (body)
+	{
+		destroyBody();
+		createBody(size);
+	}
 }
 
 void RBX::Body::step()

@@ -64,7 +64,6 @@ namespace RBX
 	class ContentProvider
 	{
 	public:
-		void downloadContent(Content& content);
 		static ContentProvider* singleton();
 	};
 }

@@ -161,7 +161,29 @@ RBX::Experimental::Application* RBX::AppManager::getApplication()
 	return currentApplication;
 }
 
+void RBX::AppManager::closeCurrentApplication()
+{
+	currentApplication->close();
+	currentApplication = 0;
+	applications.erase(std::remove(applications.begin(), applications.end(), currentApplication));
+}
+
 void RBX::AppManager::setCurrentApplication(RBX::Experimental::Application* app)
 {
 	currentApplication = app;
+	if (std::find(applications.begin(), applications.end(), currentApplication) == applications.end())
+	{
+		applications.push_back(app);
+	}
+}
+
+void RBX::AppManager::setCurrentApplicationFromIndex(int index)
+{
+	if (index + 1 > applications.size()) return;
+	Experimental::Application* app = applications.at(index);
+	if (app)
+	{
+		currentApplication = app;
+		app->window->makeCurrent();
+	}
 }

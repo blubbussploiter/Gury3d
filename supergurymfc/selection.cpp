@@ -16,6 +16,8 @@
 #include "framework.h"
 #include "MainFrm.h"
 
+#include "StudioTool.h"
+
 std::vector<RBX::ISelectable*> RBX::Selection::selection = std::vector< RBX::ISelectable*>();
 bool RBX::Selection::down = 0;
 bool RBX::Selection::clicked = 0;
@@ -92,7 +94,17 @@ void RBX::Selection::renderDragBox(RenderDevice* rd)
 		Vector3 start = selectionDragBoxStart;
 		Vector3 end = selectionDragBoxEnd;
 
-		Draw::box(Box(start, end), rd, Color4::clear(), Color3::gray());
+		Studio::StudioTool* currentTool;
+
+		currentTool = Studio::current_Tool;
+
+		if (selectionDragBoxEnd != Vector3::zero() && selectionDragBoxStart != Vector3::zero())
+		{
+			if (!currentTool || (currentTool && !currentTool->isUsing))
+			{
+				//Draw::box(Box(start, end), rd, Color4::clear(), Color3::gray());
+			}
+		}
 	}
 }
 
@@ -114,42 +126,48 @@ void RBX::Selection::renderSelection(RenderDevice* rd)
 
 void RBX::Selection::update(UserInput* ui)
 {
+	if (!canSelect) return;
+
 	RBX::PVInstance* target;
-	CoordinateFrame cframe = Camera::singleton()->getCoordinateFrame();
+	CoordinateFrame cframe;
 
-	target = RBX::Mouse::getTarget();
+	Studio::StudioTool* currentTool;
 
-	bool ctrlShift = ui->keyDown(SDLK_LCTRL) || ui->keyDown(SDLK_LSHIFT)
+	currentTool = Studio::current_Tool;
+	target = Mouse::getMouse()->getTarget();
+	cframe = Camera::singleton()->getCoordinateFrame();
+
+	bool ctrlShift = ui->keyDown(SDLK_RSHIFT) || ui->keyDown(SDLK_LSHIFT)
 		|| ui->keyDown(SDLK_RCTRL) || ui->keyDown(SDLK_LCTRL);
 
 	clicked = ui->keyPressed(SDL_LEFT_MOUSE_KEY);
 	down = ui->keyDown(SDL_LEFT_MOUSE_KEY);
 
+	multiSelect = (down && !clicked || ctrlShift);
+
 	if (down)
 	{
-		Vector3 rel = cframe.pointToObjectSpace(Mouse::getHit());
+		Vector3 rel = cframe.pointToObjectSpace(Mouse::getMouse()->getHit());
 		worldSelectEnd = Vector2(rel.x / -rel.z, rel.y / -rel.z);
 		selectionDragBoxEnd = ui->getMouseXY();
-		dragSelect();
+	}
+	if (clicked)
+	{
+		Vector3 rel = cframe.pointToObjectSpace(Mouse::getMouse()->getHit());
+		worldSelectStart = Vector2(rel.x / -rel.z, rel.y / -rel.z);
+		selectionDragBoxStart = ui->getMouseXY();
+	}
+
+	if (!currentTool || (currentTool && !currentTool->isUsing))
+	{
+		//dragSelect();
 	}
 
 	if (clicked)
 	{
-		Vector3 rel = cframe.pointToObjectSpace(Mouse::getHit());
-		worldSelectStart = Vector2(rel.x / -rel.z, rel.y / -rel.z);
-		selectionDragBoxStart = ui->getMouseXY();
-	}
-	
-	multiSelect = (down && !clicked || ctrlShift);
-
-	if (clicked && !hoveringUI)
-	{
 		if (select(target, multiSelect)) return;
-		if (clicked)
-		{
-			selection.clear();
-			CMainFrame::mainFrame->m_wndClassView.SelectInstance(0);
-		}
+		selection.clear();
+		CMainFrame::mainFrame->m_wndClassView.SelectInstance(0);
 	}
 }
 
@@ -157,9 +175,9 @@ bool RBX::Selection::select(PVInstance* target, bool multiSelect)
 {
 	if (target)
 	{
-		if (!isSelected(target))
+		if (!target->getLocked())
 		{
-			if (!target->getLocked())
+			if (!isSelected(target))
 			{
 				if (!multiSelect)
 				{
@@ -167,8 +185,8 @@ bool RBX::Selection::select(PVInstance* target, bool multiSelect)
 				}
 				selection.push_back(target);
 				select(target);
-				return 1;
 			}
+			return 1;
 		}
 	}
 	return 0;

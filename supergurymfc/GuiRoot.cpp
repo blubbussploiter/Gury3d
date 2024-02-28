@@ -1,6 +1,8 @@
 #include "GuiRoot.h"
 #include "Mouse.h"
 
+#include "selection.h"
+
 RBX::Gui::GuiRoot* root;
 
 Vector2 RBX::Gui::getPosition(float width, float height, Vector2 position, bool alignRight, bool alignBottomRight, bool alignBottom)
@@ -37,12 +39,11 @@ void RBX::Gui::GuiRoot::doButtonLogic(G3D::UserInput* ui, RenderDevice* d)
 bool RBX::Gui::GuiObject::mouseIn(Vector2 mouse)
 {
 	return (mouse.x >= position.x && mouse.y >= position.y && (mouse.x < position.x + size.x && mouse.y < position.y + size.y));
-
 }
 
 void RBX::Gui::GuiObject::updateMouse(UserInput* ui)
 {
-	hoveringUI = mouseIn(ui->mouseXY());
+	RBX::Selection::canSelect = !mouseIn(ui->mouseXY());
 }
 
 void RBX::Gui::GuiObject::handleMouse(UserInput* ui)

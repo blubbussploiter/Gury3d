@@ -17,14 +17,15 @@
 #include "supergurymfcDoc.h"
 #include "supergurymfcView.h"
 
-
+#include "players.h"
 #include "datamodel.h"
+#include "serializer.h"
 #include "crashreporter.h"
 #include "scriptcontext.h"
-#include "players.h"
-#include "serializer.h"
 
 #include "classes.h"
+
+#include "StudioTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,6 +45,15 @@ BEGIN_MESSAGE_MAP(CsupergurymfcApp, CWinAppEx)
 	ON_COMMAND(IDR_RUN, &CsupergurymfcApp::OnRunRunService)
 	ON_COMMAND(IDR_PAUSE, &CsupergurymfcApp::OnPauseRunService)
 	ON_COMMAND(IDR_RESET, &CsupergurymfcApp::OnResetRunService)
+	ON_COMMAND(ID_TILT_LEFT, &CsupergurymfcApp::OnTiltLeft)
+	ON_COMMAND(ID_TILT_RIGHT, &CsupergurymfcApp::OnTiltRight)
+	ON_COMMAND(ID_TILT_UP, &CsupergurymfcApp::OnTiltUp)
+	ON_COMMAND(ID_TILT_DOWN, &CsupergurymfcApp::OnTiltDown)
+	ON_COMMAND(ID_ZOOM_IN, &CsupergurymfcApp::OnZoomIn)
+	ON_COMMAND(ID_ZOOM_OUT, &CsupergurymfcApp::OnZoomOut)
+	ON_COMMAND(ID_LOOKAT, &CsupergurymfcApp::OnLookat)
+	ON_COMMAND(ID_ZOOM_EXTENTS, &CsupergurymfcApp::OnZoomExtents)
+	ON_COMMAND(ID_MOUSE, &CsupergurymfcApp::OnMouseToolSelected)
 END_MESSAGE_MAP()
 
 
@@ -58,6 +68,8 @@ CsupergurymfcApp::CsupergurymfcApp() noexcept
 	// TODO: replace application ID string below with unique ID string; recommended
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("supergurymfc.AppID.NoVersion"));
+
+	RBX::Studio::setToolFromType(RBX::Studio::Mouse);
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
@@ -248,7 +260,6 @@ void CsupergurymfcApp::OnInsertObject()
 	}
 }
 
-
 void CsupergurymfcApp::OnInsertModel()
 {
 	if (RBX::AppManager::isReady())
@@ -350,7 +361,7 @@ void CsupergurymfcApp::OnPauseRunService()
 {
 	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
 	if (!datamodel) return;
-	datamodel->runService->stop();
+	datamodel->runService->pause();
 }
 
 void CsupergurymfcApp::OnResetRunService()
@@ -358,6 +369,69 @@ void CsupergurymfcApp::OnResetRunService()
 	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
 	if (!datamodel) return;
 	datamodel->runService->reset();
+}
+
+void CsupergurymfcApp::OnTiltLeft()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->tiltLeft(25);
+}
+
+void CsupergurymfcApp::OnTiltRight()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->tiltRight(25);
+}
+
+void CsupergurymfcApp::OnTiltUp()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->tiltUp();
+}
+
+void CsupergurymfcApp::OnTiltDown()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->tiltDown();
+}
+
+void CsupergurymfcApp::OnZoomIn()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->cam_zoom(1);
+}
+
+void CsupergurymfcApp::OnZoomOut()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->cam_zoom(0);
+}
+
+void CsupergurymfcApp::OnLookat()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->lookAtSelected();
+	camera->switch3->play();
+}
+
+void CsupergurymfcApp::OnZoomExtents()
+{
+	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!camera) return;
+	camera->zoomExtents();
+	camera->switch3->play();
+}
+
+void CsupergurymfcApp::OnMouseToolSelected()
+{
+	RBX::Studio::setToolFromType(RBX::Studio::Mouse);
 }
 
 // CsupergurymfcApp customization load/save methods

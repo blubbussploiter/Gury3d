@@ -6,20 +6,14 @@
 #include "ray.h"
 #include "strings.h"
 
-Vector3 RBX::Mouse::dir = Vector3::zero();
-Vector3 RBX::Mouse::hitWorld = Vector3::zero();
-
-RBX::PVInstance* RBX::Mouse::target = 0;
-
-bool RBX::hoveringUI = 0;
-
 TextureRef cursor_far;
 TextureRef cursor_close;
 
 float szx = 150, szy = 150;
-float cx, cy, x, y;
 
-RBX::PVInstance* RBX::Mouse::getTarget(RBX::PVInstance* ignorePart) /* ignore part for dragger tool */
+RBX::Mouse* mouse;
+
+RBX::PVInstance* RBX::Mouse::getTarget() /* ignore part for dragger tool */
 {
 	RBX::Camera* camera = RBX::Camera::singleton();
 	RBX::ISelectable* selected;
@@ -27,7 +21,7 @@ RBX::PVInstance* RBX::Mouse::getTarget(RBX::PVInstance* ignorePart) /* ignore pa
 
 	ray = camera->camera->worldRay(x, y, RBX::AppManager::singleton()->getApplication()->getViewport());
 
-	selected = RBX::World::getPartFromG3DRay(ray, hitWorld);
+	selected = RBX::World::getPartFromG3DRay<Instance>(ray, hitWorld);
 	target = (RBX::PVInstance*)(selected);
 
 	return target;
@@ -76,4 +70,10 @@ void RBX::Mouse::render(RenderDevice* rd)
 	glDisable(GL_TEXTURE_2D);
 
 	rd->pop2D();
+}
+
+RBX::Mouse* RBX::Mouse::getMouse()
+{
+	if (!mouse) mouse = new RBX::Mouse();
+	return mouse;
 }

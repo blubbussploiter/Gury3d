@@ -9,6 +9,7 @@
 #include "MainFrm.h"
 
 #include "appmanager.h"
+#include "StudioTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,18 +26,42 @@ const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
-	ON_WM_CREATE()
+	ON_WM_SETTINGCHANGE()
+	ON_WM_CREATE()	
+	ON_WM_SIZE()
 	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
+	ON_REGISTERED_MESSAGE(AFX_WM_CHANGE_ACTIVE_TAB, &CMainFrame::OnTabChange)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_VS_2005, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_VS_2005, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
-	ON_WM_SETTINGCHANGE()
 	ON_UPDATE_COMMAND_UI(AFX_IDP_SQL_NO_POSITIONED_UPDATES, &CMainFrame::OnUpdateCommandId)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &CMainFrame::OnUpdateToolbarButton)
 	ON_UPDATE_COMMAND_UI(IDR_RUN, &CMainFrame::OnUpdateRunServiceIsntRunningButton)
 	ON_UPDATE_COMMAND_UI(IDR_PAUSE, &CMainFrame::OnUpdateRunServiceIsRunningButton)
-	ON_UPDATE_COMMAND_UI(IDR_RESET, &CMainFrame::OnUpdateRunServiceIsRunningButton)
+	ON_UPDATE_COMMAND_UI(IDR_RESET, &CMainFrame::OnUpdateRunServiceIsRunningOrPausedButton)
+	ON_UPDATE_COMMAND_UI(ID_MOUSE, &CMainFrame::OnUpdateStudioToolsButton)
+	ON_UPDATE_COMMAND_UI(ID_MOVE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_RESIZE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_LOCK, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_ANCHOR, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_COLOR, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_SAMPLE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_SMOOTH, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_GLUE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_WELD, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_STUD, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_INLET, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_HINGE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_MOTOR, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_TILT_LEFT, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_TILT_RIGHT, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_TILT_UP, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_TILT_DOWN, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_ZOOM_OUT, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_ZOOM_IN, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_LOOKAT, &CMainFrame::OnUpdateLookAtButton)
+	ON_UPDATE_COMMAND_UI(ID_ZOOM_EXTENTS, &CMainFrame::OnUpdateToolbarButton)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -99,6 +124,20 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
+	if (!m_wndStudioTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndStudioTools.LoadToolBar(SERVICES))
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
+
+	if (!m_wndCameraTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+		!m_wndCameraTools.LoadToolBar(CAMERA))
+	{
+		TRACE0("Failed to create toolbar\n");
+		return -1;      // fail to create
+	}
+
 	CString strToolBarName;
 	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
 	ASSERT(bNameValid);
@@ -107,42 +146,56 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	bNameValid = strRunServiceToolbarName.LoadString(IDS_TOOLBAR_TEST);
 	ASSERT(bNameValid);
 
+	CString strMouseName;
+	bNameValid = strMouseName.LoadString(ID_TOOLBAR_MOUSE);
+	ASSERT(bNameValid);
+
+	CString strCameraName;
+	bNameValid = strCameraName.LoadString(IDS_CAMERA);
+	ASSERT(bNameValid);
+
 	CString strCustomize;
 	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
 	ASSERT(bNameValid);
 
-	m_wndMainTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
+	//m_wndMainTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 	m_wndMainTools.SetWindowText(strToolBarName);
 
-	m_wndRunServiceTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize); 
+	//m_wndRunServiceTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize); 
 	m_wndRunServiceTools.SetWindowText(strRunServiceToolbarName);
 
+	//m_wndStudioTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
+	m_wndStudioTools.SetWindowText(strMouseName);
+
+	m_wndCameraTools.SetWindowText(strCameraName);
+
 	// Allow user-defined toolbars operations:
-	InitUserToolbars(nullptr, uiFirstUserToolBarId, uiLastUserToolBarId);
+	//InitUserToolbars(nullptr, uiFirstUserToolBarId, uiLastUserToolBarId);
 
 	if (!m_wndStatusBar.Create(this))
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
-	}
+	} 
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndMainTools.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndRunServiceTools.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndStudioTools.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndCameraTools.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndMenuBar);
 	DockPane(&m_wndMainTools);
 	DockPane(&m_wndRunServiceTools);
+	DockPane(&m_wndStudioTools);
+	DockPane(&m_wndCameraTools);
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
 	// enable Visual Studio 2005 style docking window auto-hide behavior
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
-
-	// Load menu item image (not placed on any standard toolbars):
-	CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, theApp.m_bHiColorIcons ? IDB_MENU_IMAGES_24 : 0);
 
 	// create docking windows
 	if (!CreateDockingWindows())
@@ -166,18 +219,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Enable toolbar and docking window menu replacement
 	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
-
-	// enable quick (Alt+drag) toolbar customization
-	CMFCToolBar::EnableQuickCustomization();
-	
-	if (CMFCToolBar::GetUserImages() == nullptr)
-	{
-		// load user-defined toolbar images
-		if (m_UserImages.Load(_T(".\\UserImages.bmp")))
-		{
-			CMFCToolBar::SetUserImages(&m_UserImages);
-		}
-	}
 
 	// enable menu personalization (most-recently used commands)
 	// TODO: define your own basic commands, ensuring that each pulldown menu has at least one basic command.
@@ -326,6 +367,14 @@ LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
 	return lres;
 }
 
+LRESULT CMainFrame::OnTabChange(WPARAM wp, LPARAM lp)
+{
+	RBX::AppManager* manager = RBX::AppManager::singleton();
+	int index = (int)wp;
+	manager->setCurrentApplicationFromIndex(index);
+	return 0;
+}
+
 void CMainFrame::OnApplicationLook(UINT id)
 {
 	CWaitCursor wait;
@@ -455,6 +504,15 @@ void CMainFrame::OnUpdateToolbarButton(CCmdUI* pCmdUI)
 	pCmdUI->Enable(RBX::AppManager::singleton()->getApplication() != 0);
 }
 
+void CMainFrame::OnUpdateLookAtButton(CCmdUI* pCmdUI)
+{
+	if (!RBX::Datamodel::getDatamodel()) {
+		pCmdUI->Enable(0);
+		return;
+	}
+	pCmdUI->Enable(RBX::Selection::selection.size() > 0);
+}
+
 void CMainFrame::OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI)
 {
 	if (!RBX::Datamodel::getDatamodel()) {
@@ -465,6 +523,19 @@ void CMainFrame::OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI)
 	if(runService)
 	{
 		pCmdUI->Enable(!runService->isRunning);
+	}
+}
+
+void CMainFrame::OnUpdateRunServiceIsRunningOrPausedButton(CCmdUI* pCmdUI)
+{
+	if (!RBX::Datamodel::getDatamodel()) {
+		pCmdUI->Enable(0);
+		return;
+	}
+	RBX::RunService* runService = RBX::RunService::singleton();
+	if (runService)
+	{
+		pCmdUI->Enable(runService->isRunning || runService->isPaused);
 	}
 }
 
@@ -479,4 +550,32 @@ void CMainFrame::OnUpdateRunServiceIsRunningButton(CCmdUI* pCmdUI)
 	{
 		pCmdUI->Enable(runService->isRunning);
 	}
+}
+
+void CMainFrame::OnUpdateStudioToolsButton(CCmdUI* pCmdUI)
+{
+	bool e;
+	RBX::Datamodel* dm;
+
+	dm = RBX::Datamodel::getDatamodel();
+	switch (pCmdUI->m_nID)
+	{
+		case ID_MOUSE:
+		{
+			e = RBX::Studio::currentToolType(RBX::Studio::Mouse);
+			break;
+		}
+		case ID_MOVE:
+		{
+			e = RBX::Studio::currentToolType(RBX::Studio::Move);
+			break;
+		}
+	}
+	e = (e && dm != 0);
+	pCmdUI->SetRadio(e);
+}
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CMDIFrameWndEx::OnSize(nType, cx, cy);
 }

@@ -14,28 +14,7 @@ BOOL CALLBACK documentWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case WM_CLOSE:
 		case WM_QUIT:
 		{
-			RBX::Datamodel::getDatamodel()->close();
-			app->onKillFocus();
-			app->close();
-			break;
-		}
-		case WM_MOUSELEAVE:
-		{
-			SendMessage(hwnd, WM_KILLFOCUS, 0, 0);
-			break;
-		}
-		case WM_MOUSEMOVE:
-		{
-
-			TRACKMOUSEEVENT me;
-
-			me.cbSize = sizeof(TRACKMOUSEEVENT);
-			me.dwFlags = TME_HOVER | TME_LEAVE;
-			me.hwndTrack = hwnd;
-			me.dwHoverTime = HOVER_DEFAULT;
-
-			TrackMouseEvent(&me);
-
+			RBX::AppManager::singleton()->closeCurrentApplication();
 			break;
 		}
 		case WM_MOUSEWHEEL:
@@ -92,10 +71,24 @@ void RBX::Experimental::Application::resizeWithParent(int cx, int cy)
 	if (cx) w = cx;
 	if (cy) h = cy;
 
-	renderDevice->notifyResize(w, h);
+	resize(w, h);
+}
+
+void RBX::Experimental::Application::resize(int cx, int cy)
+{
+	RECT r;
+	int w, h;
+
+	GetClientRect(parent, &r);
+
+	w = r.right;
+	h = r.bottom;
+
 	Rect2D viewportRect = Rect2D::xywh(0, 0, w, h);
+	renderDevice->notifyResize(cx, cy);
 	renderDevice->setViewport(viewportRect);
 
+	//onGraphics();
 }
 
 void RBX::Experimental::Application::setWindowLong()
@@ -111,13 +104,13 @@ RBX::Experimental::Application::Application(HWND wnd)
 {
 	GAppSettings _settings;
 
-	_settings.window.resizable = false;
+	_settings.window.resizable = true;
 	_settings.window.framed = false;
 	_settings.window.stereo = false;
+	_settings.window.refreshRate = 32;
 	_settings.dataDir = ConFileInPath("\\content\\");
 
 	parent = wnd;
-
 	window = Win32Window::create(_settings.window, parent);
 
 	renderDevice = new RenderDevice();
@@ -129,9 +122,8 @@ RBX::Experimental::Application::Application(HWND wnd)
 	sky = Sky::create(renderDevice, _settings.dataDir + "sky/");
 	resizeWithParent();
 
-	fps = 30.0f;
 	isThinking = false;
-
+	fps = 30.0f;
 }
 
 SkyRef RBX::getGlobalSky()

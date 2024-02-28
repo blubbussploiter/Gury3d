@@ -16,6 +16,7 @@ namespace RBX
 		Strafing,
 		Jumping,
 		Falling,
+		Tripped,
 		Landed
 	};
 

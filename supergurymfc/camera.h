@@ -9,6 +9,7 @@
 
 #include "pvinstance.h"
 #include "controller.h"
+#include "sounds.h"
 #include "part.h"
 
 #define CAM_ZOOM_MIN 0.5f
@@ -62,6 +63,7 @@ namespace RBX
 				startFrame = cf;
 			}
 			cframe = cf;
+			camera->setCoordinateFrame(cframe);
 		}
 
 		void setFocus(CoordinateFrame cf)
@@ -71,6 +73,8 @@ namespace RBX
 				startFocus = cf.translation;
 			}
 			focusPosition = cf.translation;
+			cframe.lookAt(focusPosition);
+			camera->setCoordinateFrame(cframe);
 		}
 
 		void refreshZoom(const CoordinateFrame& frame);
@@ -80,10 +84,15 @@ namespace RBX
 
 		void Zoom(short delta);
 
-		/* My stuff */
+		/* gury stuff */
 
-		void tiltUp(double deg = 25, bool enactedByZoom = 0);
-		void tiltDown(double deg = 25, bool enactedByZoom = 0);
+		void lookAtSelected();
+
+		void tiltRight(double deg = 5);
+		void tiltLeft(double deg = 5);
+
+		void tiltUp(double deg = 5);
+		void tiltDown(double deg = 5);
 
 		void cam_zoom(bool inout);
 
@@ -106,6 +115,7 @@ namespace RBX
 		RBX::ICameraOwner* getCameraOwner();
 
 		static RBX::Camera* singleton();
+		static RBX::Sound* switch3;
 
 		Camera() : focusPosition(Vector3(0, 0, 0)), yaw(0.f), pitch(0.f), zoom(14.f)
 		{

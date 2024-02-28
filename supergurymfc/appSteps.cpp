@@ -13,6 +13,7 @@
 #include "scriptcontext.h"
 
 #include "soundservice.h"
+#include "StudioTool.h"
 
 RBX::Datamodel* RBX::Experimental::Application::getDatamodel()
 {
@@ -77,24 +78,26 @@ void RBX::Experimental::Application::onLogic()
 	{
 		RBX::Camera::singleton()->cam_zoom(1);
 	}
+	if (RBX::Studio::current_Tool)
+	{
+		RBX::Studio::current_Tool->doLogic(userInput);
+	}
 
 	getCamera()->update(userInput->keyDown(SDL_RIGHT_MOUSE_KEY));
 	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
 	RBX::Network::getPlayers()->onStep();
 
-	RBX::Mouse::update(userInput);
+	RBX::Mouse::getMouse()->update(userInput);
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
 	RBX::Selection::update(userInput);
+
 }
 
 void RBX::Experimental::Application::onFocus()
 {
 	inFocus = 1;
 	justReceivedFocus = 1;
-
-	//ShowCursor(FALSE);
-	window->makeCurrent();
 }
 
 void RBX::Experimental::Application::onKillFocus()
@@ -109,8 +112,6 @@ void RBX::Experimental::Application::onKillFocus()
 	key.message = 0;
 	key.wParam = 0;
 	key.lParam = 0;
-
-	//ShowCursor(TRUE);
 }
 
 void RBX::Experimental::Application::onInit()
@@ -190,5 +191,6 @@ void RBX::Experimental::Application::sendClose()
 
 void RBX::Experimental::Application::close()
 {
+	RBX::Datamodel::getDatamodel()->close();
 	renderDevice->cleanup();
 }

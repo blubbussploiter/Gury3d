@@ -108,7 +108,7 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
 {
     if (!specialShape)
     {
-        glColor(1, 1, 1, 1 - (color.r * 0.5f));
+        glColor(1, 1, 1, 1 - (color.r * 0.2f));
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
         renderSurface(rd, this, RIGHT, right, idRight);
@@ -413,19 +413,22 @@ RBX::SurfaceType RBX::PVInstance::getSurface(NormalId face)
 
 void RBX::PVInstance::initializeForKernel()
 {
-    bool exists;
-    exists = body->body || primitive->geom[0];
 
-    body->createBody(size);
-    primitive->createPrimitive(shape, size);
+    if (!body->created())
+    {
 
-    body->attachPrimitive(primitive);
-    primitive->modifyUserdata(this);
+        body->createBody(size);
+        primitive->createPrimitive(shape, size);
 
-    setAnchored(getAnchored());
-    setCanCollide(getCanCollide());
+        body->attachPrimitive(primitive);
+        primitive->modifyUserdata(this);
 
-    Kernel::get()->addPrimitive(primitive);
+        setAnchored(getAnchored());
+        setCanCollide(getCanCollide());
+
+        Kernel::get()->addPrimitive(primitive);
+
+    }
 }
 
 RBX::PVInstance::PVInstance()

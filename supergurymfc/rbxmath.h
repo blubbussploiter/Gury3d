@@ -79,6 +79,10 @@ namespace RBX
                 return RBX::BOTTOM;
             return result;
         }
+        static Vector3 toDiagonal(Matrix3 m)
+        {
+            return Vector3(m.elt[0][1], m.elt[1][1], m.elt[2][2]);
+        }
     }
 }
 #endif

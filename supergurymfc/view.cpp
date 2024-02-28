@@ -7,6 +7,8 @@
 #include "datamodel.h"
 #include "selection.h"
 
+#include "StudioTool.h"
+
 RBX::View* rbx_view;
 
 void RBX::View::onWorkspaceDescendentAdded(RBX::Instance* descendent)
@@ -26,10 +28,9 @@ void RBX::View::presetLighting()
 
 void RBX::View::turnOnLights(RenderDevice* device)
 {
+	int n = 1;
 	Color3 ambientColor;
 
-	int n = 1;
-	
 	ambientColor = (lighting->ambientBottom + lighting->ambientTop) / 2.0f;
 
 	device->setSpecularCoefficient(1.0f);
@@ -83,7 +84,6 @@ void RBX::View::renderScene(RenderDevice* rd)
 	rd->disableLighting();
 
 	RBX::Scene::singleton()->darkPass(rd);
-	//RBX::Scene::singleton()->reflectancePass(rd);
 	RBX::Scene::singleton()->lastPass(rd);
 
 	rd->popState();
@@ -116,6 +116,11 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 		sky->render(params);
 	}
 
+	if (RBX::Studio::current_Tool)
+	{
+		RBX::Studio::current_Tool->doGraphics(renderDevice);
+	}
+
 	RBX::Selection::renderSelection(renderDevice);
 
 	renderScene(renderDevice);
@@ -133,8 +138,6 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	}
 
 	renderDevice->push2D();
-
-	RBX::Network::getPlayers()->updatePlayerList();
 
 	datamodel->guiRoot->render(renderDevice);
 	datamodel->message->render(renderDevice);

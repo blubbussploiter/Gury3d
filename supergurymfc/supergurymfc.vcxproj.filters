@@ -169,44 +169,35 @@
     <Filter Include="Source Files\dep\lua">
       <UniqueIdentifier>{cf23b88f-72e6-4da8-942a-b2d02ad0fb01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\rbx\studio\tools">
+      <UniqueIdentifier>{50d949fb-01bb-49f6-9307-ba768eab0553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\studio\base">
+      <UniqueIdentifier>{15f3c444-66e0-40c6-ba5f-b523cfd724d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\studio\tools\wnds">
+      <UniqueIdentifier>{0628373a-b7c2-48d7-96cb-5bef640df856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\studio\base\de">
+      <UniqueIdentifier>{71ad5206-81b1-4b52-bd8d-e88316d0e44a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\studio\base">
+      <UniqueIdentifier>{fc1ca4a7-b15f-4b63-a4d3-ee9bdfd1e057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\misc">
+      <UniqueIdentifier>{adb4174d-4ade-40f0-8307-31e3e21d82db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\studio\base\de">
+      <UniqueIdentifier>{baf38114-ee5d-4352-920b-a42eb7326747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\studio\tools">
+      <UniqueIdentifier>{4f565b8b-4a31-4296-95ce-e7ec6066b3b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\studio\tools\wnds">
+      <UniqueIdentifier>{c5d263b2-fb41-43bf-88e4-17104151aa68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewTree.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfcView.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfcDoc.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfc.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWnd.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertiesWnd.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
     <ClInclude Include="content.h">
       <Filter>Header Files\game\content</Filter>
     </ClInclude>
@@ -372,9 +363,6 @@
     <ClInclude Include="documentManager.h">
       <Filter>Header Files\game\app</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
     <ClInclude Include="instancebridge.h">
       <Filter>Header Files\game\lua</Filter>
     </ClInclude>
@@ -389,12 +377,6 @@
     </ClInclude>
     <ClInclude Include="md5.h">
       <Filter>Header Files\dep</Filter>
-    </ClInclude>
-    <ClInclude Include="decode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="encode.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="soundservice.h">
       <Filter>Header Files\game\services</Filter>
@@ -417,12 +399,6 @@
     <ClInclude Include="effectsetting.h">
       <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="CCommandBar.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
-    <ClInclude Include="CInsertObjectDlg.h">
-      <Filter>Header Files\studio</Filter>
-    </ClInclude>
     <ClInclude Include="body.h">
       <Filter>Header Files\game\physics</Filter>
     </ClInclude>
@@ -441,38 +417,65 @@
     <ClInclude Include="motor.h">
       <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
+    <ClInclude Include="decode.h">
+      <Filter>Header Files\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="encode.h">
+      <Filter>Header Files\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="supergurymfc.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="supergurymfcView.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="supergurymfcDoc.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewTree.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="CCommandBar.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="CInsertObjectDlg.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassView.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWnd.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertiesWnd.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="StudioTool.h">
+      <Filter>Header Files\studio\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="DragTool.h">
+      <Filter>Header Files\studio\tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ChildFrm.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="ClassView.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWnd.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="supergurymfc.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="supergurymfcDoc.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="supergurymfcView.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewTree.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
     <ClCompile Include="networkclient.cpp">
       <Filter>Source Files\rbx\game\services\network</Filter>
     </ClCompile>
@@ -707,9 +710,6 @@
     <ClCompile Include="poll.cpp">
       <Filter>Source Files\rbx\game\app\window</Filter>
     </ClCompile>
-    <ClCompile Include="ray.cpp">
-      <Filter>Source Files\rbx\game\services\thinkers\world</Filter>
-    </ClCompile>
     <ClCompile Include="controller.cpp">
       <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
     </ClCompile>
@@ -764,12 +764,6 @@
     <ClCompile Include="contentprovider.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="CCommandBar.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
-    <ClCompile Include="CInsertObjectDlg.cpp">
-      <Filter>Source Files\rbx\studio</Filter>
-    </ClCompile>
     <ClCompile Include="surfaceFactory.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
@@ -817,6 +811,48 @@
     </ClCompile>
     <ClCompile Include="IRenderable.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="supergurymfc.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="supergurymfcDoc.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="supergurymfcView.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="CCommandBar.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="CInsertObjectDlg.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassView.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWnd.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertiesWnd.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewTree.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildFrm.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files\rbx\studio\base\de</Filter>
+    </ClCompile>
+    <ClCompile Include="DragTool.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="StudioTool.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -910,6 +946,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\toolbar3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\services.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\camera.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

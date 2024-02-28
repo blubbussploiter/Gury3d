@@ -24,6 +24,9 @@ void RBX::RunService::run()
     RBX::Network::Player* localPlayer;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
+    Scene::singleton()->saveStartPVs();
+    Scene::singleton()->initializeKernel();
+
     if (!hasStarted)
     {
         reset();
@@ -41,18 +44,25 @@ void RBX::RunService::run()
     }
 
     isRunning = true;
+    isPaused = false;
+}
+
+void RBX::RunService::pause()
+{
+    stop();
+    isPaused = true;
 }
 
 void RBX::RunService::stop()
 {
     isRunning = false;
+    isPaused = false;
 }
 
 void RBX::RunService::reset()
 {
     if (!hasStarted)
     {
-        Scene::singleton()->initializeKernel();
         JointsService::singleton()->buildGlobalJoints();
         JointsService::singleton()->buildConnectors();
     }
@@ -70,9 +80,9 @@ void RBX::RunService::update()
     {
         RBX::Scene::singleton()->updateSteppables();
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 12; i++)
         {
-            Kernel::get()->step(0.05f);
+            Kernel::get()->step(0.015f);
         }
     }
 

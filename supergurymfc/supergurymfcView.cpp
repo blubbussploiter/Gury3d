@@ -2,6 +2,8 @@
 // supergurymfcView.cpp : implementation of the CsupergurymfcView class
 //
 
+#include <thread>
+
 #include "pch.h"
 #include "framework.h"
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
@@ -55,7 +57,6 @@ void CsupergurymfcView::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
 	// TODO: add draw code for native data here
 }
 
@@ -68,7 +69,6 @@ void CsupergurymfcView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 void CsupergurymfcView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 }
-
 
 // CsupergurymfcView diagnostics
 

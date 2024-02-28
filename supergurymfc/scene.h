@@ -30,6 +30,7 @@ namespace RBX
 		void lastPass(RenderDevice* rd);
 		
 		void initializeKernel();
+		void saveStartPVs();
 
 		static bool isRenderable(RBX::Instance* instance) { return dynamic_cast<RBX::Render::Renderable*>(instance) != 0; }
 

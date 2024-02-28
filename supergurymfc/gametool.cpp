@@ -6,19 +6,6 @@
 
 TextureRef dragCursor, grabRotateCursor;
 
-float getOccludingY(RBX::PVInstance* p)
-{
-	RBX::PVInstance* target;
-	target = RBX::Mouse::getTarget(p);
-	if (target && (target != p))
-	{ 
-		float y;
-		y = ceil(p->getSize().z / 2) + 1.2;
-		return target->getPosition().y + y;
-	}
-	return p->getPosition().y;
-}
-
 void RBX::GameTool::update(RenderDevice* rd, G3D::UserInput* ui)
 {
 	/*

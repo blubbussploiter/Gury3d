@@ -17,6 +17,9 @@ namespace RBX
 			linear = Vector3::zero();
 			rotational = Vector3::zero();
 		}
+		Velocity(Vector3 linear, Vector3 rotational) : linear(linear), rotational(rotational)
+		{
+		}
 	};
 
 	class PV
@@ -46,6 +49,10 @@ namespace RBX
 
 		dMass getMass();
 
+		float getFMass();
+
+		bool created();
+
 		void* getUserdata();
 
 		void modifyUserdata(void* data);
@@ -57,6 +64,16 @@ namespace RBX
 		void modifySize(Vector3 size);
 
 		void modifyMass(dMass mass);
+
+		void applyTorque(Vector3 torque);
+
+		void applyForce(Vector3 force);
+
+		Vector3 getTorque();
+
+		Vector3 getForce();
+
+		Matrix3 getMoment();
 
 		void createBody(Vector3 size);
 
@@ -73,6 +90,7 @@ namespace RBX
 		Body()
 		{
 			pv = new PV();
+			body = 0;
 		}
 	};
 

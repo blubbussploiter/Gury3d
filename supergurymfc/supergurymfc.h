@@ -15,7 +15,6 @@ class CsupergurymfcApp : public CWinAppEx
 public:
 	CsupergurymfcApp() noexcept;
 
-
 // Overrides
 public:
 	virtual BOOL InitInstance();
@@ -40,6 +39,15 @@ public:
 		afx_msg void OnRunRunService();
 		afx_msg void OnPauseRunService();
 		afx_msg void OnResetRunService();
+		afx_msg void OnTiltLeft();
+		afx_msg void OnTiltRight();
+		afx_msg void OnTiltUp();
+		afx_msg void OnTiltDown();
+		afx_msg void OnZoomIn();
+		afx_msg void OnZoomOut();
+		afx_msg void OnLookat();
+		afx_msg void OnZoomExtents();
+		afx_msg void OnMouseToolSelected();
 };
 
 extern CsupergurymfcApp theApp;

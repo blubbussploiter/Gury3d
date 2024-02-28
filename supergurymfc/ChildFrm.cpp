@@ -105,11 +105,22 @@ void CChildFrame::OnKillFocus(CWnd* pNewWnd)
 
 	// TODO: Add your message handler code here
 
-	if (application) application->onKillFocus();
+	//if (application) application->onKillFocus();
 }
 
 
 void CChildFrame::OnSize(UINT nType, int cx, int cy)
 {
+	/*
+
+	RBX::Experimental::Application* application = RBX::AppManager::singleton()->getApplication();
+
+	if (application)
+	{
+		application->resize(cx, cy);
+	}
+
+	*/
+
 	// TODO: Add your message handler code here
 }

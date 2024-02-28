@@ -54,7 +54,6 @@ void Player::loadCharacter()
 			if (h)
 			{
 				character = (RBX::ModelInstance*)possibleCharacter;
-				character->translate(Vector3(0, 12, 0));
 			}
 		}
 	}
@@ -70,6 +69,20 @@ void Player::loadCharacter()
 
 	if (!IsA<RBX::PartInstance>(head) || !IsA<RBX::PartInstance>(humanoidRootPart)) return;
 
+	Extents e;
+	Vector3 size, pos;
+
+	Workspace* workspace;
+
+	workspace = Workspace::singleton();
+	e = workspace->computeVisibleExtents();
+
+	size = e.size();
+	//pos = Vector3(0, size.magnitude() * 0.05f, 0);
+	pos = Vector3(0, 100, 0);
+
+	character->translate(pos);
+
 	controller = new PlayerController();
 	controller->init(this);
 
@@ -77,7 +90,7 @@ void Player::loadCharacter()
 	Camera::singleton()->cameraType = Follow;
 
 	character->setName(getName());
-	character->setParent(RBX::Workspace::singleton());
+	character->setParent(workspace);
 
 	if (RBX::RunService::singleton()->isRunning)
 	{

@@ -41,8 +41,8 @@ void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)
 {
 	Vector2 mousePos;
 
+	GuiObject::handleMouse(ui);
 	mousePos = ui->mouseXY();
-	hoveringUI = mouseIn(mousePos);
 
 	if (disabled)
 		return;

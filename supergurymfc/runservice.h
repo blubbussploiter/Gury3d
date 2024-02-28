@@ -29,10 +29,13 @@ namespace RBX
 		ScriptContext* scriptContext;
 
 		bool isRunning;
+		bool isPaused;
+
 		bool hasStarted; /* qnd fix for an error */
 		bool shouldReset; /* queued for after collision steps */
 
 		void run();
+		void pause();
 		void stop();
 		void reset();
 		void update();

@@ -203,6 +203,7 @@
     <ClInclude Include="cframebridge.h" />
     <ClInclude Include="CInsertObjectDlg.h" />
     <ClInclude Include="decode.h" />
+    <ClInclude Include="DragTool.h" />
     <ClInclude Include="effectsetting.h" />
     <ClInclude Include="encode.h" />
     <ClInclude Include="application.h" />
@@ -241,6 +242,7 @@
     <ClInclude Include="motor.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="snap.h" />
+    <ClInclude Include="StudioTool.h" />
     <ClInclude Include="surfaceFactory.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="mesh.h" />
@@ -270,6 +272,7 @@
     <ClCompile Include="CInsertObjectDlg.cpp" />
     <ClCompile Include="connector.cpp" />
     <ClCompile Include="contentprovider.cpp" />
+    <ClCompile Include="DragTool.cpp" />
     <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="iobfix.cpp" />
@@ -353,7 +356,6 @@
     <ClCompile Include="plr_controller.cpp" />
     <ClCompile Include="primitives.cpp" />
     <ClCompile Include="pvinstance.cpp" />
-    <ClCompile Include="ray.cpp" />
     <ClCompile Include="replicator.cpp" />
     <ClCompile Include="rightkeyboard.cpp" />
     <ClCompile Include="runservice.cpp" />
@@ -365,6 +367,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdout.cpp" />
+    <ClCompile Include="StudioTool.cpp" />
     <ClCompile Include="surfaceFactory.cpp" />
     <ClCompile Include="surfaces.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
@@ -424,6 +427,7 @@
     <ResourceCompile Include="supergurymfc.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\camera.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
     <Image Include="res\class_view.ico" />
@@ -443,6 +447,7 @@
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
     <Image Include="res\Runservice.bmp" />
+    <Image Include="res\services.bmp" />
     <Image Include="res\sort.bmp" />
     <Image Include="res\sort_hc.bmp" />
     <Image Include="res\supergurymfc.ico" />

@@ -40,7 +40,7 @@ void RBX::Camera::occlude()
 		RBX::PartInstance* part;
 		RBX::Instance* parent;
 
-		Vector3 startPos, negLook;
+		Vector3 startPos, negLook, hit;
 
 		player = RBX::Network::getPlayers()->localPlayer;
 		parent = focusPart->getParent();
@@ -51,8 +51,8 @@ void RBX::Camera::occlude()
 		startPos = cframe.translation;
 		negLook = focusPart->getPosition();
 
-		ray = new RBX::World::Ray(startPos, negLook);
-		selectable = ray->getPartFromRay();
+		ray = new World::Ray(startPos, negLook);
+		selectable = World::getPartFromG3DRay<Instance>(ray->g3dRay, hit);
 
 		if ((part = dynamic_cast<RBX::PartInstance*>(selectable)) && part)
 		{
@@ -85,15 +85,12 @@ void RBX::Camera::refreshZoom(const CoordinateFrame& frame)
 void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY)
 {
 	Vector3 pos;
-	Vector3 _old;
 
 	yaw += spdX;
 	pitch += spdY;
 
 	if (pitch > 1.4f) pitch = 1.4f;
 	if (pitch < -1.4f) pitch = -1.4f;
-
-	_old = frame->translation;
 
 	pos = Vector3(sin(-yaw) * zoom * cos(pitch), sin(pitch) * zoom, cos(-yaw) * zoom * cos(pitch)) + focusPosition;
 
@@ -131,8 +128,10 @@ void RBX::Camera::panLock(CoordinateFrame* frame, float spdX, float spdY)
 
 void RBX::Camera::Zoom(short delta)
 {
-
-	switch3->play();
+	if (cameraType != Follow)
+	{
+		switch3->play();
+	}
 
 	if (delta>0) { // Mouse wheel up
 		CoordinateFrame zoomFrame = cframe + cframe.lookVector()*(zoom*0.2f);
@@ -142,7 +141,7 @@ void RBX::Camera::Zoom(short delta)
 			setFrame(zoomFrame);
 			if (cameraType == Follow)
 			{
-				tiltDown(15, 1);
+				tiltDown(5);
 			}
 		}
 		else
@@ -160,7 +159,7 @@ void RBX::Camera::Zoom(short delta)
 			setFrame(zoomFrame);
 			if (cameraType == Follow)
 			{
-				tiltUp(15, 1);
+				tiltUp(5);
 			}
 		}
 		else

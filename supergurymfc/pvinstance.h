@@ -81,6 +81,13 @@ namespace RBX
 			setRotVelocity(startPV->velocity.rotational);
 		}
 
+		void savePV()
+		{
+			startPV->position = getCFrame();
+			startPV->velocity.linear = getVelocity();
+			startPV->velocity.rotational = getRotVelocity();
+		}
+
 		void setShape(Shape s) 
 		{
 			shape = s;
@@ -110,14 +117,15 @@ namespace RBX
 		RBX::SurfaceType getBottomSurface() { return bottom; }
 		void setBottomSurface(RBX::SurfaceType s) { setFace(BOTTOM, s); }
 
+		Body* getBody()
+		{
+			if (primitive->body) return primitive->body;
+			return 0;
+		}
+
 		void setVelocity(Vector3 newVelocity)
 		{
 			pv->velocity.linear = newVelocity;
-
-			if (!startPV->velocity.linear)
-			{
-				startPV->velocity.linear = newVelocity;
-			}
 
 			if (primitive->body)
 			{
@@ -128,11 +136,6 @@ namespace RBX
 		void setRotVelocity(Vector3 newVelocity)
 		{
 			pv->velocity.rotational = newVelocity;			
-
-			if (!startPV->velocity.rotational)
-			{
-				startPV->velocity.rotational = newVelocity;
-			}
 
 			if (primitive->body)
 			{
@@ -157,6 +160,11 @@ namespace RBX
 		{
 			canCollide = c;
 			primitive->modifyCollisions(canCollide);
+		}
+
+		void setCenter(CoordinateFrame c)
+		{
+			setCFrame(c);
 		}
 
 		FormFactor getFormFactor() { return formFactor; }
@@ -238,10 +246,6 @@ namespace RBX
 		{
 			pv->position = cf;
 			primitive->modifyPosition(pv->position);
-			if (startPV->position.isIdentity())
-			{
-				startPV->position = pv->position;
-			}
 		}
 
 		Color3 getColor() { return color; }
@@ -281,6 +285,13 @@ namespace RBX
 		Vector3 getVelocity() { return pv->velocity.linear; }
 		Vector3 getRotVelocity() { return pv->velocity.rotational; }
 
+		Vector3 getEulerAngles()
+		{
+			Vector3 euler;
+			pv->position.rotation.toEulerAnglesXYZ(euler.x, euler.y, euler.z);
+			return euler;
+		}
+
 		void lookAt(Vector3 v)
 		{
 			CoordinateFrame cf;
@@ -299,6 +310,11 @@ namespace RBX
 		SelectableBox getBoundingBox()
 		{
 			return SelectableBox(pv->position, size);
+		}
+
+		CoordinateFrame getCenter()
+		{
+			return pv->position;
 		}
 
 		Instance* clone() const

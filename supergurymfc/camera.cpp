@@ -11,11 +11,12 @@
 #include "players.h"
 
 #include "humanoid.h"
+#include "selection.h"
 
 POINT oldMouse;
 POINT mouse;
 
-static RBX::Sound* switch3 = RBX::Sound::fromFile(GetFileInPath("/content/sounds/SWITCH3.wav"));
+RBX::Sound* RBX::Camera::switch3 = RBX::Sound::fromFile(GetFileInPath("/content/sounds/SWITCH3.wav"));
 
 RTTR_REGISTRATION
 {
@@ -25,16 +26,28 @@ RTTR_REGISTRATION
         .property("CoordinateFrame", &RBX::Camera::getCoordinateFrame, &RBX::Camera::setCoordinateFrame);
 }
 
-void RBX::Camera::tiltUp(double deg, bool enactedByZoom)
+void RBX::Camera::tiltRight(double deg)
 {
-    pan(&cframe, 0, toRadians(deg));
-    if(!enactedByZoom) switch3->play();
+    pan(&cframe, toRadians(deg), 0);
+    switch3->play();
 }
 
-void RBX::Camera::tiltDown(double deg, bool enactedByZoom)
+void RBX::Camera::tiltLeft(double deg)
+{
+    pan(&cframe, toRadians(-deg), 0);
+    switch3->play();
+}
+
+void RBX::Camera::tiltUp(double deg)
+{
+    pan(&cframe, 0, toRadians(deg));
+    switch3->play();
+}
+
+void RBX::Camera::tiltDown(double deg)
 {
     pan(&cframe, 0, toRadians(-deg));
-    if (!enactedByZoom) switch3->play();
+    switch3->play();
 }
 
 void RBX::Camera::characterFade()
@@ -137,7 +150,10 @@ void RBX::Camera::update(bool rightMouseDown)
     GetCursorPos(&oldMouse);
 
     CoordinateFrame current = camera->getCoordinateFrame();
-    camera->setCoordinateFrame(current.lerp(cframe, smoothness));
+    if (cframe != current)
+    {
+        camera->setCoordinateFrame(current.lerp(cframe, smoothness));
+    }
 
 }
 
@@ -174,7 +190,49 @@ void RBX::Camera::move()
         }
     }
 
+    camera->setCoordinateFrame(cframe);
     setFrame(cframe);
+}
+
+void RBX::Camera::lookAtSelected()
+{
+    std::vector<RBX::ISelectable*> selected = RBX::Selection::selection;
+    Vector3 position;
+
+    if (selected.size() > 0)
+    {
+        Vector3 min, max;
+        for (unsigned int i = 0; i < selected.size(); i++) /* modded version of this: https://devforum.roblox.com/t/how-do-i-get-the-middle-of-multiple-parts/2007200/20 */
+        {
+            ISelectable* selectable = selected.at(i);
+            Vector3 pos = selectable->getCenter().translation;
+
+            if (min == Vector3::zero())
+            {
+                min = pos;
+            }
+            else
+            {
+                if (pos.x < min.x) min.x = pos.x;
+                if (pos.y < min.y) min.y = pos.y;
+                if (pos.z < min.z) min.z = pos.z;
+            }
+
+            if (max == Vector3::zero())
+            {
+                max = pos;
+            }
+            else
+            {
+                if (pos.x > max.x) max.x = pos.x;
+                if (pos.y > max.y) max.y = pos.y;
+                if (pos.z > max.z) max.z = pos.z;
+            }
+        }
+        position = ((max - min) / 2) + min;
+    }
+
+    lookAt(position);
 }
 
 void RBX::Camera::zoomExtents()
@@ -184,22 +242,15 @@ void RBX::Camera::zoomExtents()
 
 void RBX::Camera::zoomExtents(RBX::Extents extents, bool lerp)
 {
-    Vector3 size, center;
-    CoordinateFrame cameraPosition;
+    Vector3 size;
 
-    center = extents.low;
+    float magnitude;
     size = extents.size();
 
-    float mag = size.magnitude() / 4;
+    magnitude = size.magnitude() * 0.5f;
 
-    CoordinateFrame cameraFrame = camera->getCoordinateFrame();
-
-    cameraPosition = (center - (cameraFrame.lookVector() * mag));
-    cameraPosition.lookAt(center);
-
-    cframe = cameraPosition;
-    focusPosition = center;
-
+    zoom = magnitude;
+    pan(&cframe, 0, 0); /* update for zoom */
 }
 
 void RBX::Camera::setImageServerViewNoLerp(CoordinateFrame modelCoord)

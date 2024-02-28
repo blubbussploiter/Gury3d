@@ -17,5 +17,7 @@ namespace RBX
 		};
 	public:
 		virtual SelectableBox getBoundingBox() { return SelectableBox(); };
+		virtual CoordinateFrame getCenter() { return getBoundingBox().cframe; }
+		virtual void setCenter(CoordinateFrame) { }
 	};
 }

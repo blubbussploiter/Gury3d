@@ -118,7 +118,7 @@ RBX::Extents RBX::ModelInstance::computeCameraOwnerExtents()
 	return RBX::Extents();
 }
 
-RBX::Extents RBX::ModelInstance::computeVisibleExtents()
+RBX::Extents RBX::ModelInstance::computeVisibleExtents() /* modified version of: https://github.com/MaximumADHD/Super-Nostalgia-Zone/blob/4467be1ecec455a46cac919f26fddfbbc04169d9/join.client.lua#L59 */
 {
 	float minX = inf(), minY = inf(), minZ = inf();
 	float maxX = -inf(), maxY = -inf(), maxZ = -inf();

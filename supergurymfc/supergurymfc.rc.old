@@ -126,20 +126,58 @@ IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
-IDR_RUNSERVICEB         BITMAP                  "res\\toolbar3.bmp"
+RUNSERVICE              BITMAP                  "res\\runservice.bmp"
+
+SERVICES                BITMAP                  "res\\services.bmp"
+
+CAMERA                  BITMAP                  "res\\camera.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
-RUNSERVICE	BITMAP	"res\\runservice.bmp"
 
-RUNSERVICE	TOOLBAR	16,16
+CAMERA TOOLBAR 16, 16
 BEGIN
-	BUTTON	IDR_RUN
+	BUTTON	ID_TILT_LEFT
+	BUTTON	ID_TILT_RIGHT
+	BUTTON	ID_TILT_UP
+	BUTTON	ID_TILT_DOWN
+	BUTTON	ID_ZOOM_IN
+	BUTTON	ID_ZOOM_OUT
+	BUTTON	ID_LOOKAT
+	BUTTON	ID_ZOOM_EXTENTS
 END
 
+SERVICES TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_MOUSE
+    BUTTON      ID_MOVE
+    BUTTON      ID_RESIZE
+    BUTTON      ID_VELOCITY
+    SEPARATOR
+    BUTTON      ID_LOCK
+    BUTTON      ID_ANCHOR
+    SEPARATOR
+    BUTTON      ID_COLOR
+    BUTTON      ID_SAMPLE
+    SEPARATOR
+    BUTTON      ID_SMOOTH
+    BUTTON      ID_GLUE
+    BUTTON      ID_WELD
+    BUTTON      ID_STUD
+    BUTTON      ID_INLET
+    BUTTON      ID_HINGE
+    BUTTON      ID_MOTOR
+END
+
+RUNSERVICE TOOLBAR 16, 16
+BEGIN
+    BUTTON      IDR_RUN
+    BUTTON      IDR_PAUSE
+    BUTTON      IDR_RESET
+END
 
 IDR_MAINFRAME_256 TOOLBAR 16, 15
 BEGIN
@@ -191,8 +229,18 @@ BEGIN
     BUTTON      ID_EDIT_CUT
     BUTTON      ID_EDIT_COPY
     BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_REDO
+    BUTTON      ID_UNDO
+    SEPARATOR
+    BUTTON      ID_GROUP
+    BUTTON      ID_UNGROUP
+    SEPARATOR
+    BUTTON      ID_ROTATE
+    BUTTON      ID_TILT
+    BUTTON      ID_MOVE_UP
+    BUTTON      ID_MOVE_DOWN
 END
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -234,33 +282,10 @@ BEGIN
     BEGIN
         MENUITEM "Execute Script",              ID_TOOLS_EXECUTESCRIPT
         MENUITEM "Load Character",              ID_TOOLS_LOADCHARACTER
-        MENUITEM "Run Runservice",              ID_TOOLS_RUNRUNSERVICE
     END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About supergurymfc...",      ID_APP_ABOUT
-    END
-END
-
-IDR_POPUP_SORT MENU
-BEGIN
-    POPUP "Sorting"
-    BEGIN
-        MENUITEM "&Sort Alphabeticaly",         ID_SORTING_SORTALPHABETIC
-        MENUITEM "Sort by &Type",               ID_SORTING_SORTBYTYPE
-        MENUITEM "Sort by Acc&ess",             ID_SORTING_SORTBYACCESS
-        MENUITEM "Group by t&ype",              ID_SORTING_GROUPBYTYPE
-    END
-END
-
-IDR_OUTPUT_POPUP MENU
-BEGIN
-    POPUP "Popup"
-    BEGIN
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Clear",                      ID_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
     END
 END
 
@@ -278,11 +303,14 @@ BEGIN
     MENUITEM "Win&dows 7",                  ID_VIEW_APPLOOK_WINDOWS_7
 END
 
-IDR_MENU1 MENU
+IDR_OUTPUT_POPUP MENU
 BEGIN
-    POPUP "Cut"
+    POPUP "Popup"
     BEGIN
-        MENUITEM "Copy",                        ID_CUT_COPY
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Clear",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Hide",                       ID_VIEW_OUTPUTWND
     END
 END
 
@@ -428,6 +456,7 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "supergurymfc"
+    IDS_CAMERA              "Camera"
     IDR_supergurymfcTYPE    "\nsupergurymfc\nsupergurymfc\n\n\nsupergurymfc.Document\nsupergurymfc.Document"
     ID_WINDOW_MANAGER       "&Windows..."
 END
@@ -543,6 +572,8 @@ BEGIN
     IDS_STATUS_PANE2        "Pane 2"
     IDS_TOOLBAR_STANDARD    "Standard"
     IDS_TOOLBAR_CUSTOMIZE   "Customize..."
+    IDS_TOOLBAR_TEST        "Test"
+    ID_TOOLBAR_MOUSE        "Mouse"
 END
 
 STRINGTABLE

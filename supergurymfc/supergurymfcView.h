@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "appmanager.h"
 
 class CsupergurymfcView : public CView
 {
@@ -13,6 +14,9 @@ protected: // create from serialization only
 
 // Attributes
 public:
+
+	RBX::Experimental::Application* application;
+
 	CsupergurymfcDoc* GetDocument() const;
 
 // Operations

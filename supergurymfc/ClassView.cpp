@@ -108,7 +108,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	OnChangeVisualStyle();
 
 	CMenu menuSort;
-	menuSort.LoadMenu(IDR_POPUP_SORT);
+	menuSort.LoadMenu(IDR_OUTPUT_POPUP);
 
 	return 0;
 }
@@ -207,7 +207,7 @@ void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	pWndTree->SetFocus();
 	CMenu menu;
-	menu.LoadMenu(IDR_POPUP_SORT);
+	menu.LoadMenu(IDR_OUTPUT_POPUP);
 
 	CMenu* pSumMenu = menu.GetSubMenu(0);
 

@@ -128,11 +128,49 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
 RUNSERVICE              BITMAP                  "res\\runservice.bmp"
 
+SERVICES                BITMAP                  "res\\services.bmp"
+
+CAMERA                  BITMAP                  "res\\camera.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
+
+CAMERA TOOLBAR 16, 16
+BEGIN
+	BUTTON	ID_TILT_LEFT
+	BUTTON	ID_TILT_RIGHT
+	BUTTON	ID_TILT_UP
+	BUTTON	ID_TILT_DOWN
+	BUTTON	ID_ZOOM_IN
+	BUTTON	ID_ZOOM_OUT
+	BUTTON	ID_LOOKAT
+	BUTTON	ID_ZOOM_EXTENTS
+END
+
+SERVICES TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_MOUSE
+    BUTTON      ID_MOVE
+    BUTTON      ID_RESIZE
+    BUTTON      ID_VELOCITY
+    SEPARATOR
+    BUTTON      ID_LOCK
+    BUTTON      ID_ANCHOR
+    SEPARATOR
+    BUTTON      ID_COLOR
+    BUTTON      ID_SAMPLE
+    SEPARATOR
+    BUTTON      ID_SMOOTH
+    BUTTON      ID_GLUE
+    BUTTON      ID_WELD
+    BUTTON      ID_STUD
+    BUTTON      ID_INLET
+    BUTTON      ID_HINGE
+    BUTTON      ID_MOTOR
+END
 
 RUNSERVICE TOOLBAR 16, 16
 BEGIN
@@ -191,6 +229,17 @@ BEGIN
     BUTTON      ID_EDIT_CUT
     BUTTON      ID_EDIT_COPY
     BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_REDO
+    BUTTON      ID_UNDO
+    SEPARATOR
+    BUTTON      ID_GROUP
+    BUTTON      ID_UNGROUP
+    SEPARATOR
+    BUTTON      ID_ROTATE
+    BUTTON      ID_TILT
+    BUTTON      ID_MOVE_UP
+    BUTTON      ID_MOVE_DOWN
 END
 
 
@@ -407,6 +456,7 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "supergurymfc"
+    IDS_CAMERA              "Camera"
     IDR_supergurymfcTYPE    "\nsupergurymfc\nsupergurymfc\n\n\nsupergurymfc.Document\nsupergurymfc.Document"
     ID_WINDOW_MANAGER       "&Windows..."
 END
@@ -523,6 +573,7 @@ BEGIN
     IDS_TOOLBAR_STANDARD    "Standard"
     IDS_TOOLBAR_CUSTOMIZE   "Customize..."
     IDS_TOOLBAR_TEST        "Test"
+    ID_TOOLBAR_MOUSE        "Mouse"
 END
 
 STRINGTABLE

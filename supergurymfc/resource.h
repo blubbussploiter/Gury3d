@@ -14,8 +14,11 @@
 #define IDS_TOOLBAR_CUSTOMIZE           125
 #define ID_VIEW_CUSTOMIZE               126
 #define IDS_TOOLBAR_TEST                126
+#define ID_TOOLBAR_STUDIOTOOLS          127
+#define ID_TOOLBAR_MOUSE                127
 #define IDR_MAINFRAME                   128
 #define IDR_MAINFRAME_256               129
+#define IDS_CAMERA                      129
 #define IDR_supergurymfcTYPE            130
 #define ID_WINDOW_MANAGER               131
 #define ID_VIEW_FILEVIEW                133
@@ -93,6 +96,8 @@
 #define IDR_RUNSERVICEB                 317
 #define IDR_TOOLBAR2                    319
 #define RUNSERVICE                      328
+#define SERVICES                        335
+#define CAMERA                          338
 #define ID_CLASSINSERT                  1000
 #define ID_INSERT_MODEL                 32772
 #define ID_INSERT_OBJECT                32773
@@ -114,13 +119,46 @@
 #define IDR_RUN                         32793
 #define IDR_PAUSE                       32795
 #define IDR_RESET                       32796
+#define ID_REDO                         32798
+#define ID_UNDO                         32799
+#define ID_GROUP                        32800
+#define ID_UNGROUP                      32801
+#define ID_ROTATE                       32802
+#define ID_TILT                         32803
+#define ID_MOVE_UP                      32804
+#define ID_MOVE_DOWN                    32805
+#define ID_MOUSE                        32809
+#define ID_MOVE                         32810
+#define ID_RESIZE                       32811
+#define ID_VELOCITY                     32812
+#define ID_LOCK                         32813
+#define ID_ANCHOR                       32814
+#define ID_COLOR                        32815
+#define ID_SAMPLE                       32816
+#define ID_SMOOTH                       32817
+#define ID_GLUE                         32818
+#define ID_WELD                         32819
+#define ID_STUD                         32820
+#define ID_INLET                        32821
+#define ID_HINGE                        32822
+#define ID_MOTOR                        32823
+#define ID_TILT_LEFT                    32826
+#define ID_TILT_RIGHT                   32827
+#define ID_TILT_UP                      32828
+#define ID_TILT_DOWN                    32829
+#define ID_ZOOM_OUT                     32830
+#define ID_ZOOM_IN                      32831
+#define ID_LOOKAT                       32832
+#define ID_ZOOM_EXTENTS                 32833
+
+
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        331
-#define _APS_NEXT_COMMAND_VALUE         32798
+#define _APS_NEXT_RESOURCE_VALUE        342
+#define _APS_NEXT_COMMAND_VALUE         32837
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

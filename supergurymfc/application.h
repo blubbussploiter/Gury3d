@@ -50,6 +50,7 @@ namespace RBX
 
 			void setWindowLong();
 			void resizeWithParent(int cx=0, int cy=0);
+			void resize(int cx, int cy);
 
 			/* onXXX */
 

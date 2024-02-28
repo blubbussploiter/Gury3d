@@ -1,27 +1,56 @@
-#ifndef MOUSE_H
-#define MOUSE_H
+#pragma once
 
+#include <vector>
 #include <G3DAll.h>
+
+#include "appmanager.h"
+
+#include "instance.h"
 #include "pvinstance.h"
+#include "camera.h"
+#include "ray.h"
 
 namespace RBX
 {
 	class Mouse
 	{
-	private:
-		static Vector3 hitWorld, dir;
 	public:
 
-		static RBX::PVInstance* target;
-		static RBX::PVInstance* getTarget(RBX::PVInstance* ignorePart=0);
+		bool hoveringUI;
+		float cx, cy, x, y;
 
-		static Vector3 getDir() { getTarget(); return dir; }
-		static Vector3 getHit() { getTarget(); return hitWorld; }
+		Vector3 hitWorld, dir;
 
-		static void update(UserInput* ui);
-		static void render(RenderDevice* rd);
+		RBX::PVInstance* target;
+
+		RBX::PVInstance* getTarget();
+
+		Vector3 getDir() { getTarget(); return dir; }
+		Vector3 getHit() { getTarget(); return hitWorld; }
+
+		void update(UserInput* ui);
+		void render(RenderDevice* rd);
+
+		template<typename IgnoredItem>
+		inline RBX::PVInstance* getTargetWithIgnoreList(std::vector<IgnoredItem*>& ignore)
+		{
+			Ray ray;
+			Rect2D viewport;
+			viewport = AppManager::singleton()->getApplication()->getViewport();
+			Camera* camera = Camera::singleton();
+
+			ray = camera->camera->worldRay(x, y, viewport);
+			target = (PVInstance*)World::getPartFromG3DRay<IgnoredItem>(ray, hitWorld, ignore);
+
+			return target;
+		}
+
+		static Mouse* getMouse();
+
+		Mouse()
+		{
+
+		}
 	};
 
-	extern bool hoveringUI;
 }
-#endif

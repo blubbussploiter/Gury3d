@@ -101,13 +101,13 @@ namespace RBX
 	};
 
 	template <class Type>
-	bool IsA(RBX::Instance* i)
+	static bool IsA(RBX::Instance* i)
 	{
 		return (i && dynamic_cast<Type*>(i) != 0);
 	}
 
 	template <class Type>
-	Type* toInstance(Instance* i)
+	static Type* toInstance(Instance* i)
 	{
 		return dynamic_cast<Type*>(i);
 	}

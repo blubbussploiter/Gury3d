@@ -39,6 +39,8 @@ public:  // control bar embedded members
 	CMFCMenuBar       m_wndMenuBar;
 	CMFCToolBar       m_wndMainTools;
 	CMFCToolBar       m_wndRunServiceTools;
+	CMFCToolBar       m_wndStudioTools;
+	CMFCToolBar       m_wndCameraTools;
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
 	CClassView        m_wndClassView;
@@ -53,6 +55,7 @@ protected:
 	afx_msg void OnWindowManager();
 	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
+	afx_msg LRESULT OnTabChange(WPARAM wp, LPARAM lp);
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
@@ -65,8 +68,12 @@ public:
 	afx_msg void OnUpdateCommandId(CCmdUI* pCmdUI);
 
 	afx_msg void OnUpdateToolbarButton(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateLookAtButton(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateRunServiceIsRunningOrPausedButton(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateRunServiceIsRunningButton(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateStudioToolsButton(CCmdUI* pCmdUI);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

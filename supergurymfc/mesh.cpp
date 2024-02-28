@@ -1,7 +1,7 @@
 #include "mesh.h"
 #include "lighting.h"
 
-
+#include "part.h"
 
 RTTR_REGISTRATION
 {
@@ -21,6 +21,11 @@ RTTR_REGISTRATION
 			rttr::value("Brick", RBX::Render::Brick)
 		);
 
+}
+
+void RBX::Render::SpecialMesh::fromMeshType(MeshType types)
+{
+	setMeshType(types);
 }
 
 void RBX::Render::SpecialMesh::fromFile(std::string path)
@@ -55,14 +60,8 @@ void RBX::Render::SpecialMesh::fromFile(std::string path)
 	meshId = Content::fromContent(path);
 }
 
-void RBX::Render::SpecialMesh::fromMeshType(MeshType types)
-{
-	setMeshType(types);
-}
-
 void RBX::Render::SpecialMesh::setMeshId(Content SpecialMeshId)
 {
-	/*
 	std::string contentPath;
 
 	if (meshType != Filemesh)
@@ -70,20 +69,25 @@ void RBX::Render::SpecialMesh::setMeshId(Content SpecialMeshId)
 		return;
 	}
 
-	RBX::ContentProvider::singleton()->downloadContent(SpecialMeshId);
-
-	if (contentPath.empty()) return;
+	/* something... */
 
 	vertices.clear();
 	normals.clear();
 	uvs.clear();
 
 	fromFile(contentPath);
-	*/
 }
 
-void RBX::Render::SpecialMesh::renderSpecialMesh()
+void RBX::Render::SpecialMesh::renderSpecialMesh(RenderDevice* d)
 {
+
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
+
+	d->setObjectToWorldMatrix(part->pv->position);
+	d->setShininess(25.0f);
+
+	d->setColor(Color4(part->color, part->alpha));
 
 	glBegin(GL_TRIANGLES);
 
@@ -117,7 +121,7 @@ void RBX::Render::SpecialMesh::renderFace(RenderDevice* d, NormalId face)
 		case Head:
 		case Filemesh:
 		{
-			renderSpecialMesh();
+			renderSpecialMesh(d);
 			break;
 		}
 		case Wedge:
@@ -132,18 +136,22 @@ void RBX::Render::SpecialMesh::render(RenderDevice* d)
 {
 
 	switch (meshType)
-	{
-	case Head:
-	case Filemesh:
-	{
-		renderSpecialMesh();
-		return;
-	}
-	case Wedge:
-	{
-		renderFace(d, FRONT);
-		break;
-	}
+		{
+		case Wedge:
+		{
+			renderFace(d, LEFT);
+			renderFace(d, RIGHT);
+			renderFace(d, BACK);
+			renderFace(d, FRONT);
+			renderFace(d, BOTTOM);
+			renderFace(d, TOP);
+			break;
+		}
+		default:
+		{
+			renderFace(d, UNDEFINED);
+			break;
+		}
 	}
 }
 

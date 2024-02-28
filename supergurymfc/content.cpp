@@ -48,7 +48,7 @@ bool RBX::Content::resolve()
 
 	if (isStored)
 	{
-		RBX::ContentProvider::singleton()->downloadContent(*this);
+		/* resolve data stuff .. idk */
 		return true;
 	}
 

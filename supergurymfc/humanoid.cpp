@@ -14,6 +14,8 @@ RBX::Sound* whoosh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/button.
 RBX::Sound* uuhhh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/uuhhh.wav"));
 RBX::Sound* bsls_steps = RBX::Sound::fromFile(GetFileInPath("/content/sounds/bfsl-minifigfoots1.mp3"), 1);
 
+#define humanoid_max_torque 4e+005
+ 
 RTTR_REGISTRATION
 {
     rttr::registration::class_<RBX::Humanoid>("Humanoid")
@@ -79,6 +81,9 @@ void RBX::Humanoid::buildJoints()
     snap(humanoidRootPart, getLeftArm());
     snap(humanoidRootPart, getRightLeg());
     snap(humanoidRootPart, getLeftLeg());
+
+    getRightLeg()->setCanCollide(1);
+    getLeftLeg()->setCanCollide(1);
 }
 
 bool RBX::Humanoid::isFalling()
@@ -111,7 +116,6 @@ bool RBX::Humanoid::isGrounded()
     {
 
     }
-
     return 0;
 }
 
@@ -141,7 +145,7 @@ void RBX::Humanoid::setWalkDirection(Vector3 value)
             walkDirection.x = x * v4;
             walkDirection.y = 0;
             walkDirection.z = z * v4;
-            walkDirection *= 12;
+            walkDirection *= 12; /* walk speed */
             walkMode = DIRECTION_MOVE;
         }
     }
@@ -152,11 +156,6 @@ void RBX::Humanoid::snap(PVInstance* p0, PVInstance* p1)
     if (!p0 || !p1) return;
     SnapConnector* snap = new SnapConnector(p0->primitive, p1->primitive);
     snap->build();
-}
-
-void RBX::Humanoid::balance()
-{
-
 }
 
 void RBX::Humanoid::climb()
@@ -188,7 +187,6 @@ void RBX::Humanoid::jumpTimeStep()
 
 void RBX::Humanoid::turn()
 {
-   // PhysBody* body = humanoidRootPart->body;
     CoordinateFrame origin = humanoidRootPart->getCFrame(), frame = origin;
 
     frame.lookAt(origin.translation + walkDirection);
@@ -197,6 +195,54 @@ void RBX::Humanoid::turn()
     frame.rotation.toAxisAngle(Vector3(0, 1, 0), Y);
 
     walkRotationVelocity = Vector3(0, Y / 2, 0);
+}
+ 
+void RBX::Humanoid::balance() /* mainly taken from decompiled BodyGyro code (from WebService.dll) */
+{
+    Vector3 torqueBody;
+    Vector3 oldTorqueWorld;
+    Vector3 p_torque;
+
+    Body* mainBody;
+
+    mainBody = humanoidRootPart->getBody();
+    if (mainBody)
+    {
+        p_torque = mainBody->getTorque();
+    }
+    else
+    {
+        p_torque = Vector3::zero();
+    }
+    oldTorqueWorld = p_torque;
+    torqueBody = mainBody->pv->position.upVector();
+
+    Matrix3 transpose = mainBody->pv->position.rotation.transpose();
+
+    float kP = mainBody->pv->velocity.linear.magnitude(); /* spitballing here */
+    
+    float localYAxis_4 = transpose[0][0] * torqueBody.y + transpose[0][2] * oldTorqueWorld.x + transpose[0][1] * torqueBody.z;
+
+    torqueBody = Math::toDiagonal(mainBody->getMoment());
+
+    float desiredTorqueX = torqueBody.x * torqueBody.y * kP;
+    float localYAxis = -(oldTorqueWorld.x * localYAxis_4 * kP);
+
+    torqueBody.x = oldTorqueWorld.x * transpose[2][2] + oldTorqueWorld.z * transpose[2][1] + oldTorqueWorld.y * transpose[2][0];
+    torqueBody.y = transpose[0][0] * oldTorqueWorld.y + transpose[0][2] * oldTorqueWorld.x + transpose[0][1] * p_torque.z;
+    torqueBody.z = oldTorqueWorld.x * transpose[1][2] + p_torque.z * transpose[1][1] + oldTorqueWorld.y * transpose[1][0];
+     
+    float f = fabs(desiredTorqueX - torqueBody.y);
+    float v;
+
+    Vector3 d = Math::toDiagonal(mainBody->getMoment());
+
+    if (d.x * humanoid_max_torque <= f)
+        v = oldTorqueWorld.x + localYAxis;
+    else
+        v = localYAxis;
+
+
 }
 
 void RBX::Humanoid::onStep()
@@ -214,7 +260,12 @@ void RBX::Humanoid::onStep()
         health = 0;
     }
 
+    balance();
+
     updateHumanoidState();
+
+
+    //get_up();
 
     /*
     switch (walkMode)
@@ -314,8 +365,6 @@ void RBX::Humanoid::onStep()
 
 void RBX::Humanoid::updateHumanoidState()
 {
-    //btRigidBody* body = humanoidRootPart->body->_body;
-
     if (isGrounded())
     {
         humanoidState = Running;
@@ -332,6 +381,20 @@ void RBX::Humanoid::updateHumanoidState()
     if (isGrounded() && (humanoidState == Falling || humanoidState == Jumping))
     {
         humanoidState = Landed;
+    }
+
+    if (humanoidRootPart)
+    {
+        Vector3 up;
+        CoordinateFrame cframe;
+
+        cframe = humanoidRootPart->getCFrame();
+        up = cframe.upVector();
+
+        if (up.y < 0.5f)
+        {
+            humanoidState = Tripped;
+        }
     }
 }
 

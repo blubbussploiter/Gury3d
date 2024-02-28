@@ -97,6 +97,16 @@ void initializePVInstance(RBX::Render::Renderable* r, RenderDevice* rd)
 	}
 }
 
+void savePVPosition(RBX::Render::Renderable* r, RenderDevice* rd) /* in future, maybe save each value for propertydescriptor, go back and change them back */
+{
+	RBX::PVInstance* pvInstance = dynamic_cast<RBX::PVInstance*>(r);
+	if (pvInstance)
+	{
+		pvInstance->savePV();
+	}
+
+}
+
 void RBX::Scene::iterate(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*))
 {
 	for (unsigned int i = 0; i < renderObjects.size(); i++)
@@ -158,6 +168,11 @@ void RBX::Scene::lastPass(RenderDevice* rd)
 void RBX::Scene::initializeKernel()
 {
 	iterate(0, isPvInstance, initializePVInstance);
+}
+
+void RBX::Scene::saveStartPVs() /* before run: save each position of everything in the scene */
+{
+	iterate(0, isPvInstance, savePVPosition);
 }
 
 void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)
