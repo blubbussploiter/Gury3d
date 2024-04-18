@@ -21,16 +21,31 @@ namespace RBX
 
 	class Connector : public Instance
 	{
+		friend class SnapConnector;
+	private:
+
+		CoordinateFrame center; // for debug
+
 	public:
 
+		bool isAnchored;
+
 		Primitive* prim0, * prim1;
+		NormalId connectedAt;
 
 		virtual void build() {};
 		virtual void unlink() {};
 
+		bool diagPrimitivesAreTouching();
+
+		void diagRender(RenderDevice* rd);
+		void diagRenderPrimitiveOutlines(RenderDevice* rd);
+
+		CoordinateFrame getInterceptPosition(); // for debug 
+
 		bool connected();
 
-		Connector(Primitive* prim0, Primitive* prim1) : prim0(prim0), prim1(prim1)
+		Connector(Primitive* prim0, Primitive* prim1, NormalId connectedAt) : prim0(prim0), prim1(prim1), connectedAt(connectedAt)
 		{
 		}
 	};
@@ -45,11 +60,24 @@ namespace RBX
 
 		dJointGroupID joints;
 
+		class Experiment
+		{
+		public:
+			static void getKernelWorldContacts();
+			static void buildGlobalJoints();
+		};
+
 		void addConnector(Connector* connector);
 
 		void buildConnectors();
 
 		void buildGlobalJoints();
+
+		/* before build() version, looks through children */
+
+		bool areConnectedUnbuiltPrimitives(Primitive* prim0, Primitive* prim1);
+
+		/* static, after build() version */
 
 		static bool areConnectedPrimitives(Primitive* prim0, Primitive* prim1);
 
@@ -61,9 +89,7 @@ namespace RBX
 
 		static NormalId fromNormal(Vector3 normal);
 
-		static Connector* fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1);
-
-		static void collisionCallback(void* data, dGeomID o1, dGeomID o2);
+		static Connector* fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1, NormalId surface);
 
 		static JointsService* singleton();
 

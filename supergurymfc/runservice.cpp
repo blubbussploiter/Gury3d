@@ -32,6 +32,10 @@ void RBX::RunService::run()
         reset();
         hasStarted = 1;
     }
+    else
+    {
+        restartPvs();
+    }
 
     if (localPlayer)
     {
@@ -40,7 +44,7 @@ void RBX::RunService::run()
 
     if (scriptContext)
     {
-        scriptContext->runScripts();
+        //scriptContext->runScripts();
     }
 
     isRunning = true;
@@ -63,8 +67,8 @@ void RBX::RunService::reset()
 {
     if (!hasStarted)
     {
-        JointsService::singleton()->buildGlobalJoints();
-        JointsService::singleton()->buildConnectors();
+       JointsService::singleton()->buildGlobalJoints();
+       JointsService::singleton()->buildConnectors();
     }
     else
     {
@@ -82,8 +86,9 @@ void RBX::RunService::update()
 
         for (int i = 0; i < 12; i++)
         {
-            Kernel::get()->step(0.015f);
+            Kernel::get()->step();
         }
+
     }
 
     /* reset pvs */
@@ -111,12 +116,27 @@ void RBX::RunService::updateSteppers()
 
 void RBX::RunService::resetPvs()
 {
-    std::vector<Render::Renderable*> scene = Scene::singleton()->getArrayOfObjects();
+    IRenderableArray scene = Scene::singleton()->getArrayOfObjects();
     for (unsigned int i = 0; i < scene.size(); i++)
     {
         PVInstance* pv = toInstance<PVInstance>(scene.at(i));
         if (pv)
+        {
             pv->resetPV();
+        }
+    }
+}
+
+void RBX::RunService::restartPvs()
+{
+    IRenderableArray scene = Scene::singleton()->getArrayOfObjects();
+    for (unsigned int i = 0; i < scene.size(); i++)
+    {
+        PVInstance* pv = toInstance<PVInstance>(scene.at(i));
+        if (pv)
+        {
+            pv->restartPV();
+        }
     }
 }
 

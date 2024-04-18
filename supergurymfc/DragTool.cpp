@@ -22,6 +22,10 @@ void RBX::Studio::DragTool::getAccordingY(ISelectable* s, float& y)
 	y = pos.y + size.y;
 }
 
+void RBX::Studio::DragTool::doGraphics(RenderDevice* rd)
+{
+}
+
 void RBX::Studio::DragTool::doLogic(UserInput* userInput)
 {
 	return;

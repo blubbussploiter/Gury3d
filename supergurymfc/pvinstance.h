@@ -40,7 +40,6 @@ namespace RBX
 	private:
 
 		float elasticity, friction, erp, cfm;
-		float lineWidth, lineHeight;
 		float surfaceAlpha;
 
 		Vector2 cylinderOriginX, cylinderOriginY,
@@ -76,13 +75,26 @@ namespace RBX
 
 		void resetPV()
 		{
-			setCFrame(startPV->position);
-			setVelocity(startPV->velocity.linear);
-			setRotVelocity(startPV->velocity.rotational);
+			pv->position = startPV->position;
+		}
+
+		void restartPV()
+		{
+			pv->position = startPV->position;
+			pv->velocity = startPV->velocity;
+			primitive->modifyPosition(pv->position);
+			if (body)
+			{
+				body->modifyVelocity(pv->velocity);
+			}
 		}
 
 		void savePV()
 		{
+			if (!startPV->position.isIdentity())
+			{
+				return;
+			}
 			startPV->position = getCFrame();
 			startPV->velocity.linear = getVelocity();
 			startPV->velocity.rotational = getRotVelocity();
@@ -149,6 +161,7 @@ namespace RBX
 			if (anchored)
 			{
 				body->detachPrimitive(primitive);
+				primitive->body = 0;
 			}
 			else
 			{
@@ -181,11 +194,12 @@ namespace RBX
 		void setFace(NormalId f, SurfaceType s);
 		void initFace(unsigned int& f,  SurfaceType s);
 
-		virtual void render(RenderDevice* rd);
-		virtual void renderFace(RenderDevice* rd, NormalId face);
+		void render(RenderDevice* rd);
+		void renderFace(RenderDevice* rd, NormalId face);
+		void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
 
-		virtual void renderSurfaces(RenderDevice* rd);
-		virtual void render3DSurfaces(RenderDevice* rd);
+		void renderSurfaces(RenderDevice* rd);
+		void render3DSurfaces(RenderDevice* rd);
 
 		void render3dSurface(RenderDevice* d, NormalId face);
 
@@ -339,6 +353,20 @@ namespace RBX
 		void setERP(float _erp) { erp = _erp; }
 		void initializeForKernel();
 
+		static NormalId getOppositeNormalId(NormalId n)
+		{
+			switch (n)
+			{
+			case TOP: return BOTTOM;
+			case BOTTOM: return TOP;
+			case RIGHT: return LEFT;
+			case LEFT: return RIGHT;
+			case FRONT: return BACK;
+			case BACK: return FRONT;
+			default: return UNDEFINED;
+			}
+		}
+
 		PVInstance();
 
 		RTTR_ENABLE(RBX::Render::Renderable)
@@ -350,5 +378,24 @@ namespace RBX
 		extern void drawLine(Vector2 pos, RenderDevice* d, Color3 color, float width, float height);
 		extern void drawBall(RenderDevice* d, RBX::PVInstance* base);
 		extern void drawCylinder(RenderDevice* d, RBX::PVInstance* base);
+		static void drawOutline(RenderDevice* rd, Vector3 from, Vector3 to, Color3 outline = Color3::cyan(), float offsetSize = 0.1F)
+		{
+
+			Draw::box(Box(Vector3(from.x - offsetSize, from.y + offsetSize, from.z + offsetSize), Vector3(to.x + offsetSize, from.y - offsetSize, from.z - offsetSize)), rd, outline, Color4::clear());
+			Draw::box(Box(Vector3(from.x - offsetSize, to.y + offsetSize, from.z + offsetSize), Vector3(to.x + offsetSize, to.y - offsetSize, from.z - offsetSize)), rd, outline, Color4::clear());
+			Draw::box(Box(Vector3(from.x - offsetSize, to.y + offsetSize, to.z + offsetSize), Vector3(to.x + offsetSize, to.y - offsetSize, to.z - offsetSize)), rd, outline, Color4::clear());
+			Draw::box(Box(Vector3(from.x - offsetSize, from.y + offsetSize, to.z + offsetSize), Vector3(to.x + offsetSize, from.y - offsetSize, to.z - offsetSize)), rd, outline, Color4::clear());
+
+			Draw::box((Box(Vector3(from.x + offsetSize, from.y - offsetSize + 0.1, from.z + offsetSize), Vector3(from.x - offsetSize, to.y + offsetSize - 0.1, from.z - offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(to.x + offsetSize, from.y - offsetSize + 0.1, from.z + offsetSize), Vector3(to.x - offsetSize, to.y + offsetSize - 0.1, from.z - offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(to.x + offsetSize, from.y - offsetSize + 0.1, to.z + offsetSize), Vector3(to.x - offsetSize, to.y + offsetSize - 0.1, to.z - offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(from.x + offsetSize, from.y - offsetSize + 0.1, to.z + offsetSize), Vector3(from.x - offsetSize, to.y + offsetSize - 0.1, to.z - offsetSize))), rd, outline, Color4::clear());
+
+			Draw::box((Box(Vector3(from.x + offsetSize, from.y + offsetSize, from.z - offsetSize), Vector3(from.x - offsetSize, from.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(from.x + offsetSize, to.y + offsetSize, from.z - offsetSize), Vector3(from.x - offsetSize, to.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(to.x + offsetSize, from.y + offsetSize, from.z - offsetSize), Vector3(to.x - offsetSize, from.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
+			Draw::box((Box(Vector3(to.x + offsetSize, to.y + offsetSize, from.z - offsetSize), Vector3(to.x - offsetSize, to.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
+
+		}
 	}
 }

@@ -13,12 +13,9 @@
 #define IDS_TOOLBAR_STANDARD            124
 #define IDS_TOOLBAR_CUSTOMIZE           125
 #define ID_VIEW_CUSTOMIZE               126
-#define IDS_TOOLBAR_TEST                126
-#define ID_TOOLBAR_STUDIOTOOLS          127
 #define ID_TOOLBAR_MOUSE                127
 #define IDR_MAINFRAME                   128
 #define IDR_MAINFRAME_256               129
-#define IDS_CAMERA                      129
 #define IDR_supergurymfcTYPE            130
 #define ID_WINDOW_MANAGER               131
 #define ID_VIEW_FILEVIEW                133
@@ -92,10 +89,8 @@
 #define IDS_GAME_VIEW                   307
 #define IDB_BITMAP1                     316
 #define IDR_TOOLBAR1                    317
-#define IDR_RUNSERVICE                  317
-#define IDR_RUNSERVICEB                 317
 #define IDR_TOOLBAR2                    319
-#define RUNSERVICE                      328
+#define IDR_RUNSERVICE                  328
 #define SERVICES                        335
 #define CAMERA                          338
 #define ID_CLASSINSERT                  1000

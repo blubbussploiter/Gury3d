@@ -13,7 +13,11 @@
 #include "scriptcontext.h"
 
 #include "soundservice.h"
+#include "diagnosticsWorldDrawer.h"
+
 #include "StudioTool.h"
+
+HCURSOR original;
 
 RBX::Datamodel* RBX::Experimental::Application::getDatamodel()
 {
@@ -83,11 +87,11 @@ void RBX::Experimental::Application::onLogic()
 		RBX::Studio::current_Tool->doLogic(userInput);
 	}
 
+	Mouse::getMouse()->update(userInput);
+
 	getCamera()->update(userInput->keyDown(SDL_RIGHT_MOUSE_KEY));
 	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
 	RBX::Network::getPlayers()->onStep();
-
-	RBX::Mouse::getMouse()->update(userInput);
 
 	RBX::ControllerService::singleton()->updateControllers(userInput);
 	RBX::Selection::update(userInput);
@@ -116,10 +120,14 @@ void RBX::Experimental::Application::onKillFocus()
 
 void RBX::Experimental::Application::onInit()
 {
+	Diagnostics::get_Renderer()->diagnostics_enabled = false;
+
 	RBX::StandardOut::print(RBX::MESSAGE_INFO, "Application::onInit()");
-	
 	RBX::AppManager::singleton()->initOneTimeAppliances();
+
 	setWindowLong();
+
+	original = GetCursor();
 
 	getCamera();
 	getDatamodel();
@@ -139,7 +147,11 @@ void RBX::Experimental::Application::onInit()
 
 void RBX::Experimental::Application::onGraphics()
 {
-	RBX::View::singleton()->oneFrame(renderDevice, getCamera(), sky);
+	View::singleton()->oneFrame(renderDevice, getCamera(), sky);
+
+	renderDevice->push2D();
+	Diagnostics::get_Renderer()->render2D(renderDevice);
+	renderDevice->pop2D();
 }
 
 void RBX::Experimental::Application::mainProcessStep()

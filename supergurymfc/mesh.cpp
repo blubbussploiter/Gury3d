@@ -114,6 +114,11 @@ void RBX::Render::SpecialMesh::renderWedgeFace(NormalId face)
 	}
 }
 
+void RBX::Render::SpecialMesh::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
+{
+	renderFace(rd, face);
+}
+
 void RBX::Render::SpecialMesh::renderFace(RenderDevice* d, NormalId face)
 {
 	switch (meshType)

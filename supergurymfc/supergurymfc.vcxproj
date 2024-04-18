@@ -202,6 +202,7 @@
     <ClInclude Include="CCommandBar.h" />
     <ClInclude Include="cframebridge.h" />
     <ClInclude Include="CInsertObjectDlg.h" />
+    <ClInclude Include="diagnosticsWorldDrawer.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="DragTool.h" />
     <ClInclude Include="effectsetting.h" />
@@ -272,8 +273,10 @@
     <ClCompile Include="CInsertObjectDlg.cpp" />
     <ClCompile Include="connector.cpp" />
     <ClCompile Include="contentprovider.cpp" />
+    <ClCompile Include="diagnosticsWorldDrawer.cpp" />
     <ClCompile Include="DragTool.cpp" />
     <ClCompile Include="effectsetting.cpp" />
+    <ClCompile Include="exp_jointsService.cpp" />
     <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="iobfix.cpp" />
     <ClCompile Include="IRenderable.cpp" />

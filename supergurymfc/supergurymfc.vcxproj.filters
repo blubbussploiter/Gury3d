@@ -474,6 +474,9 @@
     <ClInclude Include="DragTool.h">
       <Filter>Header Files\studio\tools</Filter>
     </ClInclude>
+    <ClInclude Include="diagnosticsWorldDrawer.h">
+      <Filter>Header Files\game\rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="networkclient.cpp">
@@ -853,6 +856,12 @@
     </ClCompile>
     <ClCompile Include="StudioTool.cpp">
       <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="diagnosticsWorldDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="exp_jointsService.cpp">
+      <Filter>Source Files\rbx\game\physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -34,7 +34,7 @@ namespace RBX
 		template <typename IgnoredItem>
 		inline RBX::ISelectable* getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
 		{
-			std::vector<RBX::Render::Renderable*> instances;
+			IRenderableArray instances;
 			RBX::ISelectable* part = 0;
 			float nearest = inf();
 
@@ -42,7 +42,7 @@ namespace RBX
 
 			for (unsigned int i = 0; i < instances.size(); i++)
 			{
-				RBX::Instance* instance = dynamic_cast<RBX::Instance*>(instances.at(i));
+				RBX::Instance* instance = toInstance<RBX::Instance>(instances.at(i));
 				RBX::PVInstance* child = toInstance<PVInstance>(instance);
 
 				if (child)

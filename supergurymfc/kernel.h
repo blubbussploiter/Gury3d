@@ -5,6 +5,7 @@
 namespace RBX
 {
 	/* Rigidbody based physics engine ALTHOUGH, relies on Primitives for seperation of Primitives from Bodies */
+
 	class Kernel 
 	{
 	public:
@@ -15,11 +16,15 @@ namespace RBX
 		dSpaceID space;
 		dJointGroupID contacts;
 
+		void diag_renderObjects(RenderDevice* rd);
+
 		void addPrimitive(Primitive* primitive);
 
 		void removePrimitive(Primitive* primitive);
 
-		void step(float stepSize);
+		void step();
+
+		void afterStep();
 
 		static void collisionCallback(void* data, dGeomID o1, dGeomID o2);
 
@@ -27,6 +32,7 @@ namespace RBX
 
 		Kernel()
 		{
+
 			world = dWorldCreate();
 			space = dHashSpaceCreate(0);
 			contacts = dJointGroupCreate(0);
@@ -35,10 +41,9 @@ namespace RBX
 			dWorldSetAutoDisableFlag(world, 1);
 			dWorldSetAutoDisableLinearThreshold(world, 0.5f);
 			dWorldSetAutoDisableAngularThreshold(world, 0.5f);
-			dWorldSetContactSurfaceLayer(world, 0.00001f);
-			dWorldSetCFM(world, 1^-10);
-			dWorldSetERP(world, 0.8f);
 			dWorldSetAutoDisableSteps(world, 20);
+			dWorldSetCFM(world, 1^-5);
+			dWorldSetERP(world, 0.8f);
 		}
 	};
 }

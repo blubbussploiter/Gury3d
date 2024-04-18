@@ -5,60 +5,19 @@
 
 #include "scene.h"
 
-void RBX::JointsService::collisionCallback(void* data, dGeomID o1, dGeomID o2)
-{
-	dContact contact[4];
-	RBX::PVInstance* pv0, * pv1;
-
-	int i;
-	int numc = dCollide(o1, o2, 0, &contact[0].geom, sizeof(dContactGeom));
-
-	pv0 = static_cast<PVInstance*>(dGeomGetData(o1));
-	pv1 = static_cast<PVInstance*>(dGeomGetData(o2));
-
-	if (!pv0 || !pv1)
-	{
-		return;
-	}
-
-	if (numc > 0)
-	{
-		for (i = 0; i < numc; i++)
-		{
-			NormalId n0, n1;
-
-			dReal* normal = contact[i].geom.normal;
-
-			n0 = fromNormal(Vector3(normal[0], normal[1], normal[2]));
-			n1 = fromNormal(Vector3(-normal[0], -normal[1], -normal[2]));
-
-			SurfaceType s0, s1;
-			s0 = pv0->getSurface(n0);
-			s1 = pv1->getSurface(n1);
-
-			Linkage link = makeLinkage(s0, s1);
-
-			if(link != NotLinked)
-			{
-				JointsService::singleton()->addConnector(fromLinkageAndPrimitives(link, pv0->primitive, pv1->primitive));
-			}
-		}
-	}
-
-}
-
-RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1)
+RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1, NormalId surface)
 {
 	switch (linkage)
 	{
 	case Motored:
 	{
-		return new MotorConnector(prim0, prim1);
+		return new MotorConnector(prim0, prim1, surface);
 	}
 	case Welded:
+	case Glued:
 	case Snapped:
 	{
-		return new SnapConnector(prim0, prim1);
+		return new SnapConnector(prim0, prim1, surface);
 	}
 	}
 	return 0;
@@ -83,9 +42,31 @@ RBX::NormalId RBX::JointsService::fromNormal(Vector3 normal)
 
 bool RBX::JointsService::areConnectedPrimitives(Primitive* prim0, Primitive* prim1)
 {
+
 	if (!prim0->geom[0] || !prim1->geom[0]) return false;
 	if (!bodyIsConnector(prim0->body) || !bodyIsConnector(prim1->body)) return false;
 	return dGeomGetBody(prim0->geom[0]) == dGeomGetBody(prim1->geom[0]);
+}
+
+
+bool RBX::JointsService::areConnectedUnbuiltPrimitives(Primitive* prim0, Primitive* prim1)
+{
+
+	/* before build(), compare prim0 and prim1 */
+
+	for (unsigned int i = 0; i < connectors.size(); i++)
+	{
+		Connector* connector = connectors[i];
+		if (connector)
+		{
+			if (connector->prim0 == prim0 && connector->prim1 == prim1 ||
+				connector->prim0 == prim1 && connector->prim1 == prim0)
+				return true;
+		}
+	}
+
+	return false;
+
 }
 
 bool RBX::JointsService::areConnectedBodies(Body* body0, Body* body1)
@@ -106,13 +87,14 @@ RBX::Linkage RBX::JointsService::makeLinkage(SurfaceType s0, SurfaceType s1)
 	if ((s0 == Studs || s1 == Studs) && (s0 == Inlet || s1 == Inlet)) return Snapped;
 	if (s0 == Motor || s1 == Motor) return Motored;
 	if (s0 == Weld || s1 == Weld) return Welded;
+	if (s0 == Glue || s1 == Glue) return Glued;
 	return NotLinked;
 }
 
 void RBX::JointsService::addConnector(Connector* connector)
 {
 	if (!connector) return;
-	if (areConnectedPrimitives(connector->prim0, connector->prim1)) return;
+	if (areConnectedUnbuiltPrimitives(connector->prim0, connector->prim1)) return;
 	connectors.push_back(connector);
 }
 
@@ -131,7 +113,7 @@ void RBX::JointsService::buildConnectors()
 
 void RBX::JointsService::buildGlobalJoints()
 {
-	dSpaceCollide(Kernel::get()->space, 0, &JointsService::collisionCallback);
+	Experiment::buildGlobalJoints();
 }
 
 RBX::JointsService* RBX::JointsService::singleton()

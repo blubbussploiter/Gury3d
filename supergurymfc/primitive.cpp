@@ -105,6 +105,7 @@ void RBX::Primitive::createPrimitive(RBX::Shape primitive, Vector3 size)
 	if (geom[0]) return;
 
 	this->shape = primitive;
+	this->size = size;
 
 	switch (shape)
 		{
@@ -142,9 +143,9 @@ void RBX::Primitive::step()
 	}
 
 	position = dGeomGetPosition(geom[0]);
-	coord.translation = Vector3(position[0], position[1], position[2]);
-
 	rotation = dGeomGetRotation(geom[0]);
+	
+	coord.translation = Vector3(position[0], position[1], position[2]);
 	coord.rotation = Matrix3(rotation[0], rotation[1], rotation[2],
 		rotation[4], rotation[5], rotation[6],
 		rotation[8], rotation[9], rotation[10]);

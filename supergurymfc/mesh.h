@@ -77,7 +77,8 @@ namespace RBX
 
 			void setMeshId(Content meshId);
 			Content getMeshId() { return meshId; }
-
+			
+			void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
 			void renderFace(RenderDevice* d, NormalId face);
 			void render(RenderDevice* d);
 

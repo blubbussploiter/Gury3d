@@ -9,11 +9,13 @@
 namespace RBX
 {
 
+	typedef std::vector<RBX::Render::Renderable*> IRenderableArray;
+
 	class Scene : public RBX::Instance
 	{
 	public:
 
-		std::vector<RBX::Render::Renderable*> renderObjects;
+		IRenderableArray renderObjects;
 
 		void onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent);
 		void onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent);

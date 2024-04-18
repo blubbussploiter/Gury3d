@@ -6,10 +6,12 @@
 #include "framework.h"
 #include "supergurymfc.h"
 
+#include "ChildFrm.h"
 #include "MainFrm.h"
 
 #include "appmanager.h"
 #include "StudioTool.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,6 +39,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_VS_2005, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_UPDATE_COMMAND_UI(AFX_IDP_SQL_NO_POSITIONED_UPDATES, &CMainFrame::OnUpdateCommandId)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &CMainFrame::OnUpdateToolbarButton)
+	ON_UPDATE_COMMAND_UI(ID_TILT, &CMainFrame::OnUpdateLookAtButton)
+	ON_UPDATE_COMMAND_UI(ID_ROTATE, &CMainFrame::OnUpdateLookAtButton)
+	ON_UPDATE_COMMAND_UI(ID_MOVE_UP, &CMainFrame::OnUpdateLookAtButton)
+	ON_UPDATE_COMMAND_UI(ID_MOVE_DOWN, &CMainFrame::OnUpdateLookAtButton)
 	ON_UPDATE_COMMAND_UI(IDR_RUN, &CMainFrame::OnUpdateRunServiceIsntRunningButton)
 	ON_UPDATE_COMMAND_UI(IDR_PAUSE, &CMainFrame::OnUpdateRunServiceIsRunningButton)
 	ON_UPDATE_COMMAND_UI(IDR_RESET, &CMainFrame::OnUpdateRunServiceIsRunningOrPausedButton)
@@ -62,6 +68,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_ZOOM_IN, &CMainFrame::OnUpdateToolbarButton)
 	ON_UPDATE_COMMAND_UI(ID_LOOKAT, &CMainFrame::OnUpdateLookAtButton)
 	ON_UPDATE_COMMAND_UI(ID_ZOOM_EXTENTS, &CMainFrame::OnUpdateToolbarButton)
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -117,81 +124,32 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 
-	if (!m_wndRunServiceTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndRunServiceTools.LoadToolBar(RUNSERVICE))
+	m_wndMainTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, "Standard");
+	m_wndMainTools.SetWindowText("Standard");
+
+	if (!m_wndRunServiceTools.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | CBRS_TOP
+		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) || !m_wndRunServiceTools.LoadToolBar(IDR_RUNSERVICE))
 	{
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
 	}
-
-	if (!m_wndStudioTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndStudioTools.LoadToolBar(SERVICES))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
-	}
-
-	if (!m_wndCameraTools.CreateEx(this, TBSTYLE_TOOLTIPS, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndCameraTools.LoadToolBar(CAMERA))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
-	}
-
-	CString strToolBarName;
-	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
-	ASSERT(bNameValid);
-
-	CString strRunServiceToolbarName;
-	bNameValid = strRunServiceToolbarName.LoadString(IDS_TOOLBAR_TEST);
-	ASSERT(bNameValid);
-
-	CString strMouseName;
-	bNameValid = strMouseName.LoadString(ID_TOOLBAR_MOUSE);
-	ASSERT(bNameValid);
-
-	CString strCameraName;
-	bNameValid = strCameraName.LoadString(IDS_CAMERA);
-	ASSERT(bNameValid);
-
-	CString strCustomize;
-	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
-	ASSERT(bNameValid);
-
-	//m_wndMainTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
-	m_wndMainTools.SetWindowText(strToolBarName);
-
-	//m_wndRunServiceTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize); 
-	m_wndRunServiceTools.SetWindowText(strRunServiceToolbarName);
-
-	//m_wndStudioTools.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
-	m_wndStudioTools.SetWindowText(strMouseName);
-
-	m_wndCameraTools.SetWindowText(strCameraName);
-
-	// Allow user-defined toolbars operations:
-	//InitUserToolbars(nullptr, uiFirstUserToolBarId, uiLastUserToolBarId);
 
 	if (!m_wndStatusBar.Create(this))
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
-	} 
+	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	// TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
+	EnableDocking(CBRS_ALIGN_ANY);
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndMainTools.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndRunServiceTools.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndStudioTools.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndCameraTools.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndMenuBar);
 	DockPane(&m_wndMainTools);
 	DockPane(&m_wndRunServiceTools);
-	DockPane(&m_wndStudioTools);
-	DockPane(&m_wndCameraTools);
-
+	 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
 	// enable Visual Studio 2005 style docking window auto-hide behavior
@@ -218,7 +176,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
 
 	// Enable toolbar and docking window menu replacement
-	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
+	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, "Customize", ID_VIEW_TOOLBAR);
 
 	// enable menu personalization (most-recently used commands)
 	// TODO: define your own basic commands, ensuring that each pulldown menu has at least one basic command.
@@ -227,6 +185,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_FILE_NEW);
 	lstBasicCommands.AddTail(ID_FILE_OPEN);
 	lstBasicCommands.AddTail(ID_FILE_SAVE);
+	lstBasicCommands.AddTail(IDR_RUN);
+	lstBasicCommands.AddTail(IDR_PAUSE);
+	lstBasicCommands.AddTail(IDR_RESET);
 	lstBasicCommands.AddTail(ID_APP_EXIT);
 	lstBasicCommands.AddTail(ID_EDIT_CUT);
 	lstBasicCommands.AddTail(ID_EDIT_PASTE);
@@ -578,4 +539,10 @@ void CMainFrame::OnUpdateStudioToolsButton(CCmdUI* pCmdUI)
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CMDIFrameWndEx::OnSize(nType, cx, cy);
+}
+
+
+BOOL CMainFrame::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	return CMDIFrameWndEx::OnSetCursor(pWnd, nHitTest, message);
 }

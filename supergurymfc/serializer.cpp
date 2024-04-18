@@ -13,6 +13,8 @@
 #include "classes.h"
 #include "content.h"
 
+#include "part.h"
+
 rapidxml::xml_document<> doc;
 static std::map<std::string, int> xml_tokens =
 {
@@ -225,6 +227,13 @@ RBX::Instance* readInstance(rapidxml::xml_node<>* instanceNode, RBX::Instance* p
 		{
 			std::string className = classAttr->value();
 			inst = RBX::fromName(className);
+
+			if (RBX::IsA<RBX::PartInstance>(inst)) /* no default studs, since empty surfaces means smooth */
+			{
+				RBX::PartInstance* part = RBX::toInstance<RBX::PartInstance>(inst);
+				part->setTopSurface(RBX::Smooth);
+				part->setBottomSurface(RBX::Smooth);
+			}
 
 			if (inst)
 			{

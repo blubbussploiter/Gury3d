@@ -36,20 +36,15 @@ void RBX::SnapConnector::build()
 	connector0 = getConnectingSnap(prim0);
 	connector1 = getConnectingSnap(prim1);
 
-	isAnchored = (body0 == 0) || (body1 == 0) ||
-				 (connector0 && connector0->isAnchored) || (connector1 && connector1->isAnchored);
-
 	if (connector0)
 	{
 		connector = connector0->connector;
 		copyArray(connector0->primitives, primitives);
-		connector0->primitives = primitives;
 	}
 	else if (connector1 && !connector)
 	{
 		connector = connector1->connector;
 		copyArray(connector1->primitives, primitives);
-		connector1->primitives = primitives;
 	}
 
 	else if (!connector)
@@ -86,6 +81,7 @@ void RBX::SnapConnector::build()
 			
 			connector->modifyPosition(pos);
 			connector->modifyMass(mass0);
+
 		}
 	}
 
@@ -94,16 +90,21 @@ void RBX::SnapConnector::build()
 
 	if (connector)
 	{
-		if (!isAnchored)
+		for (int i = 0; i < primitives->size(); i++)
 		{
-			for (int i = 0; i < primitives->size(); i++)
-			{
-				Primitive* prim = (*primitives)[i];
+			Primitive* prim = (*primitives)[i];
 
+			if (prim0->body != 0 && prim1->body != 0)
+			{
 				connector->attachPrimitive(prim);
 				prim->modifyOffsetWorldCoordinateFrame(prim->pv->position);
-
 			}
+			else
+			{
+				prim->body = 0;
+				connector->detachPrimitive(prim);
+			}
+
 		}
 		connector->modifyUserdata(this);
 	}
@@ -114,8 +115,6 @@ void RBX::SnapConnector::unlink()
 {
 	if (!connector || !prim0->geom[0] || !prim1->geom[0]) return;
 
-	RBX::StandardOut::print(RBX::MESSAGE_INFO, "yeah man");
-		
 	connector->detachPrimitive(prim0);
 	connector->detachPrimitive(prim1);
 	connector->destroyBody();

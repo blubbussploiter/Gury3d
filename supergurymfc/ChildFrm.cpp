@@ -62,6 +62,7 @@ END_MESSAGE_MAP()
 CChildFrame::CChildFrame() noexcept
 {
 	// TODO: add member initialization code here
+	isChildFrame = 1;
 }
 
 CChildFrame::~CChildFrame()

@@ -209,6 +209,5 @@ void RBX::Body::detachPrimitive(Primitive* primitive)
 	if (primitive->geom[0])
 	{
 		dGeomSetBody(primitive->geom[0], 0);
-		primitive->body = 0;
 	}
 }

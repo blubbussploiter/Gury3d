@@ -19,6 +19,8 @@ protected:
 
 public:
 
+	bool isChildFrame;
+
 	RBX::Experimental::Application* application;
 
 	// Operations

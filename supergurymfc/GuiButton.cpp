@@ -21,7 +21,7 @@ void RBX::Gui::GuiButton::render(RenderDevice* d)
 	bounds = singleton()->font->get2DStringBounds(title);
 
 	right = Vector2(((end.x - (size.x))+5)+titleOff.x, (position.y)+titleOff.y);
-	boxColor = Color4(0.5f, 0.5f, 0.5f, 0.3f);
+	boxColor = renderColor;
 
 	if (hovered && !disabled)
 		boxColor = hoverColor;

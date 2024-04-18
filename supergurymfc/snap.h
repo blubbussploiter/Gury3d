@@ -12,8 +12,6 @@ namespace RBX
 		Body* body0, *body1;
 		Body* connector;
 
-		bool isAnchored;
-
 	public:
 
 		SnapConnector* getConnectingSnap(Primitive* prim);
@@ -21,7 +19,7 @@ namespace RBX
 		void build();
 		void unlink();
 
-		SnapConnector(Primitive* prim0, Primitive* prim1) : Connector(prim0, prim1)
+		SnapConnector(Primitive* prim0, Primitive* prim1, NormalId connectedAt) : Connector(prim0, prim1, connectedAt)
 		{
 			primitives = new Array<Primitive*>();
 			setClassName("Snap");

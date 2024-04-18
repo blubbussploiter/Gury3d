@@ -86,8 +86,6 @@ namespace RBX
 
 			void resume()
 			{
-				//getDatamodel()->emptyExplorerWindow();
-				//getDatamodel()->fillExplorerWindow();
 				isThinking = true;
 			}
 

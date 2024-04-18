@@ -11,6 +11,7 @@ namespace RBX
 		{
 		public:
 			void getAccordingY(ISelectable* s, float& y);
+			void doGraphics(RenderDevice* rd);
 			void doLogic(UserInput* userInput);
 		};
 	}

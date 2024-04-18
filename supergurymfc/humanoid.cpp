@@ -13,8 +13,6 @@
 RBX::Sound* whoosh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/button.wav"));
 RBX::Sound* uuhhh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/uuhhh.wav"));
 RBX::Sound* bsls_steps = RBX::Sound::fromFile(GetFileInPath("/content/sounds/bfsl-minifigfoots1.mp3"), 1);
-
-#define humanoid_max_torque 4e+005
  
 RTTR_REGISTRATION
 {
@@ -82,19 +80,19 @@ void RBX::Humanoid::buildJoints()
     snap(humanoidRootPart, getRightLeg());
     snap(humanoidRootPart, getLeftLeg());
 
-    getRightLeg()->setCanCollide(1);
-    getLeftLeg()->setCanCollide(1);
+    getRightArm()->setCanCollide(0);
+    getLeftArm()->setCanCollide(0);
+    getRightLeg()->setCanCollide(0);
+    getLeftLeg()->setCanCollide(0);
 }
 
 bool RBX::Humanoid::isFalling()
 {
-    //return (humanoidRootPart->body->body->getLinearVelocity().y() <= -0.1);
     return 0;
 }
 
 bool RBX::Humanoid::isInAir()
 {
-   //return (humanoidRootPart->body->_body->getLinearVelocity().y() > 0.1);
     return 0;
 }
 
@@ -153,8 +151,7 @@ void RBX::Humanoid::setWalkDirection(Vector3 value)
 
 void RBX::Humanoid::snap(PVInstance* p0, PVInstance* p1)
 {
-    if (!p0 || !p1) return;
-    SnapConnector* snap = new SnapConnector(p0->primitive, p1->primitive);
+    SnapConnector* snap = new SnapConnector(p0->primitive, p1->primitive, UNDEFINED);
     snap->build();
 }
 
@@ -187,66 +184,26 @@ void RBX::Humanoid::jumpTimeStep()
 
 void RBX::Humanoid::turn()
 {
-    CoordinateFrame origin = humanoidRootPart->getCFrame(), frame = origin;
 
-    frame.lookAt(origin.translation + walkDirection);
-
-    float Y;
-    frame.rotation.toAxisAngle(Vector3(0, 1, 0), Y);
-
-    walkRotationVelocity = Vector3(0, Y / 2, 0);
 }
  
 void RBX::Humanoid::balance() /* mainly taken from decompiled BodyGyro code (from WebService.dll) */
 {
-    Vector3 torqueBody;
-    Vector3 oldTorqueWorld;
-    Vector3 p_torque;
+    Vector3 linearVelocity, angularVelocity;
+    Vector3 moment;
 
-    Body* mainBody;
+    linearVelocity = humanoidRootPart->getVelocity();
+    angularVelocity = humanoidRootPart->getRotVelocity();
 
-    mainBody = humanoidRootPart->getBody();
-    if (mainBody)
-    {
-        p_torque = mainBody->getTorque();
-    }
-    else
-    {
-        p_torque = Vector3::zero();
-    }
-    oldTorqueWorld = p_torque;
-    torqueBody = mainBody->pv->position.upVector();
+    Body* body = humanoidRootPart->getBody();
 
-    Matrix3 transpose = mainBody->pv->position.rotation.transpose();
-
-    float kP = mainBody->pv->velocity.linear.magnitude(); /* spitballing here */
-    
-    float localYAxis_4 = transpose[0][0] * torqueBody.y + transpose[0][2] * oldTorqueWorld.x + transpose[0][1] * torqueBody.z;
-
-    torqueBody = Math::toDiagonal(mainBody->getMoment());
-
-    float desiredTorqueX = torqueBody.x * torqueBody.y * kP;
-    float localYAxis = -(oldTorqueWorld.x * localYAxis_4 * kP);
-
-    torqueBody.x = oldTorqueWorld.x * transpose[2][2] + oldTorqueWorld.z * transpose[2][1] + oldTorqueWorld.y * transpose[2][0];
-    torqueBody.y = transpose[0][0] * oldTorqueWorld.y + transpose[0][2] * oldTorqueWorld.x + transpose[0][1] * p_torque.z;
-    torqueBody.z = oldTorqueWorld.x * transpose[1][2] + p_torque.z * transpose[1][1] + oldTorqueWorld.y * transpose[1][0];
-     
-    float f = fabs(desiredTorqueX - torqueBody.y);
-    float v;
-
-    Vector3 d = Math::toDiagonal(mainBody->getMoment());
-
-    if (d.x * humanoid_max_torque <= f)
-        v = oldTorqueWorld.x + localYAxis;
-    else
-        v = localYAxis;
-
-
+    Vector3 v = -angularVelocity * moment;
+    dBodySetAngularVel(body->body, v.x, v.y, v.z);
 }
 
 void RBX::Humanoid::onStep()
 {
+    /*
     if (!limbsCheck()) return;
 
     jumpTimeStep();
@@ -260,14 +217,10 @@ void RBX::Humanoid::onStep()
         health = 0;
     }
 
-    balance();
-
     updateHumanoidState();
-
 
     //get_up();
 
-    /*
     switch (walkMode)
     {
     case DIRECTION_MOVE:

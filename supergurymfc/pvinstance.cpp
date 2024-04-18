@@ -53,6 +53,20 @@ void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
     glVertex(v3);
 }
 
+void drawFaceTwoOooOoOOoOoO(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+{
+    glNormal((v0 - v1).cross(v0 - v2).direction());
+
+    glTexCoord2d(uv.x, 0);
+    glVertex(v0);
+    glTexCoord2d(0, 0);
+    glVertex(v1);
+    glTexCoord2d(0, uv.y);
+    glVertex(v2);
+    glTexCoord2d(uv.x, uv.y);
+    glVertex(v3);
+}
+
 void RBX::PVInstance::setFace(NormalId f, SurfaceType s)
 {
     switch (f)
@@ -181,8 +195,7 @@ void RBX::PVInstance::render(RenderDevice* d)
         case cylinder:
         {
             RBX::Primitives::drawCylinder(d, this);
-            drawCylinderPluses(d);
-
+           // drawCylinderPluses(d);
             break;
         }
         }
@@ -257,12 +270,84 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
 
 }
 
+void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
+{
+    Vector2 uv(1, 1);
+
+    glBegin(GL_QUADS);
+
+    switch (face)
+    {
+    case NormalId::TOP:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(-size.x, size.y, size.z),
+            Vector3(size.x, size.y, size.z));
+        break;
+    }
+    case NormalId::BOTTOM:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, -size.y, size.z),
+            Vector3(-size.x, -size.y, size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(size.x, -size.y, -size.z));
+        break;
+    }
+    case NormalId::FRONT:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, size.y, size.z),
+            Vector3(-size.x, size.y, size.z),
+            Vector3(-size.x, -size.y, size.z),
+            Vector3(size.x, -size.y, size.z));
+        break;
+    }
+    case NormalId::BACK:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(size.x, size.y, -size.z));
+        break;
+    }
+    case NormalId::LEFT:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(-size.x, size.y, size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, size.z));
+        break;
+    }
+    case NormalId::RIGHT:
+    {
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, size.y, -size.z),
+            Vector3(size.x, size.y, size.z),
+            Vector3(size.x, -size.y, size.z),
+            Vector3(size.x, -size.y, -size.z));
+        break;
+    }
+    }
+
+    glEnd();
+
+}
+
 void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 {
-    float radius, axis;
+    float radius, axis, magnitude;
 
     radius = getSize().x;
     axis = getSize().y;
+
+    magnitude = getSize().magnitude();
+
+    float lineWidth = magnitude * 0.1f, lineHeight = magnitude * 0.25f;
     
     glPushMatrix();
     glRotatef(-90.0, 0.0, 1.0, 0.0);
@@ -272,11 +357,8 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 
     glTranslatef(0.0f, 0.0f, 0.01f);
 
-    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, lineWidth);
-    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, -lineWidth);
-   
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, lineHeight);
+
     glTranslatef(0.0f, 0.0f, -0.01f);
 
     glRotatef(180.0, 0.0, 1.0, 0.0);
@@ -284,10 +366,7 @@ void RBX::PVInstance::drawCylinderPluses(RenderDevice* d)
 
     glTranslatef(0.0f, 0.0f, 0.01f);
 
-    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, -lineHeight);
-    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, lineWidth);
-    RBX::Primitives::drawLine(cylinderOriginY, d, CROSS, -lineHeight, -lineWidth);
+    RBX::Primitives::drawLine(cylinderOriginX, d, CROSS, -lineWidth, lineHeight);
     
     glTranslatef(0.0f, 0.0f, -0.01f);
     glPopMatrix();
@@ -314,16 +393,10 @@ float RBX::getAffectedFormFactor(RBX::PVInstance* pv)
 
 void RBX::PVInstance::calculateCylinderOffsets()
 {
-    float radius, scale;
-    Vector3 size = getSize();
 
-    scale = size.z * 0.5f;
+    cylinderOriginX.y = getSize().magnitude() / 4;
+    cylinderOriginY.x = getSize().magnitude() / 4;
 
-    cylinderOriginX = Vector2(0, scale / 2);
-    cylinderOriginY = Vector2(scale / 2, 0);
-
-    lineWidth = scale;
-    lineHeight = scale;
 }
 
 void RBX::PVInstance::calculateUvs()
@@ -416,7 +489,6 @@ void RBX::PVInstance::initializeForKernel()
 
     if (!body->created())
     {
-
         body->createBody(size);
         primitive->createPrimitive(shape, size);
 
@@ -427,7 +499,6 @@ void RBX::PVInstance::initializeForKernel()
         setCanCollide(getCanCollide());
 
         Kernel::get()->addPrimitive(primitive);
-
     }
 }
 

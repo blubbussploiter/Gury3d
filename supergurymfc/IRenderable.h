@@ -23,8 +23,12 @@ namespace RBX
 
 			virtual void render(RenderDevice* rd) {};
 			virtual void renderSurfaces(RenderDevice* rd) {};
+
 			virtual void render3DSurfaces(RenderDevice* rd) {};
 			virtual void renderFace(RenderDevice* rd, NormalId face) {};
+
+			/* renderface but with (preferably) different uv mapping */
+			virtual void renderFaceFitForDecal(RenderDevice* rd, NormalId face) {};
 
 			virtual ~Renderable() {}
 			Renderable() 

@@ -15,21 +15,25 @@ void RBX::Kernel::removePrimitive(Primitive* primitive)
 	objects.remove(objects.findIndex(primitive));
 }
 
-void RBX::Kernel::step(float stepSize)
+void RBX::Kernel::step()
 {
 	/* ODE STUFF */
 
 	dJointGroupEmpty(contacts);
 	dSpaceCollide(space, 0, &Kernel::collisionCallback);
-	dWorldQuickStep(world, stepSize);
+	dWorldQuickStep(world, 0.01f);
 
+	Kernel::get()->afterStep();
+}
+
+void RBX::Kernel::afterStep()
+{
 	/* GURY STUFF -> STEP BODIES */
 
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->step();
 	}
-
 }
 
 void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
@@ -54,7 +58,7 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 
 			// Define contact surface properties
 
-			contact[i].surface.bounce = 0.8f; //Elasticity
+			contact[i].surface.bounce = 0.5f; //Elasticity
 			contact[i].surface.mu = 0.3f; //Friction
 			contact[i].surface.slip1 = 0.0f;
 			contact[i].surface.slip2 = 0.0f;
@@ -69,6 +73,25 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 			dJointAttach(c, b1, b2);
 		}
 
+	}
+}
+
+void RBX::Kernel::diag_renderObjects(RenderDevice* rd)
+{
+	float radius = 0.5f;
+	Color3 color = Color3::blue();
+
+	for (unsigned int i = 0; i < objects.size(); i++)
+	{
+		Primitive* primitive = objects[i];
+		if (primitive)
+		{
+			if (primitive->body)
+			{
+				const dReal* center = dBodyGetPosition(primitive->body->body);
+				Draw::sphere(Sphere(Vector3(center[0], center[1], center[2]), radius), rd, color, Color4::clear());
+			}
+		}
 	}
 }
 

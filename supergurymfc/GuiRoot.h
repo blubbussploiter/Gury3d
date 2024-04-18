@@ -81,7 +81,7 @@ namespace RBX
 
 			std::string title;
 
-			Color4 titleColor, hoverColor, disabledColor, clickedColor;
+			Color4 titleColor, hoverColor, disabledColor, clickedColor, renderColor;
 			Vector2 titleOff;
 
 			float sz;
@@ -101,6 +101,7 @@ namespace RBX
 				titleColor = Color4(0.25f, 0.25f, 0.25f, 0.95f);
 				hoverColor = Color4(0.6f, 0.6f, 0.6f, 0.3f);
 				disabledColor = Color4(0.6f, 0.6f, 0.6f, 0.6f);
+				renderColor = Color4(0.5f, 0.5f, 0.5f, 0.3f);;
 				clickedColor = hoverColor;
 			}
 		};

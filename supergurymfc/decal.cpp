@@ -68,7 +68,16 @@ void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalI
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
-    pv->renderFace(d, face);
+
+    if (repeat)
+    {
+        pv->renderFace(d, face);
+    }
+    else
+    {
+        pv->renderFaceFitForDecal(d, face);
+    }
+
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 

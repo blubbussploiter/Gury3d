@@ -126,7 +126,7 @@ IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
-RUNSERVICE              BITMAP                  "res\\runservice.bmp"
+IDR_RUNSERVICE          BITMAP                  "res\\runservice.bmp"
 
 SERVICES                BITMAP                  "res\\services.bmp"
 
@@ -172,7 +172,7 @@ BEGIN
     BUTTON      ID_MOTOR
 END
 
-RUNSERVICE TOOLBAR 16, 16
+IDR_RUNSERVICE TOOLBAR 16, 16
 BEGIN
     BUTTON      IDR_RUN
     BUTTON      IDR_PAUSE
@@ -456,7 +456,6 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "supergurymfc"
-    IDS_CAMERA              "Camera"
     IDR_supergurymfcTYPE    "\nsupergurymfc\nsupergurymfc\n\n\nsupergurymfc.Document\nsupergurymfc.Document"
     ID_WINDOW_MANAGER       "&Windows..."
 END
@@ -572,7 +571,6 @@ BEGIN
     IDS_STATUS_PANE2        "Pane 2"
     IDS_TOOLBAR_STANDARD    "Standard"
     IDS_TOOLBAR_CUSTOMIZE   "Customize..."
-    IDS_TOOLBAR_TEST        "Test"
     ID_TOOLBAR_MOUSE        "Mouse"
 END
 

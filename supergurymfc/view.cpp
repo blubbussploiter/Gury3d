@@ -7,6 +7,7 @@
 #include "datamodel.h"
 #include "selection.h"
 
+#include "diagnosticsWorldDrawer.h"
 #include "StudioTool.h"
 
 RBX::View* rbx_view;
@@ -121,9 +122,12 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 		RBX::Studio::current_Tool->doGraphics(renderDevice);
 	}
 
-	RBX::Selection::renderSelection(renderDevice);
+	Diagnostics::get_Renderer()->preRender(renderDevice);
+	Selection::renderSelection(renderDevice);
 
 	renderScene(renderDevice);
+
+	Diagnostics::get_Renderer()->render(renderDevice);
 
 	if (!sky.isNull())
 	{
@@ -142,7 +146,7 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	datamodel->guiRoot->render(renderDevice);
 	datamodel->message->render(renderDevice);
 
-	RBX::Selection::renderDragBox(renderDevice);
+	Selection::renderDragBox(renderDevice);
 
 	renderDevice->pop2D();
 
