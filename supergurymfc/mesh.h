@@ -80,6 +80,7 @@ namespace RBX
 			
 			void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
 			void renderFace(RenderDevice* d, NormalId face);
+			void renderDecal(RenderDevice* rd, Decal* decal);
 			void render(RenderDevice* d);
 
 			void renderSpecialMesh(RenderDevice* d);

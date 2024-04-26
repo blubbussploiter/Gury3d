@@ -80,8 +80,6 @@ void RBX::Humanoid::buildJoints()
     snap(humanoidRootPart, getRightLeg());
     snap(humanoidRootPart, getLeftLeg());
 
-    getRightArm()->setCanCollide(0);
-    getLeftArm()->setCanCollide(0);
     getRightLeg()->setCanCollide(0);
     getLeftLeg()->setCanCollide(0);
 }

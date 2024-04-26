@@ -75,6 +75,8 @@ void RBX::View::renderScene(RenderDevice* rd)
 	rd->pushState();
 	rd->enableLighting();
 
+	rd->setPolygonOffset(-0.02);
+
 	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
 
 	turnOnLights(rd);
@@ -86,6 +88,8 @@ void RBX::View::renderScene(RenderDevice* rd)
 
 	RBX::Scene::singleton()->darkPass(rd);
 	RBX::Scene::singleton()->lastPass(rd);
+
+	rd->setPolygonOffset(0.02);
 
 	rd->popState();
 

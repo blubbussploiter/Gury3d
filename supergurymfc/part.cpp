@@ -28,14 +28,19 @@ void RBX::PartInstance::render(RenderDevice* rd)
 	for (unsigned int i = 0; i < children->size(); i++)
 	{
 		Decal* decal = toInstance<Decal>(children->at(i));
+
 		if (!decal) continue;
+
+		rd->setObjectToWorldMatrix(pv->position);
+		rd->setColor(Color4(1, 1, 1));
+
 		if (specialShape)
 		{
-			decal->render(rd, specialShape);
+			specialShape->renderDecal(rd, decal);
 		}
 		else
 		{
-			decal->render(rd, this);
+			renderDecal(rd, decal);
 		}
 	}
 }

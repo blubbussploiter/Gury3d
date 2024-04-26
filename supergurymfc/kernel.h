@@ -4,13 +4,15 @@
 
 namespace RBX
 {
-	/* Rigidbody based physics engine ALTHOUGH, relies on Primitives for seperation of Primitives from Bodies */
+
+	/* my cool physics engine :) */
 
 	class Kernel 
 	{
 	public:
 
 		Array<Primitive*> objects;
+		Array<Primitive*> objectQueue;
 		
 		dWorldID world;
 		dSpaceID space;
@@ -22,9 +24,13 @@ namespace RBX
 
 		void removePrimitive(Primitive* primitive);
 
+		void addQueuedPrimitive(Primitive* primitive);
+
 		void step();
 
 		void afterStep();
+
+		void spawnWorld();
 
 		static void collisionCallback(void* data, dGeomID o1, dGeomID o2);
 
@@ -32,7 +38,6 @@ namespace RBX
 
 		Kernel()
 		{
-
 			world = dWorldCreate();
 			space = dHashSpaceCreate(0);
 			contacts = dJointGroupCreate(0);

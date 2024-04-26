@@ -58,8 +58,21 @@ void RBX::Primitive::modifyCollisions(bool canCollide)
 
 void RBX::Primitive::modifyUserdata(void* data)
 {
-	if (!geom[0]) return;
+	if (!geom[0])
+	{
+		ud = data;
+		return;
+	}
 	dGeomSetData(geom[0], data);
+}
+
+void* RBX::Primitive::getUserdata()
+{
+	if (!geom[0])
+	{
+		return ud;
+	}
+	return dGeomGetData(geom[0]);
 }
 
 void RBX::Primitive::modifyOffsetWorldCoordinateFrame(CoordinateFrame offset)
@@ -136,8 +149,12 @@ void RBX::Primitive::step()
 	const dReal* position;
 	const dReal* rotation;
 
+	if (!geom[0]) return;
+
 	if (body)
 	{
+		if (body->disabled) return; /* save cpu and stuff, dont step */
+
 		body->step();
 		pv->velocity = body->pv->velocity;
 	}

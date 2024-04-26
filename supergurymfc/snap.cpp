@@ -98,11 +98,13 @@ void RBX::SnapConnector::build()
 			{
 				connector->attachPrimitive(prim);
 				prim->modifyOffsetWorldCoordinateFrame(prim->pv->position);
+				connector->setDisabled(0);
 			}
 			else
 			{
 				prim->body = 0;
 				connector->detachPrimitive(prim);
+				connector->setDisabled(1);
 			}
 
 		}

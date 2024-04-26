@@ -23,6 +23,113 @@ RTTR_REGISTRATION
 
 }
 
+static void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+{
+	glBegin(GL_QUADS);
+	glNormal((v0 - v1).cross(v0 - v2).direction());
+
+	glTexCoord2d(uv.x, uv.y);
+	glVertex(v0);
+	glTexCoord2d(0, uv.y);
+	glVertex(v1);
+	glTexCoord2d(0, 0);
+	glVertex(v2);
+	glTexCoord2d(uv.x, 0);
+	glVertex(v3);
+	glEnd();
+}
+
+void drawTriangleFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2)
+{
+	glBegin(GL_TRIANGLES);
+
+	glNormal((v0 - v1).cross(v0 - v2).direction());
+
+	glTexCoord2d(uv.x, uv.y);
+	glVertex(v0);
+	glTexCoord2d(0, uv.y);
+	glVertex(v1);
+	glTexCoord2d(0, 0);
+	glVertex(v2);
+
+	glEnd();
+}
+
+void RBX::Render::SpecialMesh::renderWedgeFace(NormalId face)
+{
+
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
+
+
+	Vector3 size = part->getSize();
+	Vector2 uv0(size.x, -size.z / 2), uv1, uv2;
+
+	switch (face)
+	{
+	case BOTTOM:
+	{
+		drawFace(uv0,
+			Vector3(size.x, -size.y, size.z),
+			Vector3(-size.x, -size.y, size.z),
+			Vector3(-size.x, -size.y, -size.z),
+			Vector3(size.x, -size.y, -size.z));
+		break;
+	}
+	case TOP: break;
+	case FRONT:
+	{
+		drawFace(uv1,
+			Vector3(-size.x, -size.y, -size.z),
+			Vector3(-size.x, size.y, size.z),
+			Vector3(size.x, size.y, size.z),
+			Vector3(size.x, -size.y, -size.z));
+		break;
+	}
+	case BACK:
+	{
+		drawFace(uv1,
+			Vector3(size.x, size.y, size.z),
+			Vector3(-size.x, size.y, size.z),
+			Vector3(-size.x, -size.y, size.z),
+			Vector3(size.x, -size.y, size.z));
+		break;
+	}
+	case LEFT:
+	{
+		drawTriangleFace(uv2,
+			Vector3(size.x, -size.y, size.z),
+			Vector3(size.x, -size.y, -size.z),
+			Vector3(size.x, size.y, size.z));
+		break;
+	}
+	case RIGHT:
+	{
+		drawTriangleFace(uv2, 
+			Vector3(-size.x, -size.y, -size.z),
+			Vector3(-size.x, -size.y, size.z),
+			Vector3(-size.x, size.y, size.z));
+		break;
+	}
+	}
+}
+
+void RBX::Render::SpecialMesh::renderSpecialMesh(RenderDevice* d)
+{
+
+	glBegin(GL_TRIANGLES);
+
+	for (int i = 0; i < num_faces; ++i)
+	{
+		glNormal(normals[i] * mesh_scale);
+		glTexCoord(uvs[i]);
+		glVertex(vertices[i] * mesh_scale);
+	}
+
+	glEnd();
+
+}
+
 void RBX::Render::SpecialMesh::fromMeshType(MeshType types)
 {
 	setMeshType(types);
@@ -78,42 +185,6 @@ void RBX::Render::SpecialMesh::setMeshId(Content SpecialMeshId)
 	fromFile(contentPath);
 }
 
-void RBX::Render::SpecialMesh::renderSpecialMesh(RenderDevice* d)
-{
-
-	PartInstance* part = toInstance<PartInstance>(getParent());
-	if (!part) return;
-
-	d->setObjectToWorldMatrix(part->pv->position);
-	d->setShininess(25.0f);
-
-	d->setColor(Color4(part->color, part->alpha));
-
-	glBegin(GL_TRIANGLES);
-
-	for (int i = 0; i < num_faces; ++i)
-	{
-		glNormal(normals[i] * mesh_scale);
-		glTexCoord(uvs[i]);
-		glVertex(vertices[i] * mesh_scale);
-	}
-
-	glEnd();
-
-}
-
-void RBX::Render::SpecialMesh::renderWedgeFace(NormalId face)
-{
-	switch (face)
-	{
-		case FRONT:
-		{
-
-			break;
-		}
-	}
-}
-
 void RBX::Render::SpecialMesh::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
 {
 	renderFace(rd, face);
@@ -137,8 +208,36 @@ void RBX::Render::SpecialMesh::renderFace(RenderDevice* d, NormalId face)
 	}
 }
 
+void RBX::Render::SpecialMesh::renderDecal(RenderDevice* rd, Decal* decal)
+{
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
+
+	if (!part->transparency)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	decal->render(rd, this);
+
+	if (!part->transparency)
+	{
+		glBlendFunc(GL_ZERO, GL_ZERO);
+		glDisable(GL_BLEND);
+	}
+
+}
+
 void RBX::Render::SpecialMesh::render(RenderDevice* d)
 {
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
+
+	d->setObjectToWorldMatrix(part->pv->position);
+	d->setShininess(25.0f);
+
+	d->setColor(Color4(part->color, part->alpha));
 
 	switch (meshType)
 		{

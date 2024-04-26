@@ -1,6 +1,8 @@
 #include "kernel.h"
 #include "primitive.h"
 
+#include "pvinstance.h"
+
 #pragma comment(lib, "ode.lib")
 
 RBX::Kernel* kernel;
@@ -15,24 +17,59 @@ void RBX::Kernel::removePrimitive(Primitive* primitive)
 	objects.remove(objects.findIndex(primitive));
 }
 
+void RBX::Kernel::addQueuedPrimitive(Primitive* primitive)
+{
+	objectQueue.append(primitive);
+}
+
 void RBX::Kernel::step()
 {
-	/* ODE STUFF */
+	/* ode stuff, step the simulation */
 
 	dJointGroupEmpty(contacts);
 	dSpaceCollide(space, 0, &Kernel::collisionCallback);
-	dWorldQuickStep(world, 0.01f);
+	dWorldQuickStep(world, 0.02f);
 
 	Kernel::get()->afterStep();
+
 }
 
 void RBX::Kernel::afterStep()
 {
-	/* GURY STUFF -> STEP BODIES */
+	/* gury stuff, create them or step them */
+
+	/* (re) */
+
+	spawnWorld();
+
+	/* step */
 
 	for (int i = 0; i < objects.size(); i++)
 	{
-		objects[i]->step();
+		Primitive* prim = objects[i];
+		prim->step();
+	}
+}
+
+void RBX::Kernel::spawnWorld()
+{
+	if (objectQueue.size() > 0)
+	{
+		for (int i = 0; i < objectQueue.size(); i++)
+		{
+			Primitive* prim = objectQueue[i];
+			PVInstance* pv;
+
+			void* ud = prim->getUserdata();
+			pv = (PVInstance*)ud;
+
+			if (pv)
+			{
+				pv->initializeForKernel();
+			}
+		}
+
+		objectQueue.clear();
 	}
 }
 

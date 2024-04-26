@@ -21,6 +21,8 @@ namespace RBX
 
 		Vector3 size;
 
+		void* ud;
+
 		void modifySize(Vector3 size);
 
 		void modifyShape(Shape shape);
@@ -32,6 +34,8 @@ namespace RBX
 		void modifyUserdata(void* data);
 
 		void modifyOffsetWorldCoordinateFrame(CoordinateFrame offset);
+
+		void* getUserdata();
 
 		void setDisabled(bool disabled);
 

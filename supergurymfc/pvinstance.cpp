@@ -41,7 +41,7 @@ RTTR_REGISTRATION
 
 void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
-    glNormal((v0 - v1).cross(v0 - v2).direction());
+    glNormal((v2 - v1).cross(v3 - v1).direction());
 
     glTexCoord2d(uv.x, uv.y);
     glVertex(v0);
@@ -144,6 +144,23 @@ void RBX::PVInstance::render3DSurfaces(RenderDevice* rd)
 
 }
 
+void RBX::PVInstance::renderDecal(RenderDevice* rd, Decal* decal)
+{
+    if (!transparency)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    decal->render(rd, this);
+
+    if (!transparency)
+    {
+        glBlendFunc(GL_ZERO, GL_ZERO);
+        glDisable(GL_BLEND);
+    }
+}
+
 void RBX::renderSurface(RenderDevice* rd, RBX::PVInstance* pv, NormalId n, SurfaceType s, unsigned int& glid)
 {
     if (glid == -1) return;
@@ -166,7 +183,6 @@ void RBX::PVInstance::render(RenderDevice* d)
 {
     if (transparency < 1)
     {
-
         d->setObjectToWorldMatrix(getCFrame());
         d->setShininess(45.0f);
 
@@ -195,12 +211,26 @@ void RBX::PVInstance::render(RenderDevice* d)
         case cylinder:
         {
             RBX::Primitives::drawCylinder(d, this);
-           // drawCylinderPluses(d);
             break;
         }
         }
     }
     
+}
+
+void RBX::PVInstance::calculateCylinderOffsets()
+{
+
+    cylinderOriginX.y = getSize().magnitude() / 4;
+    cylinderOriginY.x = getSize().magnitude() / 4;
+
+}
+
+void RBX::PVInstance::calculateUvs()
+{
+    uv0 = Vector2(size.x, -size.z / 2);
+    uv1 = Vector2(-size.x, -size.y / 2);
+    uv2 = Vector2(size.z, size.y / 2);
 }
 
 void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
@@ -231,19 +261,19 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     case NormalId::FRONT:
     {
         drawFace(uv1,
-            Vector3(size.x, size.y, size.z),
-            Vector3(-size.x, size.y, size.z),
-            Vector3(-size.x, -size.y, size.z),
-            Vector3(size.x, -size.y, size.z));
+            Vector3(size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(size.x, size.y, -size.z));
         break;
     }
     case NormalId::BACK:
     {
         drawFace(uv1,
-            Vector3(size.x, -size.y, -size.z),
-            Vector3(-size.x, -size.y, -size.z),
-            Vector3(-size.x, size.y, -size.z),
-            Vector3(size.x, size.y, -size.z));
+            Vector3(size.x, size.y, size.z),
+            Vector3(-size.x, size.y, size.z),
+            Vector3(-size.x, -size.y, size.z),
+            Vector3(size.x, -size.y, size.z));
         break;
     }
     case NormalId::LEFT:
@@ -297,21 +327,21 @@ void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
         break;
     }
     case NormalId::FRONT:
+    {        
+        drawFaceTwoOooOoOOoOoO(uv,
+            Vector3(size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(size.x, size.y, -size.z));
+        break;
+    }
+    case NormalId::BACK:
     {
         drawFaceTwoOooOoOOoOoO(uv,
             Vector3(size.x, size.y, size.z),
             Vector3(-size.x, size.y, size.z),
             Vector3(-size.x, -size.y, size.z),
             Vector3(size.x, -size.y, size.z));
-        break;
-    }
-    case NormalId::BACK:
-    {
-        drawFaceTwoOooOoOOoOoO(uv,
-            Vector3(size.x, -size.y, -size.z),
-            Vector3(-size.x, -size.y, -size.z),
-            Vector3(-size.x, size.y, -size.z),
-            Vector3(size.x, size.y, -size.z));
         break;
     }
     case NormalId::LEFT:
@@ -389,21 +419,6 @@ float RBX::getAffectedFormFactor(RBX::PVInstance* pv)
         return 1.0f;
     }
     }
-}
-
-void RBX::PVInstance::calculateCylinderOffsets()
-{
-
-    cylinderOriginX.y = getSize().magnitude() / 4;
-    cylinderOriginY.x = getSize().magnitude() / 4;
-
-}
-
-void RBX::PVInstance::calculateUvs()
-{
-    uv0 = Vector2(size.x, -size.z/2);
-    uv1 = Vector2(-size.x, size.y/2);
-    uv2 = Vector2(size.z, size.y/2);
 }
 
 void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
@@ -486,19 +501,15 @@ RBX::SurfaceType RBX::PVInstance::getSurface(NormalId face)
 
 void RBX::PVInstance::initializeForKernel()
 {
-
     if (!body->created())
     {
         body->createBody(size);
-        primitive->createPrimitive(shape, size);
 
+        primitive->createPrimitive(shape, size);
         body->attachPrimitive(primitive);
-        primitive->modifyUserdata(this);
 
         setAnchored(getAnchored());
         setCanCollide(getCanCollide());
-
-        Kernel::get()->addPrimitive(primitive);
     }
 }
 
@@ -529,7 +540,12 @@ RBX::PVInstance::PVInstance()
     shape = part;
 
     body = new Body();
+    body->modifyUserdata(this);
+
     primitive = new Primitive(body);
+    primitive->modifyUserdata(this);
+
+    Kernel::get()->addPrimitive(primitive);
 
     pv = primitive->pv;
     startPV = new PV();

@@ -175,30 +175,28 @@ void RBX::Scene::saveStartPVs() /* before run: save each position of everything 
 	iterate(0, isPvInstance, savePVPosition);
 }
 
-void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)
+void RBX::Scene::onWorkspaceDescendentAdded(Render::Renderable* descendent)
 {
-	if (RBX::IsA<RBX::Render::Renderable>(descendent) || steppableRule(descendent))
+	if (IsA<Render::Renderable>(descendent) || steppableRule(descendent))
 	{
-		RBX::Render::Renderable* r = toInstance<RBX::Render::Renderable>(descendent);
+		Render::SpecialMesh* specialMesh = toInstance<Render::SpecialMesh>(descendent);
+		PVInstance* pvInstance = toInstance<PVInstance>(descendent);
 
-		if (RBX::IsA<RBX::Render::SpecialMesh>(r))
+		if (specialMesh)
 		{
-			RBX::Render::Renderable* p = toInstance<RBX::Render::Renderable>(r->getParent());
+			Render::Renderable* p = toInstance<Render::Renderable>(descendent->getParent());
 			if (p)
 			{
-				p->specialShape = r;
+				p->specialShape = descendent;
 			}
 		}
 
-		if (RBX::IsA<PVInstance>(r))
+		if (pvInstance)
 		{
-			if (RunService::singleton()->isRunning)
-			{
-				toInstance<PVInstance>(r)->initializeForKernel();
-			}
+			Kernel::get()->addQueuedPrimitive(pvInstance->primitive);
 		}
 
-		renderObjects.push_back(r);
+		renderObjects.push_back(descendent);
 	}
 }
 

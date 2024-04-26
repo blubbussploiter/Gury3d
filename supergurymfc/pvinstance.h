@@ -197,6 +197,7 @@ namespace RBX
 		void render(RenderDevice* rd);
 		void renderFace(RenderDevice* rd, NormalId face);
 		void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
+		void renderDecal(RenderDevice* rd, Decal* decal);
 
 		void renderSurfaces(RenderDevice* rd);
 		void render3DSurfaces(RenderDevice* rd);

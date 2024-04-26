@@ -31,13 +31,20 @@ bool RBX::Body::created()
 
 void* RBX::Body::getUserdata()
 {
-	if (!body) return 0;
+	if (!body)
+	{
+		return ud;
+	}
 	return dBodyGetData(body);
 }
 
 void RBX::Body::modifyUserdata(void* data)
 {
-	if (!body) return;
+	if (!body)
+	{
+		ud = data;
+		return;
+	}
 	dBodySetData(body, data);
 }
 

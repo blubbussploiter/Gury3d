@@ -1,3 +1,6 @@
+
+#include <queue>
+
 #include "stdout.h"
 
 #include "scene.h"
@@ -25,7 +28,7 @@ void RBX::RunService::run()
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
     Scene::singleton()->saveStartPVs();
-    Scene::singleton()->initializeKernel();
+    Kernel::get()->spawnWorld();
 
     if (!hasStarted)
     {
@@ -82,13 +85,13 @@ void RBX::RunService::update()
 
     if (isRunning)
     {
-        RBX::Scene::singleton()->updateSteppables();
 
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 8; i++)
         {
             Kernel::get()->step();
         }
 
+        RBX::Scene::singleton()->updateSteppables();
     }
 
     /* reset pvs */

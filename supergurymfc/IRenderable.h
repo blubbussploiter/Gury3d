@@ -7,6 +7,8 @@
 
 namespace RBX
 {
+	class Decal;
+
 	namespace Render
 	{
 		class Renderable : 
@@ -22,6 +24,8 @@ namespace RBX
 			void renderDecals(RenderDevice* rd, Instance* parent=0);
 
 			virtual void render(RenderDevice* rd) {};
+			virtual void renderDecal(RenderDevice* rd, Decal* decal) {};
+
 			virtual void renderSurfaces(RenderDevice* rd) {};
 
 			virtual void render3DSurfaces(RenderDevice* rd) {};

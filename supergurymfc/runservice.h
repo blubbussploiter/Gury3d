@@ -45,7 +45,7 @@ namespace RBX
 		/* called after reset and before run, sets all pv's pv position back to its starting position, body position set when restartpvs called */
 		void resetPvs();
 		/* called after run after reset, to keep physics kernel consistent */
-		void restartPvs();
+		void restartPvs();                                                             
 
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 
@@ -55,8 +55,8 @@ namespace RBX
 		{
 			setClassName("RunService");
 			setName("Run Service");
-			isRunning = 0;
 			steppers = new RBX::Instances();
+			isRunning = 0;
 		}
 		RTTR_ENABLE(RBX::Instance);
 	};

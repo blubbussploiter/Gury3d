@@ -43,6 +43,7 @@ namespace RBX
 
 		Vector3 size;
 
+		void* ud;
 		bool disabled; /* anchored */
 
 	public:
