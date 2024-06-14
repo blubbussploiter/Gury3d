@@ -1,6 +1,7 @@
 #include "jointsservice.h"
 
 #include "snap.h"
+#include "weld.h"
 #include "motor.h"
 
 #include "scene.h"
@@ -14,6 +15,9 @@ RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Pr
 		return new MotorConnector(prim0, prim1, surface);
 	}
 	case Welded:
+	{
+		return new WeldConnector(prim0, prim1, surface);
+	}
 	case Glued:
 	case Snapped:
 	{

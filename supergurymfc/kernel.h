@@ -32,6 +32,10 @@ namespace RBX
 
 		void spawnWorld();
 
+		float getGravity();
+
+		bool outOfBoundCheck(Primitive* object);
+
 		static void collisionCallback(void* data, dGeomID o1, dGeomID o2);
 
 		static Kernel* get();

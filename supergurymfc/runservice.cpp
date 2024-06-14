@@ -37,7 +37,10 @@ void RBX::RunService::run()
     }
     else
     {
-        restartPvs();
+        if (!isPaused)
+        {
+            restartPvs();
+        }
     }
 
     if (localPlayer)
@@ -68,7 +71,7 @@ void RBX::RunService::stop()
 
 void RBX::RunService::reset()
 {
-    if (!hasStarted)
+    if (!hasStarted) /* to do : make this dependent on the functions below! this doesnt check for new objects / objects added after run */
     {
        JointsService::singleton()->buildGlobalJoints();
        JointsService::singleton()->buildConnectors();
@@ -85,13 +88,14 @@ void RBX::RunService::update()
 
     if (isRunning)
     {
+        RBX::Scene::singleton()->updateSteppables();
+        RBX::Scene::singleton()->updateSteppablesKernelly();
 
         for (int i = 0; i < 8; i++)
         {
             Kernel::get()->step();
         }
 
-        RBX::Scene::singleton()->updateSteppables();
     }
 
     /* reset pvs */
@@ -104,8 +108,9 @@ void RBX::RunService::update()
 
 }
 
-void RBX::RunService::heartbeat()
+void RBX::RunService::heartbeat(float deltaTime)
 {
+    this->deltaTime = deltaTime;
     update();
 }
 

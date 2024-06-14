@@ -22,7 +22,11 @@ void RBX::PartInstance::render(RenderDevice* rd)
 	{
 		specialShape->render(rd);
 	}
+	renderDecals(rd);
+}
 
+void RBX::PartInstance::renderDecals(RenderDevice* rd)
+{
 	/* render decals */
 
 	for (unsigned int i = 0; i < children->size(); i++)

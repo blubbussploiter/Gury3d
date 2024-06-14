@@ -28,6 +28,8 @@ namespace RBX
 
 		ScriptContext* scriptContext;
 
+		float deltaTime;
+
 		bool isRunning;
 		bool isPaused;
 
@@ -39,7 +41,7 @@ namespace RBX
 		void stop();
 		void reset();
 		void update();
-		void heartbeat();
+		void heartbeat(float deltaTime);
 		void updateSteppers();
 
 		/* called after reset and before run, sets all pv's pv position back to its starting position, body position set when restartpvs called */

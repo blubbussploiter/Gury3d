@@ -11,6 +11,11 @@ void RBX::Controller::addDirection(MovementDirections direction)
 	}
 }
 
+void RBX::Controller::removeDirection(MovementDirections direction)
+{
+	directions.erase(std::remove(directions.begin(), directions.end(), direction));
+}
+
 void RBX::Controller::handleInput(G3D::UserInput* ui)
 {
 	if (ui->keyDown(SDLK_w))
@@ -29,7 +34,7 @@ void RBX::Controller::handleInput(G3D::UserInput* ui)
 	{
 		addDirection(Right);
 	}
-	if (ui->keyPressed(SDLK_SPACE))
+	if (ui->keyReleased(SDLK_SPACE))
 	{
 		addDirection(Jump);
 	}

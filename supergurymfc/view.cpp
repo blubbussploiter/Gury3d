@@ -34,7 +34,7 @@ void RBX::View::turnOnLights(RenderDevice* device)
 
 	ambientColor = (lighting->ambientBottom + lighting->ambientTop) / 2.0f;
 
-	device->setSpecularCoefficient(1.0f);
+	device->setSpecularCoefficient(1);
 	device->setColorClearValue(colorClearValue);
 
 	for (int i = 0; i < lighting->lightArray.size(); i++)
@@ -72,9 +72,7 @@ void RBX::View::renderScene(RenderDevice* rd)
 
 	glCullFace(GL_BACK);
 
-	rd->pushState();
 	rd->enableLighting();
-
 	rd->setPolygonOffset(-0.02);
 
 	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
@@ -86,12 +84,15 @@ void RBX::View::renderScene(RenderDevice* rd)
 
 	rd->disableLighting();
 
+	if (!effectSettings->toneMap.isNull())
+	{
+		effectSettings->toneMap->endFrame(rd);
+	}
+
 	RBX::Scene::singleton()->darkPass(rd);
 	RBX::Scene::singleton()->lastPass(rd);
 
 	rd->setPolygonOffset(0.02);
-
-	rd->popState();
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -107,7 +108,7 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	presetLighting();
 
 	renderDevice->beginFrame();
-	renderDevice->pushState();
+	//shadows->generateShadowMap(renderDevice);
 
 	renderDevice->clear();
 	renderDevice->setProjectionAndCameraMatrix(*projection->getCamera());
@@ -121,28 +122,23 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 		sky->render(params);
 	}
 
+	renderDevice->pushState();
+	//shadows->render(renderDevice);
+
+	Selection::renderSelection(renderDevice);
+
 	if (RBX::Studio::current_Tool)
 	{
 		RBX::Studio::current_Tool->doGraphics(renderDevice);
 	}
 
-	Diagnostics::get_Renderer()->preRender(renderDevice);
-	Selection::renderSelection(renderDevice);
-
 	renderScene(renderDevice);
 
-	Diagnostics::get_Renderer()->render(renderDevice);
+	renderDevice->popState();
 
 	if (!sky.isNull())
 	{
 		sky->renderLensFlare(params);
-	}
-
-	renderDevice->popState();
-
-	if (!effectSettings->toneMap.isNull())
-	{
-		effectSettings->toneMap->endFrame(renderDevice);
 	}
 
 	renderDevice->push2D();

@@ -8,6 +8,7 @@
 #include "basescript.h"
 #include "hopperbin.h"
 #include "decal.h"
+#include "texture.h"
 #include "model.h"
 #include "mesh.h"
 
@@ -38,6 +39,11 @@ RBX::Instance* RBX::fromName(std::string className)
 	if (className == "Decal")
 	{
 		return new RBX::Decal();
+	}
+
+	if (className == "Texture")
+	{
+		return new RBX::Texture();
 	}
 
 	if (className == "Script" ||

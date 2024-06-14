@@ -8,6 +8,8 @@
 
 #define CROSS Color3(0.5f, 0.5f, 0.5f)
 
+/* dear user: I CANT WRITE 3D RENDER STUFF CODE!!! OKAY ITS A LITTLE SLOPPY BUT IT GETS THE JOB DONE! :)))))))))) */
+
 RTTR_REGISTRATION
 {
     rttr::registration::class_ <RBX::PVInstance>("PVInstance")
@@ -39,6 +41,8 @@ RTTR_REGISTRATION
          .property("Transparency", &RBX::PVInstance::getFauxTransparency, &RBX::PVInstance::setTransparency)(rttr::metadata("Type", RBX::Appearance));
 }
 
+/* hurl */
+
 void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
     glNormal((v2 - v1).cross(v3 - v1).direction());
@@ -53,9 +57,29 @@ void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
     glVertex(v3);
 }
 
-void drawFaceTwoOooOoOOoOoO(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+void drawFaceStudsUV(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, Vector2 studs)
 {
-    glNormal((v0 - v1).cross(v0 - v2).direction());
+    glNormal((v2 - v1).cross(v3 - v1).direction());
+
+    /* thumbs up */
+
+    uv.x /= (studs.x / 2);
+    uv.y /= (studs.y / 4);
+
+    glTexCoord2d(0, uv.y);
+    glVertex(v0);
+    glTexCoord2d(uv.x, uv.y);
+    glVertex(v1);
+    glTexCoord2d(uv.x, 0);
+    glVertex(v2);
+    glTexCoord2d(0, 0);
+    glVertex(v3);
+
+}
+
+void drawFaceThree(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+{
+    glNormal((v2 - v1).cross(v3 - v1).direction());
 
     glTexCoord2d(uv.x, 0);
     glVertex(v0);
@@ -64,6 +88,19 @@ void drawFaceTwoOooOoOOoOoO(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vect
     glTexCoord2d(0, uv.y);
     glVertex(v2);
     glTexCoord2d(uv.x, uv.y);
+    glVertex(v3);
+}
+void drawFaceTwoOooOoOOoOoO(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+{
+    glNormal((v0 - v1).cross(v0 - v2).direction());
+
+    glTexCoord2d(0, uv.y);
+    glVertex(v0);
+    glTexCoord2d(uv.x, uv.y);
+    glVertex(v1);
+    glTexCoord2d(uv.x, 0);
+    glVertex(v2);
+    glTexCoord2d(0, 0);
     glVertex(v3);
 }
 
@@ -122,7 +159,7 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
 {
     if (!specialShape)
     {
-        glColor(1, 1, 1, 1 - (color.r * 0.2f));
+        glColor(1, 1, 1, 1 - (color.r * 0.1f));
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
         renderSurface(rd, this, RIGHT, right, idRight);
@@ -319,7 +356,7 @@ void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
     }
     case NormalId::BOTTOM:
     {
-        drawFaceTwoOooOoOOoOoO(uv,
+        drawFaceThree(uv,
             Vector3(size.x, -size.y, size.z),
             Vector3(-size.x, -size.y, size.z),
             Vector3(-size.x, -size.y, -size.z),
@@ -337,7 +374,7 @@ void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
     }
     case NormalId::BACK:
     {
-        drawFaceTwoOooOoOOoOoO(uv,
+        drawFaceThree(uv,
             Vector3(size.x, size.y, size.z),
             Vector3(-size.x, size.y, size.z),
             Vector3(-size.x, -size.y, size.z),
@@ -346,7 +383,7 @@ void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
     }
     case NormalId::LEFT:
     {
-        drawFaceTwoOooOoOOoOoO(uv,
+        drawFaceThree(uv,
             Vector3(-size.x, size.y, size.z),
             Vector3(-size.x, size.y, -size.z),
             Vector3(-size.x, -size.y, -size.z),
@@ -355,11 +392,78 @@ void RBX::PVInstance::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
     }
     case NormalId::RIGHT:
     {
-        drawFaceTwoOooOoOOoOoO(uv,
+        drawFaceThree(uv,
             Vector3(size.x, size.y, -size.z),
             Vector3(size.x, size.y, size.z),
             Vector3(size.x, -size.y, size.z),
             Vector3(size.x, -size.y, -size.z));
+        break;
+    }
+    }
+
+    glEnd();
+
+}
+
+void RBX::PVInstance::renderFaceFitForTexture(RenderDevice* rd, NormalId face, Vector2 StudsUV)
+{
+
+    glBegin(GL_QUADS);
+
+    switch (face)
+    {
+    case NormalId::TOP:
+    {
+        drawFaceStudsUV(uv0,
+            Vector3(size.x, size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(-size.x, size.y, size.z),
+            Vector3(size.x, size.y, size.z), StudsUV);
+        break;
+    }
+    case NormalId::BOTTOM:
+    {
+        drawFaceStudsUV(uv0,
+            Vector3(size.x, -size.y, size.z),
+            Vector3(-size.x, -size.y, size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(size.x, -size.y, -size.z), StudsUV);
+        break;
+    }
+    case NormalId::FRONT:
+    {
+        drawFaceStudsUV(uv1,
+            Vector3(size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(size.x, size.y, -size.z), StudsUV);
+        break;
+    }
+    case NormalId::BACK:
+    {
+        drawFaceStudsUV(uv1,
+            Vector3(size.x, size.y, size.z),
+            Vector3(-size.x, size.y, size.z),
+            Vector3(-size.x, -size.y, size.z),
+            Vector3(size.x, -size.y, size.z), StudsUV);
+        break;
+    }
+    case NormalId::LEFT:
+    {
+        drawFaceStudsUV(uv2,
+            Vector3(-size.x, size.y, size.z),
+            Vector3(-size.x, size.y, -size.z),
+            Vector3(-size.x, -size.y, -size.z),
+            Vector3(-size.x, -size.y, size.z), StudsUV);
+        break;
+    }
+    case NormalId::RIGHT:
+    {
+        drawFaceStudsUV(uv2,
+            Vector3(size.x, size.y, -size.z),
+            Vector3(size.x, size.y, size.z),
+            Vector3(size.x, -size.y, size.z),
+            Vector3(size.x, -size.y, -size.z), StudsUV);
         break;
     }
     }

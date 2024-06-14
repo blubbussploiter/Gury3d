@@ -4,6 +4,11 @@
 #include "stdout.h"
 #include "primitive.h"
 
+bool RBX::Primitive::collisionsEnabled()
+{
+	return dGeomIsEnabled(geom[0]);
+}
+
 void RBX::Primitive::modifySize(Vector3 size)
 {
 	if (!geom[0]) return;
@@ -11,6 +16,7 @@ void RBX::Primitive::modifySize(Vector3 size)
 	this->size = size;
 	switch (shape)
 	{
+	case cylinder:
 	case ball:
 	{
 		dGeomSphereSetRadius(geom[0], size.y);
@@ -139,6 +145,7 @@ void RBX::Primitive::createPrimitive(RBX::Shape primitive, Vector3 size)
 	dGeomSetPosition(geom[0], position.x, position.y, position.z);
 	dGeomSetRotation(geom[0], dRotation);
 
+	dGeomSetData(geom[0], this);
 
 }
 
@@ -175,10 +182,14 @@ RBX::Primitive::Primitive(Body* body)
 {
 	this->body = body;
 	this->pv = body->pv;
+	elasticity = 0.5f;
+	friction = 0.3f;
 }
 
 RBX::Primitive::Primitive()
 {
 	this->pv = new PV();
 	this->body = 0;
+	elasticity = 0.5f;
+	friction = 0.3f;
 }

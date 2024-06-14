@@ -62,8 +62,7 @@ namespace RBX
 		void open();
 		void close();
 
-		void step();
-		void heartbeat(double step); /* non runservice stuff */
+		void step(double deltaTime);
 
 		Datamodel()
 		{

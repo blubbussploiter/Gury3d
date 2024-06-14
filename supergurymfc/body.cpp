@@ -106,6 +106,13 @@ Vector3 RBX::Body::getForce()
 	return Vector3(real[0], real[1], real[2]);
 }
 
+Vector3 RBX::Body::getPosition()
+{
+	if (!body) return Vector3::zero();
+	const dReal* real = dBodyGetPosition(body);
+	return Vector3(real[0], real[1], real[2]);
+}
+
 Matrix3 RBX::Body::getMoment()
 {
 	if (!body) return Matrix3::identity();
@@ -185,7 +192,6 @@ void RBX::Body::createBody(Vector3 size)
 
 void RBX::Body::destroyBody()
 {
-
 	if (body != NULL)
 	{
 		dBodyEnable(body);

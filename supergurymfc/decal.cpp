@@ -31,8 +31,8 @@ void RBX::Decal::initContentTexture()
             {
                 Texture::Parameters params;
 
-                params.wrapMode = Texture::WrapMode::CLAMP;
-                params.interpolateMode = Texture::InterpolateMode::NO_INTERPOLATION;
+                params.wrapMode = Texture::WrapMode::TILE;
+                params.interpolateMode = Texture::NEAREST_MIPMAP;
 
                 texture = Texture::fromGImage(getName(), image, TextureFormat::RGBA8, Texture::DIM_2D, params);
             }
@@ -56,15 +56,14 @@ void RBX::Decal::render(RenderDevice* rd, RBX::Render::Renderable* p)
     }
 
     Render::rawDecal(rd, p, face, getGLid(), 0);
-
 }
 
 void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, bool repeat)
 {
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
+    glBindTexture(GL_TEXTURE_2D, texture); 
+    
     if (repeat)
     {
         pv->renderFace(d, face);

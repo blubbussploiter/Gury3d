@@ -21,6 +21,7 @@ namespace RBX
 		void onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent);
 
 		void updateSteppables();
+		void updateSteppablesKernelly();
 
 		void iterate(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
 

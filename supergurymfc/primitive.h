@@ -21,7 +21,11 @@ namespace RBX
 
 		Vector3 size;
 
+		float elasticity, friction;
+
 		void* ud;
+
+		bool collisionsEnabled();
 
 		void modifySize(Vector3 size);
 

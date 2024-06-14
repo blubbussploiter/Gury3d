@@ -41,13 +41,13 @@ void RBX::SnapConnector::build()
 		connector = connector0->connector;
 		copyArray(connector0->primitives, primitives);
 	}
-	else if (connector1 && !connector)
+	if (connector1 && !connector)
 	{
 		connector = connector1->connector;
 		copyArray(connector1->primitives, primitives);
 	}
 
-	else if (!connector)
+	if (!connector)
 	{
 		connector = new Body();
 		connector->createBody(Vector3(1, 1, 1));
@@ -57,8 +57,6 @@ void RBX::SnapConnector::build()
 			CoordinateFrame pos0, pos1, pos;
 			Vector3 t0, t1;
 			Matrix3 m0, m1;
-
-			dMass mass0, mass1;
 
 			pos0 = prim0->pv->position;
 			pos1 = prim1->pv->position;
@@ -71,17 +69,10 @@ void RBX::SnapConnector::build()
 			pos = (t0 + t1) / 2;
 			pos.rotation = m0 * m1;
 
-			dBodyGetMass(body0->body, &mass0);
-			dBodyGetMass(body1->body, &mass1);
-
-			dMassAdd(&mass0, &mass1);
-
 			body0->setDisabled(1);
 			body1->setDisabled(1);
 			
 			connector->modifyPosition(pos);
-			connector->modifyMass(mass0);
-
 		}
 	}
 
@@ -90,6 +81,9 @@ void RBX::SnapConnector::build()
 
 	if (connector)
 	{
+		Vector3 cofm = connector->getPosition();
+		Vector3 size, lastSize;
+
 		for (int i = 0; i < primitives->size(); i++)
 		{
 			Primitive* prim = (*primitives)[i];
@@ -107,8 +101,24 @@ void RBX::SnapConnector::build()
 				connector->setDisabled(1);
 			}
 
+			size = prim->size;
+			if (size.magnitude() > lastSize.magnitude())
+			{
+				const dReal* p = dGeomGetPosition(prim->geom[0]);
+				cofm = Vector3(p[0], p[1], p[2]);
+				lastSize = size;
+			}
+
 		}
+		
+		dMass mass;
+		dBodyGetMass(connector->body, &mass);
+		mass.c[0] = cofm.x;
+		mass.c[1] = cofm.y;
+		mass.c[2] = cofm.z;
+
 		connector->modifyUserdata(this);
+		connector->modifyMass(mass);
 	}
 
 }

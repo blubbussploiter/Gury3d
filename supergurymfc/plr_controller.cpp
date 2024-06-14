@@ -35,7 +35,7 @@ void RBX::Network::PlayerController::mv_update()
 void RBX::Network::PlayerController::move()
 {
 	CoordinateFrame o;
-	Vector3 mov;
+	Vector3 mov = Vector3::zero();
 	Vector3 look;
 	RBX::Camera* camera;
 	RBX::ModelInstance* character;
@@ -78,8 +78,16 @@ void RBX::Network::PlayerController::move()
 			mov = normalize(-o.rightVector());
 			break;
 		}
-		case RBX::Jump: { humanoid->setJump(); setdir(Idle); return; }
-		case RBX::Idle: { return; }
+		case RBX::Jump:
+		{
+			setdir(Idle);
+			humanoid->setJump();
+			break;
+		}
+		case RBX::Idle: 
+		{
+			directions.clear();
+			break; }
 		}
 	}
 

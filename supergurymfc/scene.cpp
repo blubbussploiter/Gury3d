@@ -77,15 +77,33 @@ void render3DSurface(RBX::Render::Renderable* r, RenderDevice* rd)
 	r->render3DSurfaces(rd);
 }
 
-void stepStepper(RBX::Render::Renderable* r, RenderDevice* rd)
+void doStep(RBX::Render::Renderable* r, bool stepKernel=0)
 {
+
 	RBX::ISteppable* steppable;
 	RBX::Instance* i = dynamic_cast<RBX::Instance*>(r);
 	steppable = dynamic_cast<RBX::ISteppable*>(i);
 	if (steppable)
 	{
-		steppable->onStep();
+		if (!stepKernel)
+		{
+			steppable->onStep();
+		}
+		else
+		{
+			steppable->onKernelStep();
+		}
 	}
+}
+
+void stepStepper(RBX::Render::Renderable* r, RenderDevice* rd)
+{
+	doStep(r);
+}
+
+void stepStepperKernel(RBX::Render::Renderable* r, RenderDevice* rd)
+{
+	doStep(r, true);
 }
 
 void initializePVInstance(RBX::Render::Renderable* r, RenderDevice* rd)
@@ -124,6 +142,11 @@ void RBX::Scene::updateSteppables()
 	iterate(0, steppableRule, stepStepper);
 }
 
+void RBX::Scene::updateSteppablesKernelly()
+{
+	iterate(0, steppableRule, stepStepperKernel);
+}
+
 void RBX::Scene::opaquePass(RenderDevice* rd)
 {
 	iterate(rd, opaqueRule, renderRenderable);
@@ -134,13 +157,12 @@ void RBX::Scene::reflectancePass(RenderDevice* rd) /* keep working on this somet
 	rd->pushState();
 	rd->disableLighting();
 
-	rd->configureReflectionMap(0, getGlobalSky()->getEnvironmentMap());
-	rd->setDepthWrite(0);
+	//rd->configureReflectionMap(0, getGlobalSky()->getEnvironmentMap());
+	//rd->setDepthWrite(0);
 
 	iterate(rd, reflectanceRule, renderRenderable);
 	
 	rd->popState();
-
 }
 
 void RBX::Scene::transparentPass(RenderDevice* rd)

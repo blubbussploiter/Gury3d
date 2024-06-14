@@ -17,6 +17,8 @@
 #include "surfaceFactory.h"
 #include "stdout.h"
 
+#include "rbxmath.h"
+
 namespace RBX
 {
 
@@ -39,6 +41,8 @@ namespace RBX
 		friend class RBX::PartInstance;
 	private:
 
+		Body* body;
+
 		float elasticity, friction, erp, cfm;
 		float surfaceAlpha;
 
@@ -53,7 +57,6 @@ namespace RBX
 
 		PV* pv;
 		Primitive* primitive;
-		Body* body;
 
 		Vector3 size;
 		Color3 color;
@@ -135,6 +138,11 @@ namespace RBX
 			return 0;
 		}
 
+		Primitive* getPrimitive()
+		{
+			return primitive;
+		}
+
 		void setVelocity(Vector3 newVelocity)
 		{
 			pv->velocity.linear = newVelocity;
@@ -194,13 +202,14 @@ namespace RBX
 		void setFace(NormalId f, SurfaceType s);
 		void initFace(unsigned int& f,  SurfaceType s);
 
-		void render(RenderDevice* rd);
-		void renderFace(RenderDevice* rd, NormalId face);
-		void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
-		void renderDecal(RenderDevice* rd, Decal* decal);
+		void render(RenderDevice* renderDevice);
+		void renderFace(RenderDevice* renderDevice, NormalId face);
+		void renderFaceFitForDecal(RenderDevice* renderDevice, NormalId face);
+		void renderFaceFitForTexture(RenderDevice* renderDevice, NormalId face, Vector2 StudsUV);
+		void renderDecal(RenderDevice* renderDevice, Decal* decal);
 
-		void renderSurfaces(RenderDevice* rd);
-		void render3DSurfaces(RenderDevice* rd);
+		void renderSurfaces(RenderDevice* renderDevice);
+		void render3DSurfaces(RenderDevice* renderDevice);
 
 		void render3dSurface(RenderDevice* d, NormalId face);
 
@@ -269,6 +278,8 @@ namespace RBX
 		bool getCanCollide() { return canCollide; }
 		bool getLocked() { return locked; }
 
+		CoordinateFrame getCoordinateFrame() { return getCFrame(); }
+
 		SurfaceType getSurface(NormalId face);
 
 		float getFauxTransparency()
@@ -302,9 +313,7 @@ namespace RBX
 
 		Vector3 getEulerAngles()
 		{
-			Vector3 euler;
-			pv->position.rotation.toEulerAnglesXYZ(euler.x, euler.y, euler.z);
-			return euler;
+			return Math::getEulerAngles(pv->position.rotation);
 		}
 
 		void lookAt(Vector3 v)

@@ -242,6 +242,7 @@
     <ClInclude Include="luabridge.h" />
     <ClInclude Include="motor.h" />
     <ClInclude Include="primitive.h" />
+    <ClInclude Include="shadows.h" />
     <ClInclude Include="snap.h" />
     <ClInclude Include="StudioTool.h" />
     <ClInclude Include="surfaceFactory.h" />
@@ -278,12 +279,14 @@
     <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="exp_jointsService.cpp" />
     <ClCompile Include="hopperbin.cpp" />
+    <ClCompile Include="humanoidPhysicsStuff.cpp" />
     <ClCompile Include="iobfix.cpp" />
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="jointsservice.cpp" />
     <ClCompile Include="kernel.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="motor.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="serializer.h" />
     <ClInclude Include="scriptcontext.h" />
@@ -293,9 +296,11 @@
     <ClInclude Include="soundservice.h" />
     <ClInclude Include="stdout.h" />
     <ClInclude Include="strings.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="thumbnailGenerator.h" />
     <ClInclude Include="vector3bridge.h" />
     <ClInclude Include="view.h" />
+    <ClInclude Include="weld.h" />
     <ClInclude Include="workspace.h" />
     <ClInclude Include="yieldingthreads.h" />
     <ClInclude Include="ChildFrm.h" />
@@ -366,6 +371,7 @@
     <ClCompile Include="scriptcontext.cpp" />
     <ClCompile Include="selection.cpp" />
     <ClCompile Include="serializer.cpp" />
+    <ClCompile Include="shadows.cpp" />
     <ClCompile Include="snap.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sounds.cpp" />
@@ -373,11 +379,13 @@
     <ClCompile Include="StudioTool.cpp" />
     <ClCompile Include="surfaceFactory.cpp" />
     <ClCompile Include="surfaces.cpp" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
     <ClCompile Include="ToneMap.cpp" />
     <ClCompile Include="valuebridge.cpp" />
     <ClCompile Include="vector3mt.cpp" />
     <ClCompile Include="view.cpp" />
+    <ClCompile Include="wedgemesh.cpp" />
     <ClCompile Include="workspace.cpp" />
     <ClCompile Include="..\include\lua\lapi.c" />
     <ClCompile Include="..\include\lua\lauxlib.c" />

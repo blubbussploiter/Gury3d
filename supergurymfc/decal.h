@@ -23,22 +23,21 @@ namespace RBX
 	{
 	private:
 
-		NormalId face;
 		Content tContent;
-
-		TextureRef texture;
 
 		Texture::InterpolateMode interpolateMode;
 		Texture::WrapMode wrapMode;
 
-		unsigned int openGLid;
 	public:
+
+		NormalId face;
+		TextureRef texture;
 
 		float transparency;
 		bool isDefinedSurfaceDecal; /* whether its a hardcoded engine decal or user defined decal. (should be distilled by part color) */
 
 		TextureRef getTexture() { return texture; }
-		void setTexture(TextureRef r) { texture = r; openGLid = 0; }
+		void setTexture(TextureRef r) { texture = r; }
 
 		void setTextureContent(Content c);
 		Content getTextureContent() { return tContent; }
@@ -46,20 +45,19 @@ namespace RBX
 		NormalId getFace() { return face; }
 		void setFace(NormalId _face) { face = _face; }
 
-		void fromFile(std::string file, Texture::WrapMode wrap = Texture::TILE, Texture::InterpolateMode interpolate=Texture::BILINEAR_NO_MIPMAP);
+		void fromFile(std::string file, Texture::WrapMode wrap = Texture::TILE, Texture::InterpolateMode interpolate=Texture::NEAREST_MIPMAP);
 
 		unsigned int getGLid() 
 		{ 
-			if (!openGLid && !texture.isNull()) 
-				openGLid = texture->openGLID(); 
-			return openGLid; 
+			if (!texture.isNull()) 
+				return texture->openGLID(); 
+			return 0;
 		}
 
-		void render(RenderDevice* rd, RBX::Render::Renderable* p);
+		virtual void render(RenderDevice* rd, RBX::Render::Renderable* p);
 		void initContentTexture();
 
 		Decal() {
-			openGLid = 0; 
 			face = NormalId::TOP;
 			transparency = 0.f;
 			setClassName("Decal");

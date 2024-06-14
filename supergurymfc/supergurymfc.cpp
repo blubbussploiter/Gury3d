@@ -314,7 +314,6 @@ void CsupergurymfcApp::OnExecuteScript()
 	}
 
 	static TCHAR BASED_CODE szFilter[] = _T("Scripts (*.rbxs;*.lua;*.txt)|*.rbxs; *.lua;*.txt|All Files (*.*)|*.*||");
-
 	CFileDialog dlgFile(TRUE, "Open", 0, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
 	if (dlgFile.DoModal() == IDOK)

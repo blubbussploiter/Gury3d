@@ -5,6 +5,7 @@
 #include "camera.h"
 
 #include "effectsetting.h"
+#include "shadows.h"
 
 namespace RBX
 {
@@ -12,15 +13,17 @@ namespace RBX
 	{
 	private:
 
-		LightingRef lighting;
-		LightingParameters params;
-
 		Color3 colorClearValue;
-		Render::EffectSettings* effectSettings;
-
+		
 		bool graphicsInitialized;
 
 	public:
+
+		Render::EffectSettings* effectSettings;
+		Shadows* shadows;
+
+		LightingRef lighting;
+		LightingParameters params;
 
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 		void onWorkspaceDescendentRemoved(RBX::Instance* descendent);
@@ -36,6 +39,7 @@ namespace RBX
 			if (!effectSettings)
 			{
 				effectSettings = new Render::EffectSettings();
+				effectSettings->_hemisphereLighting = 0;
 				effectSettings->toneMap->setEnabled(0);
 			}
 			return effectSettings;
@@ -64,6 +68,7 @@ namespace RBX
 		{
 			lighting = G3D::Lighting::create();
 			params.source = LightingParameters::MOON;
+			shadows = new Shadows();
 		}
 
 		static View* singleton();

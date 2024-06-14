@@ -37,6 +37,7 @@ namespace RBX
 		std::vector<MovementDirections> directions;
 
 		void addDirection(MovementDirections direction);
+		void removeDirection(MovementDirections direction);
 
 		float getSpeed() { return speed; }
 		void setSpeed(float s) { speed = s; }

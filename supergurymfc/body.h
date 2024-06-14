@@ -74,6 +74,8 @@ namespace RBX
 
 		Vector3 getForce();
 
+		Vector3 getPosition();
+
 		Matrix3 getMoment();
 
 		void createBody(Vector3 size);

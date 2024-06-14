@@ -25,8 +25,16 @@ namespace RBX
 			Brick
 		};
 
+		class WedgeMesh : public Renderable
+		{
+		public:
+
+			void renderWedgeFace(NormalId face);
+
+		};
+
 		class SpecialMesh : 
-			public RBX::Render::Renderable
+			public WedgeMesh
 		{
 		private:
 			Content meshId;
@@ -84,7 +92,6 @@ namespace RBX
 			void render(RenderDevice* d);
 
 			void renderSpecialMesh(RenderDevice* d);
-			void renderWedgeFace(NormalId face);
 
 			SpecialMesh()
 			{
@@ -97,6 +104,7 @@ namespace RBX
 
 			RTTR_ENABLE(RBX::Render::Renderable)
 		};
+
 	}
 }
 

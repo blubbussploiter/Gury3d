@@ -32,10 +32,11 @@ namespace RBX
 		static Instances empty_ignoreList = {}; /* default argument for function below */
 
 		template <typename IgnoredItem>
-		inline RBX::ISelectable* getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
+		inline RBX::ISelectable* getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld, bool ignoreNonCollidableObjects=false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
 		{
 			IRenderableArray instances;
 			RBX::ISelectable* part = 0;
+
 			float nearest = inf();
 
 			instances = RBX::Scene::singleton()->getArrayOfObjects();
@@ -52,7 +53,8 @@ namespace RBX
 
 					b = child->getCFrame().toWorldSpace(Box(-sb.size, sb.size));
 
-					if (std::find(ignore.begin(), ignore.end(), child) != ignore.end())
+					if (std::find(ignore.begin(), ignore.end(), child) != ignore.end()
+						|| (ignoreNonCollidableObjects && !child->canCollide))
 					{
 						continue;
 					}

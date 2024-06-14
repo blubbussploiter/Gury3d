@@ -68,8 +68,7 @@ void RBX::Experimental::Application::doUserInput()
 void RBX::Experimental::Application::onSimulation(RealTime rdt, SimTime sdt, SimTime idt)
 {
 	SoundService::singleton()->update();
-	getDatamodel()->step();
-	getDatamodel()->heartbeat(idt);
+	getDatamodel()->step(idt);
 }
 
 void RBX::Experimental::Application::onLogic()
@@ -120,7 +119,7 @@ void RBX::Experimental::Application::onKillFocus()
 
 void RBX::Experimental::Application::onInit()
 {
-	Diagnostics::get_Renderer()->diagnostics_enabled = false;
+	Diagnostics::get_Renderer()->diagnostics_enabled = 0;
 
 	RBX::StandardOut::print(RBX::MESSAGE_INFO, "Application::onInit()");
 	RBX::AppManager::singleton()->initOneTimeAppliances();

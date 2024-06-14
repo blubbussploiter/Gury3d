@@ -5,6 +5,8 @@
 
 #pragma comment(lib, "ode.lib")
 
+#define ENGINE_BOUNDS_Y 200
+
 RBX::Kernel* kernel;
 
 void RBX::Kernel::addPrimitive(Primitive* primitive)
@@ -73,9 +75,32 @@ void RBX::Kernel::spawnWorld()
 	}
 }
 
+bool RBX::Kernel::outOfBoundCheck(Primitive* object)
+{
+	if (object->pv->position.translation.y <= -ENGINE_BOUNDS_Y)
+	{
+		object->body->destroyBody();
+		//removePrimitive(object);
+		return 1;
+	}
+	return 0;
+}
+
+float RBX::Kernel::getGravity()
+{
+	dVector3 gravity;
+	dWorldGetGravity(world, gravity);
+	return gravity[1];
+}
+
 void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 {
 	int i;
+
+	Primitive* prim0 = (Primitive*)dGeomGetData(o1);
+	Primitive* prim1 = (Primitive*)dGeomGetData(o2);
+
+	if (!prim0 || !prim1) return;
 
 	dBodyID b1 = dGeomGetBody(o1);
 	dBodyID b2 = dGeomGetBody(o2);
@@ -95,8 +120,11 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 
 			// Define contact surface properties
 
-			contact[i].surface.bounce = 0.5f; //Elasticity
-			contact[i].surface.mu = 0.3f; //Friction
+			float fric = max(prim0->friction, prim1->friction);
+			float elas = max(prim0->elasticity, prim1->elasticity);
+
+			contact[i].surface.bounce = elas; //Elasticity
+			contact[i].surface.mu = fric; //Friction
 			contact[i].surface.slip1 = 0.0f;
 			contact[i].surface.slip2 = 0.0f;
 			contact[i].surface.soft_erp = 0.8f;
@@ -116,20 +144,27 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 void RBX::Kernel::diag_renderObjects(RenderDevice* rd)
 {
 	float radius = 0.5f;
-	Color3 color = Color3::blue();
+	Color3 color = Color3::green();
+
+	rd->pushState();
 
 	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		Primitive* primitive = objects[i];
 		if (primitive)
 		{
-			if (primitive->body)
+			if (primitive->body && primitive->body->body)
 			{
 				const dReal* center = dBodyGetPosition(primitive->body->body);
-				Draw::sphere(Sphere(Vector3(center[0], center[1], center[2]), radius), rd, color, Color4::clear());
+				CoordinateFrame cframe = Vector3(center[0], center[1], center[2]);
+				rd->setObjectToWorldMatrix(cframe);
+				Draw::sphere(Sphere(Vector3::zero(), 0.5f), rd, Color3::blue(), Color4::clear());
+				Draw::axes(rd);
 			}
 		}
 	}
+
+	rd->popState();
 }
 
 RBX::Kernel* RBX::Kernel::get()

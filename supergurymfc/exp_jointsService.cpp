@@ -17,8 +17,8 @@ void RBX::JointsService::Experiment::getKernelWorldContacts()
 
 			/* hacky lil' thing, might not work in the future */
 
-			Vector3 modifiedSize1 = pvInstance1->getSize() * 1.2f;
-			Vector3 modifiedSize2 = pvInstance2->getSize() * 1.2f;
+			Vector3 modifiedSize1 = pvInstance1->getSize() * 1.1f;
+			Vector3 modifiedSize2 = pvInstance2->getSize() * 1.1f;
 			Box modifiedBox1 = pvInstance1->getCFrame().toWorldSpace(Box(-modifiedSize1, modifiedSize1));
 			Box modifiedBox2 = pvInstance2->getCFrame().toWorldSpace(Box(-modifiedSize2, modifiedSize2));
 
@@ -34,9 +34,9 @@ void RBX::JointsService::Experiment::getKernelWorldContacts()
 				/* get two contact normals (for linkage) */
 				CollisionDetection::penetrationDepthForFixedBoxFixedBox(modifiedBox1, modifiedBox2, contactPoints, contactNormals);
 
-				if (contactNormals.size() > 0)
+				for (int i = 0; i < contactNormals.size(); i++)
 				{
-					Vector3 normal = contactNormals[0];
+					Vector3 normal = contactNormals[i];
 
 					NormalId n0;
 					n0 = fromNormal(normal);

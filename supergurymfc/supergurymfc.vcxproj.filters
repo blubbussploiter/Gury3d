@@ -60,9 +60,6 @@
     <Filter Include="Header Files\game\rendering\objects">
       <UniqueIdentifier>{a7ad6bb3-d916-424d-a017-196e1528df73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\game\rendering\offscreen">
-      <UniqueIdentifier>{847c621d-7484-466b-80b3-7e999952cbec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\game\services">
       <UniqueIdentifier>{1aa7e503-b5a0-46c5-9dd0-be8a8bb088a2}</UniqueIdentifier>
     </Filter>
@@ -196,6 +193,9 @@
     <Filter Include="Header Files\studio\tools\wnds">
       <UniqueIdentifier>{c5d263b2-fb41-43bf-88e4-17104151aa68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game\rendering\objects\offscreen">
+      <UniqueIdentifier>{847c621d-7484-466b-80b3-7e999952cbec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="content.h">
@@ -247,7 +247,7 @@
       <Filter>Header Files\game\reflection</Filter>
     </ClInclude>
     <ClInclude Include="oscontext.h">
-      <Filter>Header Files\game\rendering\offscreen</Filter>
+      <Filter>Header Files\game\rendering\objects\offscreen</Filter>
     </ClInclude>
     <ClInclude Include="pvinstance.h">
       <Filter>Header Files\game\rendering</Filter>
@@ -475,6 +475,15 @@
       <Filter>Header Files\studio\tools</Filter>
     </ClInclude>
     <ClInclude Include="diagnosticsWorldDrawer.h">
+      <Filter>Header Files\game\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="weld.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\game\rendering\decals</Filter>
+    </ClInclude>
+    <ClInclude Include="shadows.h">
       <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
   </ItemGroup>
@@ -862,6 +871,21 @@
     </ClCompile>
     <ClCompile Include="exp_jointsService.cpp">
       <Filter>Source Files\rbx\game\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="wedgemesh.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="humanoidPhysicsStuff.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers</Filter>
+    </ClCompile>
+    <ClCompile Include="shadows.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

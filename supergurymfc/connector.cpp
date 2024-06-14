@@ -38,10 +38,12 @@ void RBX::Connector::diagRender(RenderDevice* rd)
 
 void RBX::Connector::diagRenderPrimitiveOutlines(RenderDevice* rd)
 {
+	Color3 color;
+	color = (prim0->body == 0 || prim1->body == 0) ? Color3::blue() : Color3::red();
 	rd->setObjectToWorldMatrix(prim0->pv->position);
-	Primitives::drawOutline(rd, -prim0->size, prim0->size, Color3::red(), 0.1f);
+	Primitives::drawOutline(rd, -prim0->size, prim0->size, color, 0.1f);
 	rd->setObjectToWorldMatrix(prim1->pv->position);
-	Primitives::drawOutline(rd, -prim1->size, prim1->size, Color3::red(), 0.1f);
+	Primitives::drawOutline(rd, -prim1->size, prim1->size, color, 0.1f);
 }
 
 CoordinateFrame RBX::Connector::getInterceptPosition()

@@ -33,6 +33,7 @@ namespace RBX
 
 			/* renderface but with (preferably) different uv mapping */
 			virtual void renderFaceFitForDecal(RenderDevice* rd, NormalId face) {};
+			virtual void renderFaceFitForTexture(RenderDevice* rd, NormalId face, Vector2 StudsUV) {};
 
 			virtual ~Renderable() {}
 			Renderable() 

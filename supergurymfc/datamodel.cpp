@@ -108,12 +108,8 @@ void RBX::Datamodel::open()
     // guiRoot->initFont();
 }
 
-void RBX::Datamodel::step()
+void RBX::Datamodel::step(double deltaTime)
 {
-    runService->heartbeat();
-}
-
-void RBX::Datamodel::heartbeat(double step)
-{
-    yieldingThreads->resume(step);
+    runService->heartbeat(deltaTime);
+    yieldingThreads->resume(deltaTime);
 }

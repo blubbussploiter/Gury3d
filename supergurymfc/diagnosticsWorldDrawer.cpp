@@ -33,10 +33,6 @@ void RBX::Diagnostics::Renderer::render(RenderDevice* rd)
 
 	}
 
-	/* render kernel stuff */
-
-	Kernel::get()->diag_renderObjects(rd);
-
 	/* -- render roblox stuff probably.. -- */
 
 

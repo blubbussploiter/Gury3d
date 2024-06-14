@@ -199,38 +199,7 @@ void RBX::Camera::lookAtSelected()
     std::vector<RBX::ISelectable*> selected = RBX::Selection::selection;
     Vector3 position;
 
-    if (selected.size() > 0)
-    {
-        Vector3 min, max;
-        for (unsigned int i = 0; i < selected.size(); i++) /* modded version of this: https://devforum.roblox.com/t/how-do-i-get-the-middle-of-multiple-parts/2007200/20 */
-        {
-            ISelectable* selectable = selected.at(i);
-            Vector3 pos = selectable->getCenter().translation;
-
-            if (min == Vector3::zero())
-            {
-                min = pos;
-            }
-            else
-            {
-                if (pos.x < min.x) min.x = pos.x;
-                if (pos.y < min.y) min.y = pos.y;
-                if (pos.z < min.z) min.z = pos.z;
-            }
-
-            if (max == Vector3::zero())
-            {
-                max = pos;
-            }
-            else
-            {
-                if (pos.x > max.x) max.x = pos.x;
-                if (pos.y > max.y) max.y = pos.y;
-                if (pos.z > max.z) max.z = pos.z;
-            }
-        }
-        position = ((max - min) / 2) + min;
-    }
+    position = ISelectable::getCenterOfSelectableObjects(selected);
 
     lookAt(position);
 }
