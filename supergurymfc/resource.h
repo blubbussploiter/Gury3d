@@ -93,6 +93,7 @@
 #define IDR_RUNSERVICE                  328
 #define SERVICES                        335
 #define CAMERA                          338
+#define IDC_CURSOR1                     349
 #define ID_CLASSINSERT                  1000
 #define ID_INSERT_MODEL                 32772
 #define ID_INSERT_OBJECT                32773
@@ -146,14 +147,12 @@
 #define ID_LOOKAT                       32832
 #define ID_ZOOM_EXTENTS                 32833
 
-
-
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        342
-#define _APS_NEXT_COMMAND_VALUE         32837
+#define _APS_NEXT_RESOURCE_VALUE        350
+#define _APS_NEXT_COMMAND_VALUE         32838
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

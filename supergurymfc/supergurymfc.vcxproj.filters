@@ -486,6 +486,12 @@
     <ClInclude Include="shadows.h">
       <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
+    <ClInclude Include="collisionTest.h">
+      <Filter>Header Files\game\physics\world</Filter>
+    </ClInclude>
+    <ClInclude Include="hinge.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="networkclient.cpp">
@@ -557,7 +563,7 @@
     <ClCompile Include="appmanager.cpp">
       <Filter>Source Files\rbx\game\app</Filter>
     </ClCompile>
-    <ClCompile Include="appSteps.cpp">
+    <ClCompile Include="guryApplication.cpp">
       <Filter>Source Files\rbx\game\app</Filter>
     </ClCompile>
     <ClCompile Include="classes.cpp">
@@ -839,7 +845,7 @@
     <ClCompile Include="CInsertObjectDlg.cpp">
       <Filter>Source Files\rbx\studio\tools\wnds</Filter>
     </ClCompile>
-    <ClCompile Include="ClassView.cpp">
+    <ClCompile Include="ExplorerClass.cpp">
       <Filter>Source Files\rbx\studio\tools\wnds</Filter>
     </ClCompile>
     <ClCompile Include="OutputWnd.cpp">
@@ -848,7 +854,7 @@
     <ClCompile Include="PropertiesWnd.cpp">
       <Filter>Source Files\rbx\studio\tools\wnds</Filter>
     </ClCompile>
-    <ClCompile Include="ViewTree.cpp">
+    <ClCompile Include="ExplorerWnd.cpp">
       <Filter>Source Files\rbx\studio\tools\wnds</Filter>
     </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
@@ -886,6 +892,15 @@
     </ClCompile>
     <ClCompile Include="shadows.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="hinge.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="normalId.cpp">
+      <Filter>Source Files\rbx\game\services\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="toolbarTools.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -990,6 +1005,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\supergurymfc.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\gursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor1.cur">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

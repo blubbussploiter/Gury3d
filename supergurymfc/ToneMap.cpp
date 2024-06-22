@@ -492,21 +492,29 @@ void ToneMap::resizeImages(RenderDevice* rd) {
 
     const Rect2D viewport = rd->getViewport();
 
-    screenImage = Texture::createEmpty
-    ("Copied Screen Image",
-        (int)viewport.width(), (int)viewport.height(),
-        TextureFormat::RGB8,
-        Texture::DIM_2D_NPOT,
-        Texture::Settings::video());
+    /*
+    if (screenImage.isNull() ||
+        (viewport.wh() != screenImage->vector2Bounds())) 
+    { 
+    */
+        screenImage = Texture::createEmpty
+        ("Copied Screen Image",
+            (int)viewport.width(), (int)viewport.height(),
+            TextureFormat::RGB16,
+            Texture::DIM_2D_NPOT,
+            Texture::Settings::video());
 
-    bloomMapIntermediate = Texture::createEmpty
-    ("Bloom map intermediate",
-        (int)viewport.width() / 4, (int)viewport.height(),
-        TextureFormat::RGB8,
-        Texture::DIM_2D_NPOT,
-        Texture::Settings::video());
+        bloomMapIntermediate = Texture::createEmpty
+        ("Bloom map intermediate",
+            (int)viewport.width() / 4, (int)viewport.height(),
+            TextureFormat::RGB16,
+            Texture::DIM_2D_NPOT,
+            Texture::Settings::video());
 
-    resizeBloomMap((int)viewport.width() / 4, (int)viewport.height() / 4);
+        resizeBloomMap((int)viewport.width() / 4, (int)viewport.height() / 4);
+            /*
+    }
+    */
 }
 
 
@@ -516,7 +524,7 @@ void ToneMap::resizeBloomMap(int w, int h) {
     for (int i = 0; i < (stereo ? 2 : 1); ++i) {
         stereoBloomMap[i] = Texture::createEmpty(
             "Bloom map", w, h,
-            TextureFormat::RGB8, Texture::DIM_2D_NPOT,
+            TextureFormat::RGB16, Texture::DIM_2D_NPOT,
             Texture::Settings::video());
     }
 }
@@ -526,7 +534,7 @@ LightingParameters ToneMap::prepareLightingParameters(const LightingParameters& 
 
     bool on = mEnabled && (profile != NO_TONE);
 
-    double lightScale = on ? 0.4 : 1.0;
+    double lightScale = on ? 0.75 : 1.0;
     LightingParameters params = L;
 
     params.emissiveScale *= lightScale;
@@ -541,7 +549,7 @@ LightingParameters ToneMap::prepareLightingParameters(const LightingParameters& 
 
 LightingRef ToneMap::prepareLighting(const LightingRef& L) const {
 
-    double lightScale = (mEnabled && (profile != NO_TONE)) ? 0.4 : 1.0;
+    double lightScale = (mEnabled && (profile != NO_TONE)) ? 0.75 : 1.0;
 
     LightingRef lighting = Lighting::create();
     *lighting = *L;

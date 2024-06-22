@@ -88,12 +88,19 @@ void RBX::ModelInstance::render(RenderDevice* rd)
 
 void RBX::ModelInstance::setPrimaryPartCFrame(CoordinateFrame cframe)
 {
-	getPrimaryPart()->setCFrame(cframe);
+	if (getPrimaryPart())
+	{
+		primaryPart->setCFrame(cframe);
+	}
 }
 
 CoordinateFrame RBX::ModelInstance::getPrimaryPartCFrame()
 {
-	return getPrimaryPart()->getCFrame();
+	if (getPrimaryPart())
+	{
+		return primaryPart->getCFrame();
+	}
+	return CoordinateFrame();
 }
 
 RBX::PartInstance* RBX::ModelInstance::getPrimaryPart()

@@ -10,14 +10,17 @@ class CViewTree : public CTreeCtrl
 {
 private:
 	RBX::ISelectable* lastSelected;
-	std::vector<HTREEITEM> selection;
+	std::vector<RBX::Instance*> selection;
 // Construction
 public:
 	CViewTree() noexcept;
 
+	void DeselectAll();
+
 	void DeselectItem(HTREEITEM item);
 	void SelectItem(HTREEITEM item, BOOL multiSelect);
 
+	void ExpandAndFocusOnItem(RBX::Instance* i, HTREEITEM item);
 	void SelectInstance(RBX::Instance* instance);
 
 // Overrides

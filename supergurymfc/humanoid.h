@@ -44,6 +44,8 @@ namespace RBX
 		WalkMode walkMode;
 		HumanoidStates humanoidState;
 
+		bool wasTripped;
+
 		bool jointsBuilt;
 		bool attemptingToBalance;
 		bool currentlyJumping;
@@ -69,12 +71,13 @@ namespace RBX
 		{
 			health = 100.0f;
 			maxHealth = 100.0f;
-			jumpTimer = 1.0f;
+			jumpTimer = 1.5f;
 			jumpClock = 0.0f;
 			jumping = 0;
 			genieHeight = 3.9f;
 			canJump = 1;
 			currentlyJumping = 0;
+			renderedLast = 1;
 			setClassName("Humanoid");
 			setName("Humanoid");
 		}
@@ -88,11 +91,14 @@ namespace RBX
 		bool isGrounded();
 		bool isJoined();
 
+		void setLegCollisions(bool collidable);
+
 		void adjustLimbPhysics();
 		void buildJoints();
 
-		/* sets humanoidRootPart and humanoidHead accordingly */
 		void setLocalTransparency(float transparency);
+
+		/* sets humanoidRootPart and humanoidHead accordingly */
 		void setHumanoidAttributes();
 
 		void setWalkDirection(Vector3 walkDir);
@@ -121,7 +127,7 @@ namespace RBX
 
 		/* balancing physics stuff */
 
-		void getFeetOffGround(bool isMoving, float damper=0.2f, float multiplier=6.f); /* balancing */
+		void getFeetOffGround(float damper=0.2f, float multiplier=2.f); /* balancing */
 		void genieFloat();
 
 		void tryEnable();

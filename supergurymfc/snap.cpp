@@ -5,7 +5,7 @@ RBX::SnapConnector* RBX::SnapConnector::getConnectingSnap(Primitive* prim)
 {
 	if (!prim->body) return 0;
 
-	void* rawData = dBodyGetData(prim->body->body);
+	void* rawData = prim->body->getUserdata();
 	if (!rawData) return 0;
 
 	RBX::Instance* instance = static_cast<Instance*>(rawData);

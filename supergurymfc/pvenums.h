@@ -3,8 +3,12 @@
 
 #include <rttr/registration.h>
 
+namespace G3D { class Vector3; }
+
 namespace RBX
 {
+	class PVInstance;
+
 	enum NormalId
 	{
 		RIGHT,
@@ -15,6 +19,19 @@ namespace RBX
 		FRONT,
 		UNDEFINED
 	};
+
+	static RBX::NormalId normals[6] = {
+		RBX::NormalId::FRONT,
+		RBX::NormalId::BACK,
+		RBX::NormalId::RIGHT,
+		RBX::NormalId::LEFT,
+		RBX::NormalId::TOP,
+		RBX::NormalId::BOTTOM
+	};
+
+	extern G3D::Vector3 getNormalIdDirection(RBX::NormalId normal);
+
+	extern G3D::Vector3 getNormalFromNormalId(RBX::PVInstance* object, RBX::NormalId normal);
 
 	enum SurfaceType
 	{

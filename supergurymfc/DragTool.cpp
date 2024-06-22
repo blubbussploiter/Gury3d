@@ -3,63 +3,37 @@
 #include "DragTool.h"
 #include "Mouse.h"
 
-void RBX::Studio::DragTool::getAccordingY(ISelectable* s, float& y)
+void RBX::Studio::DragTool::onDrag()
 {
-	PVInstance* target;
-	ISelectable* selected;
-
-	std::vector<RBX::ISelectable*> selection;
-	selection = RBX::Selection::selection;
-
-	target = Mouse::getMouse()->getTargetWithIgnoreList<ISelectable>(selection);
-	selected = toInstance<ISelectable>(target);
-
-	if (!selected || selected == s) return;
-
-	Vector3 size = target->getSize();
-	Vector3 pos = target->getPosition();
-
-	y = pos.y + size.y;
-}
-
-void RBX::Studio::DragTool::doGraphics(RenderDevice* rd)
-{
+	Selection* selectionService;
+	selectionService = Selection::get();
+	
+	if (isDragging)
+	{
+		selectionService->canSelect = false;
+	}
+	else
+	{
+		selectionService->canSelect = true;
+	}
 }
 
 void RBX::Studio::DragTool::doLogic(UserInput* userInput)
 {
-	return;
+	Selection* selectionService;
+	selectionService = Selection::get();
 
-	Vector3 hit;
-	std::vector<RBX::ISelectable*> selected;
-	PVInstance* target;
+	ISelectableArray selection = selectionService->selection;
 
-	bool mouseDown;
-	mouseDown = userInput->keyDown(SDL_LEFT_MOUSE_KEY);
-
-	selected = RBX::Selection::selection;
-
-	target = Mouse::getMouse()->getTarget();
-	hit = Mouse::getMouse()->hitWorld; /* no need to call getHit, getTarget already called! */
-
-	isUsing = (mouseDown && selected.size() != 0);
-
-	if (!isUsing || !mouseDown) return;
-
-	Vector3 translation;
-	float y;
-
-	for (unsigned int i = 0; i < selected.size(); i++)
+	if (userInput->keyDown(SDL_LEFT_MOUSE_KEY) &&
+		selection.size() > 0)
 	{
-		if (!isFinite(hit.x) || !isFinite(hit.y) || !isFinite(hit.z)) return;
-
-		ISelectable* s = selected.at(i);
-
-		y = ceil(hit.y);
-		getAccordingY(s, y);
-
-		translation = Vector3(ceil(hit.x), y, ceil(hit.z));
-
-		s->setCenter(translation);
+		isDragging = true;
 	}
+	else
+	{
+		isDragging = false;
+	}
+
+
 }

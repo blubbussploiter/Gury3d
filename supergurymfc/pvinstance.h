@@ -180,7 +180,7 @@ namespace RBX
 		void setCanCollide(bool c) 
 		{
 			canCollide = c;
-			primitive->modifyCollisions(canCollide);
+			getPrimitive()->modifyCollisions(canCollide);
 		}
 
 		void setCenter(CoordinateFrame c)
@@ -193,7 +193,6 @@ namespace RBX
 		void setFormFactor(FormFactor f)
 		{
 			formFactor = f;
-			setSize(getSizeExternal());
 		}
 
 		bool getShowControllerFlag() { return showControllerFlag; }

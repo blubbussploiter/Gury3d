@@ -43,7 +43,7 @@ bool RBX::Gui::GuiObject::mouseIn(Vector2 mouse)
 
 void RBX::Gui::GuiObject::updateMouse(UserInput* ui)
 {
-	RBX::Selection::canSelect = !mouseIn(ui->mouseXY());
+	RBX::Selection::get()->canSelect = !mouseIn(ui->mouseXY());
 }
 
 void RBX::Gui::GuiObject::handleMouse(UserInput* ui)

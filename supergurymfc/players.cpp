@@ -25,7 +25,7 @@ RTTR_REGISTRATION
 }
 
 
-void Players::createLocalPlayer(int userId)
+Player* Players::createLocalPlayer(int userId)
 {
 	Player* player;
 
@@ -45,6 +45,7 @@ void Players::createLocalPlayer(int userId)
 	localPlayer = player;
 	addPlayer(player);
 
+	return localPlayer;
 }
 
 void RBX::Network::Players::setPlayerList(RBX::Gui::GuiList* _playerList)

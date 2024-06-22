@@ -10,30 +10,33 @@
 
 namespace RBX
 {
+	typedef std::vector<RBX::ISelectable*> ISelectableArray;
+
 	class Selection : public RBX::Instance
 	{
 	public:
-		static std::vector<RBX::ISelectable*> selection;
 
-		static Vector2 selectionDragBoxStart, selectionDragBoxEnd;
-		static Vector2 worldSelectStart, worldSelectEnd;
+		ISelectableArray selection;
 
-		static bool clicked, down;
-		static bool canSelect, multiSelect;
+		Vector2 selectionDragBoxStart, selectionDragBoxEnd;
+		Vector2 worldSelectStart, worldSelectEnd;
 
-		static bool isSelected(ISelectable* i);
+		bool clicked, down;
+		bool canSelect, multiSelect;
 
-		static void renderDragBox(RenderDevice* rd);
+		bool isSelected(ISelectable* i);
 
-		static void renderSelected(RenderDevice* rd, ISelectable* i);
-		static void renderSelection(RenderDevice* d);
+		void renderDragBox(RenderDevice* rd);
 
-		static void dragSelect();
+		void renderSelected(RenderDevice* rd, ISelectable* i);
+		void renderSelection(RenderDevice* d);
 
-		static void update(UserInput* ui);
+		void dragSelect();
 
-		static bool select(PVInstance* p, bool multiSelect);
-		static void deselect(RBX::ISelectable* pv)
+		void update(UserInput* ui);
+
+		bool select(PVInstance* p, bool multiSelect);
+		void deselect(RBX::ISelectable* pv)
 		{
 			if (pv)
 			{
@@ -45,15 +48,14 @@ namespace RBX
 			}
 		}
 
-		static void deselectAll()
+		void deselectAll()
 		{
 			selection.clear();
 		}
 
-		static void select(RBX::ISelectable* pv)
-		{
-			selection.push_back(pv);
-		}
+		void select(RBX::ISelectable* pv, bool selectInExplorer=1);
+
+		static Selection* get();
 	};
 }
 

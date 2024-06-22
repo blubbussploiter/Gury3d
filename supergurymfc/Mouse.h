@@ -17,6 +17,7 @@ namespace RBX
 	public:
 
 		bool hoveringUI;
+		int currentglId;
 		float cx, cy, x, y;
 
 		Vector3 hitWorld, dir;
@@ -28,7 +29,10 @@ namespace RBX
 		Vector3 getDir() { getTarget(); return dir; }
 		Vector3 getHit() { getTarget(); return hitWorld; }
 
+		bool inGuryWindow();
+
 		void update(UserInput* ui);
+		void updateCursorInfo();
 		void render(RenderDevice* rd);
 
 		template<typename IgnoredItem>

@@ -3,7 +3,7 @@
 
 void RBX::JointsService::Experiment::getKernelWorldContacts()
 {
-    IRenderableArray instances = Scene::singleton()->getArrayOfObjects();\
+    Instances instances = Scene::singleton()->getArrayOfObjects();
 
 	for (RBX::Instance* instance1 : instances)
 	{
@@ -17,6 +17,8 @@ void RBX::JointsService::Experiment::getKernelWorldContacts()
 
 			/* hacky lil' thing, might not work in the future */
 
+			bool areIntersecting;
+
 			Vector3 modifiedSize1 = pvInstance1->getSize() * 1.1f;
 			Vector3 modifiedSize2 = pvInstance2->getSize() * 1.1f;
 			Box modifiedBox1 = pvInstance1->getCFrame().toWorldSpace(Box(-modifiedSize1, modifiedSize1));
@@ -26,7 +28,7 @@ void RBX::JointsService::Experiment::getKernelWorldContacts()
 			modifiedBox1.getBounds(box1);
 			modifiedBox2.getBounds(box2);
 
-			bool areIntersecting = box1.intersects(box2);
+			areIntersecting = box1.intersects(box2);
 			if (areIntersecting)
 			{
 				Array<Vector3> contactPoints, contactNormals;
@@ -38,12 +40,13 @@ void RBX::JointsService::Experiment::getKernelWorldContacts()
 				{
 					Vector3 normal = contactNormals[i];
 
-					NormalId n0;
-					n0 = fromNormal(normal);
+					NormalId n0, n1;
+					n0 = fromNormal(pvInstance1, normal);
+					n1 = fromNormal(pvInstance2, -normal);
 
 					SurfaceType s0, s1;
 					s0 = pvInstance1->getSurface(n0);
-					s1 = pvInstance2->getSurface(PVInstance::getOppositeNormalId(n0));
+					s1 = pvInstance2->getSurface(n1);
 
 					Linkage link = makeLinkage(s0, s1);
 

@@ -63,16 +63,13 @@ void Player::loadCharacter()
 
 	if (!IsA<RBX::PartInstance>(head) || !IsA<RBX::PartInstance>(humanoidRootPart)) return;
 
-	Extents e, ce;
-	Vector3 size, pos;
+	Extents ce;
+	Vector3 pos;
 
 	Workspace* workspace;
-
 	workspace = Workspace::singleton();
-	e = workspace->computeVisibleExtents().toWorldSpace(CoordinateFrame());
-	ce = character->computeVisibleExtents().toWorldSpace(CoordinateFrame());
 
-	pos = Vector3(0, e.high.y + (ce.high.y * 2), 0);
+	pos = Camera::singleton()->camera->getCoordinateFrame().translation;
 
 	character->translate(pos);
 

@@ -4,10 +4,14 @@
 
 #include <thread>
 
+#include "resource.h"
+
 #include "framework.h"
 #include "supergurymfc.h"
 
 #include "ChildFrm.h"
+
+HCURSOR RBX::Experimental::guryCursor = 0;
 
 void suspendCurrentApplication(RBX::Experimental::Application* application)
 {
@@ -55,6 +59,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_WM_SETFOCUS()
 	ON_WM_KILLFOCUS()
 	ON_WM_SIZE()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 // CChildFrame construction/destruction
@@ -75,6 +80,13 @@ BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	// TODO: Modify the Window class or styles here by modifying the CREATESTRUCT cs
 
+	std::string cursor = GetFileInPath("\\content\\font\\gury.cur");
+	RBX::Experimental::guryCursor = LoadCursorFromFile(cursor.c_str());
+	cs.lpszClass = AfxRegisterWndClass(
+		CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW, // use any window styles
+		RBX::Experimental::guryCursor,
+		(HBRUSH)(COLOR_WINDOW + 1)); // background brush
+
 	if (!CMDIChildWnd::PreCreateWindow(cs))
 		return FALSE;
 
@@ -83,13 +95,7 @@ BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 void CChildFrame::OnSetFocus(CWnd* pNewWnd)
 {
-	RBX::AppManager* manager = RBX::AppManager::singleton();
-
-	if (application)
-	{
-		suspendCurrentApplication(application);
-		application->onFocus();
-	}
+	CMDIChildWnd::OnSetFocus(pNewWnd);
 }
 
 BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContext)
@@ -103,25 +109,21 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 void CChildFrame::OnKillFocus(CWnd* pNewWnd)
 {
 	CMDIChildWnd::OnKillFocus(pNewWnd);
-
-	// TODO: Add your message handler code here
-
-	//if (application) application->onKillFocus();
 }
 
 
 void CChildFrame::OnSize(UINT nType, int cx, int cy)
 {
-	/*
-
-	RBX::Experimental::Application* application = RBX::AppManager::singleton()->getApplication();
-
-	if (application)
-	{
-		application->resize(cx, cy);
-	}
-
-	*/
 
 	// TODO: Add your message handler code here
+}
+
+
+void CChildFrame::OnClose()
+{
+	// TODO: Add your message handler code here and/or call default
+
+	DestroyCursor(guryCursor);
+
+	CMDIChildWndEx::OnClose();
 }

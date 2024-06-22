@@ -18,6 +18,8 @@ namespace RBX
 		dSpaceID space;
 		dJointGroupID contacts;
 
+		void cleanup();
+
 		void diag_renderObjects(RenderDevice* rd);
 
 		void addPrimitive(Primitive* primitive);
@@ -26,7 +28,7 @@ namespace RBX
 
 		void addQueuedPrimitive(Primitive* primitive);
 
-		void step();
+		void step(float step=0.02f);
 
 		void afterStep();
 
@@ -50,9 +52,8 @@ namespace RBX
 			dWorldSetAutoDisableFlag(world, 1);
 			dWorldSetAutoDisableLinearThreshold(world, 0.5f);
 			dWorldSetAutoDisableAngularThreshold(world, 0.5f);
-			dWorldSetAutoDisableSteps(world, 20);
-			dWorldSetCFM(world, 1^-5);
-			dWorldSetERP(world, 0.8f);
+			//dWorldSetCFM(world, 1^-5);
+			//dWorldSetERP(world, 0.8f);
 		}
 	};
 }

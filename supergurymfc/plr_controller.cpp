@@ -70,12 +70,12 @@ void RBX::Network::PlayerController::move()
 		/* horizontal */
 		case RBX::Right:
 		{
-			mov = normalize(o.rightVector());
+			mov += normalize(o.rightVector());
 			break;
 		}
 		case RBX::Left:
 		{
-			mov = normalize(-o.rightVector());
+			mov += normalize(-o.rightVector());
 			break;
 		}
 		case RBX::Jump:
@@ -91,5 +91,6 @@ void RBX::Network::PlayerController::move()
 		}
 	}
 
+	camera->doCameraCollisionLogic();
 	humanoid->setWalkDirection(mov);
 }

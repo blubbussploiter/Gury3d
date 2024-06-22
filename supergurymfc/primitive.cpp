@@ -64,21 +64,20 @@ void RBX::Primitive::modifyCollisions(bool canCollide)
 
 void RBX::Primitive::modifyUserdata(void* data)
 {
-	if (!geom[0])
+	ud = data;
+}
+
+void RBX::Primitive::modifyGeomData(void* data)
+{
+	if (geom[0])
 	{
-		ud = data;
-		return;
+		dGeomSetData(geom[0], data);
 	}
-	dGeomSetData(geom[0], data);
 }
 
 void* RBX::Primitive::getUserdata()
 {
-	if (!geom[0])
-	{
-		return ud;
-	}
-	return dGeomGetData(geom[0]);
+	return ud;
 }
 
 void RBX::Primitive::modifyOffsetWorldCoordinateFrame(CoordinateFrame offset)

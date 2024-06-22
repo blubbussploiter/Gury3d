@@ -33,7 +33,7 @@ namespace RBX
 			Player* localPlayer;
 			Player* getLocalPlayer() { return localPlayer; }
 
-			void createLocalPlayer(int userId);
+			Player* createLocalPlayer(int userId);
 
 			void setPlayerList(RBX::Gui::GuiList* playerList);
 			void destroyPlayer(Player* plr);

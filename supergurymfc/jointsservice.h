@@ -63,6 +63,7 @@ namespace RBX
 		class Experiment
 		{
 		public:
+			static bool areIntersecting(PVInstance* pv1, PVInstance* pv2);
 			static void getKernelWorldContacts();
 			static void buildGlobalJoints();
 		};
@@ -87,7 +88,7 @@ namespace RBX
 
 		static Linkage makeLinkage(SurfaceType s0, SurfaceType s1);
 
-		static NormalId fromNormal(Vector3 normal);
+		static NormalId fromNormal(PVInstance* object, Vector3 normal);
 
 		static Connector* fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1, NormalId surface);
 

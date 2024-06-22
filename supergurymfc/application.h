@@ -12,6 +12,8 @@ namespace RBX
 	namespace Experimental
 	{
 
+		extern HCURSOR guryCursor;
+
 		class Application
 		{
 		private:
@@ -19,7 +21,6 @@ namespace RBX
 			bool isThinking, isInitialized;
 			RealTime lastWaitTime, lastTime;
 
-			HWND parent;
 			Datamodel* datamodel;
 
 			Camera* camera; /* main viewport */
@@ -31,9 +32,12 @@ namespace RBX
 
 		public:
 
+			HWND parent;
+
 			SkyRef sky;
 
 			bool justReceivedFocus, inFocus;
+			int width, height;
 			float fps;
 
 			WNDPROC wndProc;
@@ -54,6 +58,7 @@ namespace RBX
 
 			/* onXXX */
 
+			void onResize();
 			void onGraphics();
 			void onLogic();
 			void onInit();

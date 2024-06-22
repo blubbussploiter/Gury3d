@@ -20,6 +20,7 @@ protected:
 public:
 
 	bool isChildFrame;
+	HCURSOR guryCursor;
 
 	RBX::Experimental::Application* application;
 
@@ -46,5 +47,6 @@ protected:
 public:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnClose();
 };
 

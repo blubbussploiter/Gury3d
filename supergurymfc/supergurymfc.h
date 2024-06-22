@@ -39,6 +39,8 @@ public:
 		afx_msg void OnRunRunService();
 		afx_msg void OnPauseRunService();
 		afx_msg void OnResetRunService();
+		afx_msg void OnMoveUp();
+		afx_msg void OnMoveDown();
 		afx_msg void OnTiltLeft();
 		afx_msg void OnTiltRight();
 		afx_msg void OnTiltUp();

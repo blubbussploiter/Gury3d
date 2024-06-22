@@ -2,6 +2,7 @@
 #include "primitive.h"
 
 #include "pvinstance.h"
+#include "scene.h"
 
 #pragma comment(lib, "ode.lib")
 
@@ -24,13 +25,13 @@ void RBX::Kernel::addQueuedPrimitive(Primitive* primitive)
 	objectQueue.append(primitive);
 }
 
-void RBX::Kernel::step()
+void RBX::Kernel::step(float step)
 {
 	/* ode stuff, step the simulation */
 
 	dJointGroupEmpty(contacts);
 	dSpaceCollide(space, 0, &Kernel::collisionCallback);
-	dWorldQuickStep(world, 0.02f);
+	dWorldQuickStep(world, step);
 
 	Kernel::get()->afterStep();
 
@@ -55,23 +56,16 @@ void RBX::Kernel::afterStep()
 
 void RBX::Kernel::spawnWorld()
 {
-	if (objectQueue.size() > 0)
+	/* not going by very inconsistent primitives anymore, going by pvinstances in scene */
+
+	RBX::Instances instances = Scene::singleton()->getArrayOfObjects();
+	for (unsigned int i = 0; i < instances.size(); i++)
 	{
-		for (int i = 0; i < objectQueue.size(); i++)
+		PVInstance* pv = toInstance<PVInstance>(instances.at(i));
+		if (pv)
 		{
-			Primitive* prim = objectQueue[i];
-			PVInstance* pv;
-
-			void* ud = prim->getUserdata();
-			pv = (PVInstance*)ud;
-
-			if (pv)
-			{
-				pv->initializeForKernel();
-			}
+			pv->initializeForKernel();
 		}
-
-		objectQueue.clear();
 	}
 }
 
@@ -139,6 +133,15 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 		}
 
 	}
+}
+
+void RBX::Kernel::cleanup()
+{
+	RBX::StandardOut::print(RBX::MESSAGE_INFO, "Kernel::cleanup() closing Gurnel");
+	dJointGroupDestroy(contacts);
+	dSpaceDestroy(space);
+	dWorldDestroy(world);
+	dCloseODE();
 }
 
 void RBX::Kernel::diag_renderObjects(RenderDevice* rd)

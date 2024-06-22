@@ -106,8 +106,9 @@ RBX::Experimental::Application::Application(HWND wnd)
 
 	_settings.window.resizable = true;
 	_settings.window.framed = false;
-	_settings.window.stereo = false;
+	_settings.window.stereo = true;
 	_settings.window.refreshRate = 32;
+	_settings.window.depthBits = 32;
 	_settings.dataDir = ConFileInPath("\\content\\");
 
 	parent = wnd;

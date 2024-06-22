@@ -34,7 +34,7 @@ namespace RBX
 		template <typename IgnoredItem>
 		inline RBX::ISelectable* getPartFromG3DRay(G3D::Ray ray, Vector3& hitWorld, bool ignoreNonCollidableObjects=false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
 		{
-			IRenderableArray instances;
+			Instances instances;
 			RBX::ISelectable* part = 0;
 
 			float nearest = inf();
@@ -43,7 +43,7 @@ namespace RBX
 
 			for (unsigned int i = 0; i < instances.size(); i++)
 			{
-				RBX::Instance* instance = toInstance<RBX::Instance>(instances.at(i));
+				RBX::Instance* instance = instances.at(i);
 				RBX::PVInstance* child = toInstance<PVInstance>(instance);
 
 				if (child)
@@ -72,6 +72,24 @@ namespace RBX
 
 			return part;
 
+		}
+
+		template <typename IgnoredItem>
+		Vector3 getHitFromRay(G3D::Ray ray, bool ignoreNonCollidableObjects = false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
+		{
+			Vector3 hit = Vector3::zero();
+			getPartFromG3DRay<IgnoredItem>(ray, hit, ignoreNonCollidableObjects, ignore);
+			return hit;
+		}
+
+
+		template <typename IgnoredItem>
+		PVInstance* getPVInstanceFromRay(G3D::Ray ray, bool ignoreNonCollidableObjects = false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
+		{
+			Vector3 h;
+			ISelectable* i = getPartFromG3DRay<IgnoredItem>(ray, h, ignoreNonCollidableObjects, ignore);
+			Instance* instance = dynamic_cast<Instance*>(i);
+			return toInstance<PVInstance>(instance);
 		}
 
 	}

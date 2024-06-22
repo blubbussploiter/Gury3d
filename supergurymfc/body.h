@@ -58,6 +58,8 @@ namespace RBX
 
 		void modifyUserdata(void* data);
 
+		void modifyBodyData(void* data);
+
 		void modifyVelocity(Velocity velocity);
 
 		void modifyPosition(CoordinateFrame position);

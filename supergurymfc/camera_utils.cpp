@@ -27,7 +27,6 @@ void RBX::Camera::setFrame(const CoordinateFrame& cf)
 	cframe = cf;
 	lookAt(cframe.translation + look);
 	focusPosition = cframe.translation + cframe.lookVector() * zoom;
-	if(focusPart) focusPosition = focusPart->getPosition();
 }
 
 void RBX::Camera::occlude()
@@ -82,7 +81,7 @@ void RBX::Camera::refreshZoom(const CoordinateFrame& frame)
 	setFrame(zoomFrame);
 }
 
-void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY)
+void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool lookAt)
 {
 	Vector3 pos;
 
@@ -95,7 +94,10 @@ void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY)
 	pos = Vector3(sin(-yaw) * zoom * cos(pitch), sin(pitch) * zoom, cos(-yaw) * zoom * cos(pitch)) + focusPosition;
 
 	frame->translation = pos;
-	frame->lookAt(focusPosition);
+	if (lookAt)
+	{
+		frame->lookAt(focusPosition);
+	}
 }
 
 void RBX::Camera::panLock(CoordinateFrame* frame, float spdX, float spdY)
@@ -132,40 +134,49 @@ void RBX::Camera::Zoom(short delta)
 	{
 		switch3->play();
 	}
+	if (oldZoom > zoom)
+	{
+		zoom = oldZoom;
+		oldZoom = 0;
+		pan(&cframe, 0, 0);
+	}
 
 	if (delta>0) { // Mouse wheel up
-		CoordinateFrame zoomFrame = cframe + cframe.lookVector()*(zoom*0.2f);
-		zoom=(zoomFrame.translation-focusPosition).magnitude();
-		if (zoom>CAM_ZOOM_MIN)
+		CoordinateFrame zoomFrame = cframe + cframe.lookVector() * (zoom * 0.2f);
+		zoom = (zoomFrame.translation - focusPosition).magnitude();
+		if (zoom > CAM_ZOOM_MIN)
 		{
 			setFrame(zoomFrame);
-			if (cameraType == Follow)
-			{
-				tiltDown(5);
-			}
 		}
 		else
 		{
-			zoom=CAM_ZOOM_MIN;
+			zoom = CAM_ZOOM_MIN;
 			refreshZoom(cframe);
+		}
+		if (cameraType == Follow)
+		{
+			tiltDown(5);
 		}
 	}
 	else 
 	{
-		CoordinateFrame zoomFrame = cframe - cframe.lookVector()*(zoom*0.2f);
-		zoom=(zoomFrame.translation-focusPosition).magnitude();
-		if (zoom<CAM_ZOOM_MAX)
+		if (canZoom(0))
 		{
-			setFrame(zoomFrame);
-			if (cameraType == Follow)
+			CoordinateFrame zoomFrame = cframe - cframe.lookVector() * (zoom * 0.2f);
+			zoom = (zoomFrame.translation - focusPosition).magnitude();
+			if (zoom < CAM_ZOOM_MAX)
 			{
-				tiltUp(5);
+				setFrame(zoomFrame);
+			}
+			else
+			{
+				zoom = CAM_ZOOM_MAX;
+				refreshZoom(cframe);
 			}
 		}
-		else
+		if (cameraType == Follow)
 		{
-			zoom=CAM_ZOOM_MAX;
-			refreshZoom(cframe);
+			tiltUp(5);
 		}
 	}
 }

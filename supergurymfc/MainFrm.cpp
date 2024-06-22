@@ -471,7 +471,7 @@ void CMainFrame::OnUpdateLookAtButton(CCmdUI* pCmdUI)
 		pCmdUI->Enable(0);
 		return;
 	}
-	pCmdUI->Enable(RBX::Selection::selection.size() > 0);
+	pCmdUI->Enable(RBX::Selection::get()->selection.size() > 0);
 }
 
 void CMainFrame::OnUpdateRunServiceIsntRunningButton(CCmdUI* pCmdUI)

@@ -17,13 +17,7 @@
 #include "supergurymfcDoc.h"
 #include "supergurymfcView.h"
 
-#include "players.h"
-#include "datamodel.h"
-#include "serializer.h"
 #include "crashreporter.h"
-#include "scriptcontext.h"
-
-#include "classes.h"
 
 #include "StudioTool.h"
 
@@ -45,6 +39,8 @@ BEGIN_MESSAGE_MAP(CsupergurymfcApp, CWinAppEx)
 	ON_COMMAND(IDR_RUN, &CsupergurymfcApp::OnRunRunService)
 	ON_COMMAND(IDR_PAUSE, &CsupergurymfcApp::OnPauseRunService)
 	ON_COMMAND(IDR_RESET, &CsupergurymfcApp::OnResetRunService)
+	//ON_COMMAND(ID_MOVE_UP, &CsupergurymfcApp::OnMoveUp)
+	//ON_COMMAND(ID_MOVE_DOWN, &CsupergurymfcApp::OnMoveDown)
 	ON_COMMAND(ID_TILT_LEFT, &CsupergurymfcApp::OnTiltLeft)
 	ON_COMMAND(ID_TILT_RIGHT, &CsupergurymfcApp::OnTiltRight)
 	ON_COMMAND(ID_TILT_UP, &CsupergurymfcApp::OnTiltUp)
@@ -235,203 +231,6 @@ void CsupergurymfcApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
-void CsupergurymfcApp::OnInsertObject()
-{
-	if (RBX::AppManager::isReady())
-	{
-		CInsertObjectDlg dialog;
-		if (dialog.DoModal() == IDOK)
-		{
-			std::string classN;
-			classN = dialog.CLASSTOINSERT;
-
-			RBX::Instance* n = RBX::fromName(classN);
-			if (!n)
-			{
-				std::string err = RBX::Format("Failed to insert object of type '%s'. Did you spell it correctly?", classN.c_str());
-				MessageBox(0, err.c_str(), "Gury3d", MB_ICONWARNING);
-			}
-			else
-			{
-				RBX::Instance* parent = RBX::Workspace::singleton();
-				if (parent) n->setParent(parent);
-			}
-		}
-	}
-}
-
-void CsupergurymfcApp::OnInsertModel()
-{
-	if (RBX::AppManager::isReady())
-	{
-		static TCHAR BASED_CODE szFilter[] = _T("ROBLOX Model Files (*.rbxm;*.rbxmx)|*.rbxm; *.rbxmx|All Files (*.*)|*.*||");
-
-		CFileDialog dlgFile(TRUE, "Open", 0, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
-
-		if (dlgFile.DoModal() == IDOK)
-		{
-			CString file = dlgFile.GetPathName();
-			RBX::Instances* instances = RBX::Serializer::loadInstances(file.GetString());
-
-			if (instances->size() > 0)
-			{
-				RBX::Instance* at = instances->at(0);
-				RBX::Instance* parent = RBX::Workspace::singleton();
-
-				if (at && parent)
-				{
-					RBX::ModelInstance* model = dynamic_cast<RBX::ModelInstance*>(at);
-					RBX::Camera* camera = RBX::Camera::singleton();
-
-					at->setParent(parent);
-
-					if (model)
-					{
-						if (!camera)
-						{
-							return;
-						}
-
-						RBX::PartInstance* primaryPart;
-						primaryPart = model->getPrimaryPart();
-
-						if (primaryPart)
-						{
-							camera->lookAt(primaryPart->getPosition());
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void CsupergurymfcApp::OnExecuteScript()
-{
-	if (!RBX::AppManager::isReady())
-	{
-		OnFileNew();
-	}
-
-	static TCHAR BASED_CODE szFilter[] = _T("Scripts (*.rbxs;*.lua;*.txt)|*.rbxs; *.lua;*.txt|All Files (*.*)|*.*||");
-	CFileDialog dlgFile(TRUE, "Open", 0, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
-
-	if (dlgFile.DoModal() == IDOK)
-	{
-		CString file = dlgFile.GetPathName();
-		RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
-
-		if (datamodel && datamodel->scriptContext)
-		{
-			std::ifstream stream(file);
-			std::string script, line = "";
-
-			if (!stream.good()) return;
-			while (std::getline(stream, line)) { script += line + ' '; }
-			stream.close();
-
-			datamodel->scriptContext->execute(script);
-		}
-	}
-}
-
-void CsupergurymfcApp::OnLoadCharacter()
-{
-	RBX::Network::Players* players;
-	RBX::Network::Player* player;
-	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
-
-	if (!datamodel) return;
-	players = datamodel->players;
-	if (!players) return;
-
-	player = players->localPlayer;
-	if (player) player->loadCharacter();
-}
-
-void CsupergurymfcApp::OnRunRunService()
-{
-	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
-	if (!datamodel) return;
-	datamodel->runService->run();
-}
-
-void CsupergurymfcApp::OnPauseRunService()
-{
-	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
-	if (!datamodel) return;
-	datamodel->runService->pause();
-}
-
-void CsupergurymfcApp::OnResetRunService()
-{
-	RBX::Datamodel* datamodel = RBX::Datamodel::getDatamodel();
-	if (!datamodel) return;
-	datamodel->runService->reset();
-}
-
-void CsupergurymfcApp::OnTiltLeft()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->tiltLeft(25);
-}
-
-void CsupergurymfcApp::OnTiltRight()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->tiltRight(25);
-}
-
-void CsupergurymfcApp::OnTiltUp()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->tiltUp();
-}
-
-void CsupergurymfcApp::OnTiltDown()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->tiltDown();
-}
-
-void CsupergurymfcApp::OnZoomIn()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->cam_zoom(1);
-}
-
-void CsupergurymfcApp::OnZoomOut()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->cam_zoom(0);
-}
-
-void CsupergurymfcApp::OnLookat()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->lookAtSelected();
-	camera->switch3->play();
-}
-
-void CsupergurymfcApp::OnZoomExtents()
-{
-	RBX::Camera* camera = RBX::Camera::singleton();
-	if (!camera) return;
-	camera->zoomExtents();
-	camera->switch3->play();
-}
-
-void CsupergurymfcApp::OnMouseToolSelected()
-{
-	RBX::Studio::setToolFromType(RBX::Studio::Mouse);
-}
 
 // CsupergurymfcApp customization load/save methods
 

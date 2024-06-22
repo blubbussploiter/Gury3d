@@ -9,6 +9,18 @@ using namespace RBX;
 RBX::Sound* whoosh = RBX::Sound::fromFile(GetFileInPath("/content/sounds/button.wav"));
 RBX::Sound* bsls_steps = RBX::Sound::fromFile(GetFileInPath("/content/sounds/bfsl-minifigfoots1.mp3"), 1);
 
+void RBX::Humanoid::setLegCollisions(bool collidable)
+{
+    Primitive* leftLeg = getLeftLeg()->getPrimitive();
+    Primitive* rightLeg = getRightLeg()->getPrimitive();
+    
+    if (leftLeg && rightLeg)
+    {
+        leftLeg->modifyCollisions(collidable);
+        rightLeg->modifyCollisions(collidable);
+    }
+}
+
 groundData* RBX::Humanoid::getHumanoidGroundData()
 {
     groundData* data = new groundData();
@@ -25,7 +37,7 @@ groundData* RBX::Humanoid::getHumanoidGroundData()
 
 bool RBX::Humanoid::isGrounded()
 {
-    return (getHumanoidGroundData()->distanceFrom <= genieHeight);
+    return (getHumanoidGroundData()->distanceFrom < genieHeight);
 }
 
 void RBX::Humanoid::adjustLimbPhysics()
@@ -41,7 +53,7 @@ void RBX::Humanoid::tryEnable()
         dBodyEnable(body->body);
 }
 
-void RBX::Humanoid::getFeetOffGround(bool isMoving, float damper, float multiplier)
+void RBX::Humanoid::getFeetOffGround(float damper, float multiplier)
 {
     CoordinateFrame cframe = humanoidHead->getCoordinateFrame();
     Quat rotation = cframe.rotation.inverse();
@@ -92,7 +104,7 @@ void RBX::Humanoid::onTurn()
     Vector3 rotVelocity = humanoidRootPart->getRotVelocity();
     Matrix3 difference = changed.rotation * origin.rotation.inverse();
 
-    r_turnVelocity = Math::getEulerAngles(difference).y / (difference.determinant());
+    r_turnVelocity = Math::getEulerAngles(difference).y * 0.85f;
 
 }
 
@@ -117,13 +129,14 @@ void RBX::Humanoid::onJump()
     Vector3 velocity = body->pv->velocity.linear;
     if (!body || !body->body) return;
 
-    if (jumping) /* manual banual.. very bad and icky (imo) */
+    if (jumping)
     {
-        dBodyAddForce(body->body, 0, 20, 0);
+        dBodyAddForceAtRelPos(body->body, 0, 7.5f, 0, 0, -genieHeight/2, 0);
+
+        whoosh->setStartPosition(jumpClock);
         whoosh->play();
 
-        getLeftLeg()->getPrimitive()->modifyCollisions(1);
-        getRightLeg()->getPrimitive()->modifyCollisions(1);
+        setLegCollisions(true);
 
         jumping = false;
         currentlyJumping = true;
@@ -133,15 +146,13 @@ void RBX::Humanoid::onJump()
     {
     case Jumping:
     {
-        const dReal* torque = dBodyGetTorque(body->body);
-        dBodyAddTorque(body->body, 0, -torque[1], 0); /* stop spinning */
+        r_turnVelocity = 0;
         break;
     }
     case Landed:
     {
         currentlyJumping = false;
-        getLeftLeg()->getPrimitive()->modifyCollisions(0);
-        getRightLeg()->getPrimitive()->modifyCollisions(0);
+        setLegCollisions(false);
         break;
     }
     default: break;
@@ -156,53 +167,83 @@ void RBX::Humanoid::onStrafe()
 
     if (body && body->body)
     {
-        adjustLimbPhysics();
-        tryEnable();
 
-        genieFloat();
-        onJump();
-
-        switch (walkMode)
+        switch (humanoidState)
         {
-            case DIRECTION_MOVE:
+        case Tripped:
+        {
+            if (currentlyJumping)
+                break;
+            getFeetOffGround(0.2f, 3.0f);
+            setLegCollisions(false);
+            wasTripped = 1;
+            break;
+        }
+        default:
+        {
+            adjustLimbPhysics();
+            tryEnable();
+
+            genieFloat();
+            onJump();
+
+            if(wasTripped) /* just got out of being tripped, reset rotational velocity */
             {
-                if (!currentlyJumping)
+                const dReal* torque = dBodyGetTorque(body->body);
+                dBodySetTorque(body->body, -torque[0], -torque[1], -torque[2]);
+                wasTripped = false;
+            }
+
+            switch (walkMode)
+            {
+                case DIRECTION_MOVE:
                 {
-                    onTurn();
-                }
+
+                    if (isGrounded() && !isFalling())
+                    {
+
+                        humanoidState = Strafing;
+
+                        if (!bsls_steps->isPlaying())
+                        {
+                            bsls_steps->play();
+                        }
+
+                        onMovement();
+                    }
                     
-                if (isGrounded() && !isFalling())
-                {
-
-                    humanoidState = Strafing;
-
-                    if (!bsls_steps->isPlaying())
+                    if (!currentlyJumping)
                     {
-                        bsls_steps->play();
+                        onTurn();
                     }
 
-                    onMovement();
+                    break;
                 }
-                break;
-            }
-            default:
-            {
-                if (walkDirection.length() <= 0)
+                default:
                 {
-                    if(bsls_steps->isPlaying())
-                        bsls_steps->stop();
-                    if (isGrounded())
+                    if (walkDirection == Vector3::zero())
                     {
-                        dBodyAddForce(body->body, -velocity.x, 0, -velocity.z);
+                        if (bsls_steps->isPlaying())
+                        {
+                            bsls_steps->stop();
+                        }
+                        if (isGrounded())
+                        {
+                            dBodyAddForce(body->body, -velocity.x, 0, -velocity.z);
+                        }
+                        r_turnVelocity = 0.0f;
                     }
-                    r_turnVelocity = 0.0f;
-                }
 
-                break;
+                    break;
+                }
             }
+            
+            getFeetOffGround();
+            break;
+        }
         }
 
-        getFeetOffGround(walkMode == DIRECTION_MOVE, 0.45f, 2);
+
 
     }
 

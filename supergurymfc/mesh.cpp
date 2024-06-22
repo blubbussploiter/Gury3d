@@ -30,8 +30,8 @@ void RBX::Render::SpecialMesh::renderSpecialMesh(RenderDevice* d)
 
 	for (int i = 0; i < num_faces; ++i)
 	{
-		glNormal(normals[i] * mesh_scale);
 		glTexCoord(uvs[i]);
+		glNormal(normals[i].direction());
 		glVertex(vertices[i] * mesh_scale);
 	}
 
@@ -128,7 +128,7 @@ void RBX::Render::SpecialMesh::renderDecal(RenderDevice* rd, Decal* decal)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	rd->setShininess(25.0f);
+	rd->setShininess(100.0f);
 	decal->render(rd, this);
 
 	if (!part->transparency)
@@ -145,7 +145,7 @@ void RBX::Render::SpecialMesh::render(RenderDevice* d)
 	if (!part) return;
 
 	d->setObjectToWorldMatrix(part->pv->position);
-	d->setShininess(50.0f);
+	d->setShininess(100.0f);
 
 	d->setColor(Color4(part->color, part->alpha));
 

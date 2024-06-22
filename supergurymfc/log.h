@@ -15,6 +15,7 @@ namespace RBX
 	class Log
 	{
 	public:
+		static void cleanup();
 		static void writeEntry(MessageType messageType, const char* message);
 	};
 }

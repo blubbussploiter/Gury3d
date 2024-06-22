@@ -3,6 +3,7 @@
 #include "snap.h"
 #include "weld.h"
 #include "motor.h"
+#include "hinge.h"
 
 #include "scene.h"
 
@@ -13,6 +14,10 @@ RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Pr
 	case Motored:
 	{
 		return new MotorConnector(prim0, prim1, surface);
+	}
+	case Hinged:
+	{
+		return new HingeConnector(prim0, prim1, surface);
 	}
 	case Welded:
 	{
@@ -27,31 +32,12 @@ RBX::Connector* RBX::JointsService::fromLinkageAndPrimitives(Linkage linkage, Pr
 	return 0;
 }
 
-RBX::NormalId RBX::JointsService::fromNormal(Vector3 normal)	
-{
-	if (normal.y == 1)
-		return TOP;
-	if (normal.y == -1)
-		return BOTTOM;
-	if (normal.x == 1)
-		return RIGHT;
-	if (normal.x == -1)
-		return LEFT;
-	if (normal.z == 1)
-		return FRONT;
-	if (normal.z == -1)
-		return BACK;
-	return UNDEFINED;
-}
-
 bool RBX::JointsService::areConnectedPrimitives(Primitive* prim0, Primitive* prim1)
 {
-
 	if (!prim0->geom[0] || !prim1->geom[0]) return false;
 	if (!bodyIsConnector(prim0->body) || !bodyIsConnector(prim1->body)) return false;
 	return dGeomGetBody(prim0->geom[0]) == dGeomGetBody(prim1->geom[0]);
 }
-
 
 bool RBX::JointsService::areConnectedUnbuiltPrimitives(Primitive* prim0, Primitive* prim1)
 {
@@ -82,7 +68,7 @@ bool RBX::JointsService::areConnectedBodies(Body* body0, Body* body1)
 bool RBX::JointsService::bodyIsConnector(Body* body)
 {
 	if (!body) return 0;
-	Connector* data = (Connector*)dBodyGetData(body->body);
+	Connector* data = (Connector*)body->getUserdata();
 	return data != 0;
 }
 
@@ -90,9 +76,25 @@ RBX::Linkage RBX::JointsService::makeLinkage(SurfaceType s0, SurfaceType s1)
 {
 	if ((s0 == Studs || s1 == Studs) && (s0 == Inlet || s1 == Inlet)) return Snapped;
 	if (s0 == Motor || s1 == Motor) return Motored;
+	if (s0 == Hinge || s1 == Hinge) return Hinged;
 	if (s0 == Weld || s1 == Weld) return Welded;
 	if (s0 == Glue || s1 == Glue) return Glued;
 	return NotLinked;
+}
+
+RBX::NormalId RBX::JointsService::fromNormal(PVInstance* object, Vector3 normal)
+{
+	float tolerance = 1 - 0.01f;
+	
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		NormalId n = normals[i];
+		if (dot(getNormalFromNormalId(object, n), normal) > tolerance)
+		{
+			return n;
+		}
+	}
+	return UNDEFINED;
 }
 
 void RBX::JointsService::addConnector(Connector* connector)

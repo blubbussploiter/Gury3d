@@ -91,9 +91,9 @@ void RBX::RunService::update()
         RBX::Scene::singleton()->updateSteppables();
         RBX::Scene::singleton()->updateSteppablesKernelly();
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 4; i++)
         {
-            Kernel::get()->step();
+            Kernel::get()->step(0.04f);
         }
 
     }
@@ -124,7 +124,7 @@ void RBX::RunService::updateSteppers()
 
 void RBX::RunService::resetPvs()
 {
-    IRenderableArray scene = Scene::singleton()->getArrayOfObjects();
+    Instances scene = Scene::singleton()->getArrayOfObjects();
     for (unsigned int i = 0; i < scene.size(); i++)
     {
         PVInstance* pv = toInstance<PVInstance>(scene.at(i));
@@ -137,7 +137,7 @@ void RBX::RunService::resetPvs()
 
 void RBX::RunService::restartPvs()
 {
-    IRenderableArray scene = Scene::singleton()->getArrayOfObjects();
+    Instances scene = Scene::singleton()->getArrayOfObjects();
     for (unsigned int i = 0; i < scene.size(); i++)
     {
         PVInstance* pv = toInstance<PVInstance>(scene.at(i));

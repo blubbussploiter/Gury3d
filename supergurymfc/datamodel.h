@@ -13,6 +13,7 @@ namespace RBX
 	class Lighting;
 	class Scene;
 	class SoundService;
+	class Selection;
 	class JointsService;
 
 	namespace Network { class Players; }
@@ -30,6 +31,7 @@ namespace RBX
 		ThumbnailGenerator* thumbnailGenerator;
 		ScriptContext* scriptContext;
 		SoundService* soundService;
+		Selection* selectionService;
 		Lighting* lighting;
 		Scene* scene;
 

@@ -9,21 +9,17 @@
 namespace RBX
 {
 
-	typedef std::vector<RBX::Render::Renderable*> IRenderableArray;
-
 	class Scene : public RBX::Instance
 	{
 	public:
 
-		IRenderableArray renderObjects;
+		Instances sceneObjects;
 
 		void onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent);
 		void onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent);
 
 		void updateSteppables();
 		void updateSteppablesKernelly();
-
-		void iterate(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*));
 
 		void opaquePass(RenderDevice* rd);
 		void reflectancePass(RenderDevice* rd);
@@ -45,7 +41,7 @@ namespace RBX
 
 		}
 
-		std::vector<RBX::Render::Renderable*> getArrayOfObjects();
+		Instances getArrayOfObjects();
 	};
 }
 

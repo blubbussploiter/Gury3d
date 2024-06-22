@@ -28,7 +28,12 @@ namespace RBX
 		std::string soundPath;
 		void play();
 		void stop();
-		bool isPlaying() { bool b; channel->isPlaying(&b); return b; }
+		bool isPlaying()
+		{ 
+			bool b; 
+			channel->isPlaying(&b);
+			return b; 
+		}
 		double getStartPosition() { unsigned int position; channel->getPosition(&position, FMOD_TIMEUNIT_MS); return ((double)position) / 1000.0; }
 		void setStartPosition(double value);
 		double getLength() { unsigned int len; sound->getLength(&len, FMOD_TIMEUNIT_MS); return ((double)len) / 1000.0; }

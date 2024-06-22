@@ -18,18 +18,9 @@
 
 #include "StudioTool.h"
 
-std::vector<RBX::ISelectable*> RBX::Selection::selection = std::vector< RBX::ISelectable*>();
-bool RBX::Selection::down = 0;
-bool RBX::Selection::clicked = 0;
-bool RBX::Selection::canSelect = 0;
-bool RBX::Selection::multiSelect = 0;
-Vector2 RBX::Selection::selectionDragBoxStart = Vector2::zero();
-Vector2 RBX::Selection::selectionDragBoxEnd = Vector2::zero();
-Vector2 RBX::Selection::worldSelectStart = Vector2::zero();
-Vector2 RBX::Selection::worldSelectEnd = Vector2::zero();
+#include "datamodel.h"
 
 /* straight up not mine lmao, https://github.com/Vulpovile/Blocks3D/blob/develop/src/source/DataModelV2/SelectionService.cpp */
-
 
 bool RBX::Selection::isSelected(ISelectable* i)
 {
@@ -42,7 +33,7 @@ void RBX::Selection::dragSelect()
 	Vector2 a1(min(worldSelectStart.x, worldSelectEnd.x), min(worldSelectStart.y, worldSelectEnd.y));
 	Vector2 a2(max(worldSelectStart.x, worldSelectEnd.x), max(worldSelectStart.y, worldSelectEnd.y));
 
-	std::vector<RBX::Render::Renderable*> instances;
+	Instances instances;
 	instances = RBX::Scene::singleton()->getArrayOfObjects();
 
 	for (unsigned int i = 0; i < instances.size(); i++)
@@ -144,9 +135,12 @@ void RBX::Selection::update(UserInput* ui)
 
 	if (clicked)
 	{
-		if (select(target, multiSelect)) return;
-		selection.clear();
+		if (select(target, multiSelect))
+		{
+			return;
+		}
 		CMainFrame::mainFrame->m_wndClassView.SelectInstance(0);
+		selection.clear();
 	}
 }
 
@@ -169,4 +163,19 @@ bool RBX::Selection::select(PVInstance* target, bool multiSelect)
 		}
 	}
 	return 0;
+}
+
+void RBX::Selection::select(RBX::ISelectable* selected, bool selectInExplorer)
+{
+	Instance* instance = dynamic_cast<Instance*>(selected);
+	if (instance && selectInExplorer)
+	{
+		CMainFrame::mainFrame->m_wndClassView.SelectInstance(instance);
+	}
+	selection.push_back(selected);
+}
+
+RBX::Selection* RBX::Selection::get()
+{
+	return Datamodel::getDatamodel()->selectionService;
 }

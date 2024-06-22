@@ -7,6 +7,8 @@
 
 #include "log.h"
 
+std::ofstream* log_outStream;
+
 std::string dayOfWeek(WORD d)
 {
 	switch (d)
@@ -29,6 +31,14 @@ std::string dayOfWeek(WORD d)
 	return "";
 }
 
+void RBX::Log::cleanup()
+{
+	if (log_outStream)
+	{
+		log_outStream->close();
+	}
+}
+
 void RBX::Log::writeEntry(MessageType messageType, const char* message)
 {
 	switch (messageType)
@@ -40,11 +50,7 @@ void RBX::Log::writeEntry(MessageType messageType, const char* message)
 	}
 	case MESSAGE_INFO:
 	{
-
-		CMainFrame::mainFrame->m_wndOutput.SetTextColor(0, 0, 255);
 		CMainFrame::mainFrame->m_wndOutput.AddText(message);
-		CMainFrame::mainFrame->m_wndOutput.SetTextColor(0, 0, 0);
-
 		break;
 	}
 	case MESSAGE_ERROR:
@@ -52,5 +58,22 @@ void RBX::Log::writeEntry(MessageType messageType, const char* message)
 		CMainFrame::mainFrame->m_wndOutput.AddText(message);
 		break;
 	}
+	}
+
+	if (!log_outStream)
+	{
+		log_outStream = new std::ofstream(ConFileInPath("\\gury-log.txt"));
+	}
+	else
+	{
+		if (log_outStream->is_open())
+		{
+			log_outStream->write(message, strlen(message));
+			log_outStream->flush();
+		}
+		else
+		{
+			RBX::StandardOut::print(RBX::MESSAGE_ERROR, "Cannot write to log file");
+		}
 	}
 }

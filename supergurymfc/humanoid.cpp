@@ -77,8 +77,6 @@ void RBX::Humanoid::buildJoints()
     snap(humanoidRootPart, getRightLeg());
     snap(humanoidRootPart, getLeftLeg());
 
-    /* physics stuff */
-
     Body* body = humanoidHead->getBody();
     if (body && body->body)
     {
@@ -86,7 +84,9 @@ void RBX::Humanoid::buildJoints()
         dMass m;
 
         m = body->getMass();
-        dMassTranslate(&m, cofm.x, cofm.y, cofm.z);
+        m.c[0] = cofm.x;
+        m.c[1] = cofm.y;
+        m.c[2] = cofm.z;
 
         body->modifyMass(m);
     }
@@ -106,7 +106,7 @@ bool RBX::Humanoid::isJoined()
 {
     if (!checkHumanoidAttributes()) return 0;
 
-    return JointsService::areConnectedPrimitives(humanoidRootPart->primitive, humanoidHead->primitive);
+    return JointsService::areConnectedPrimitives(humanoidRootPart->primitive, humanoidHead->primitive); /* change this probably.. fixi t!!!*/
 }
 
 bool RBX::Humanoid::limbsCheck()
@@ -135,7 +135,7 @@ void RBX::Humanoid::setWalkDirection(Vector3 value)
             walkDirection.x = x * v4;
             walkDirection.y = 0;
             walkDirection.z = z * v4;
-            walkDirection *= 4; /* walk speed */
+            walkDirection *= 5; /* walk speed */
             walkMode = DIRECTION_MOVE;
         }
     }
@@ -196,16 +196,17 @@ void RBX::Humanoid::onStep()
 
     buildJoints();
 
+   // if (!isJoined())
+   // {
+   //     health = 0;
+   // }
+
     if (!health)
         onDied();
 
-    if (!isJoined())
-    {
-        health = 0;
-    }
-
     updateHumanoidState();
     jumpTimeStep();
+
 }
 
 void RBX::Humanoid::updateHumanoidState()
@@ -264,7 +265,7 @@ void RBX::Humanoid::render(RenderDevice* rd)
         return;
     }
 
-   // if (localPlayer && localPlayer->character == getParent()) return;
+    if (localPlayer && localPlayer->character == getParent()) return;
 
     if (!fnt.isNull()) 
         /* 
@@ -286,7 +287,6 @@ void RBX::Humanoid::render(RenderDevice* rd)
             CoordinateFrame pos(rd->getCameraToWorldMatrix().rotation, gamepoint);
 
             fnt->draw3D(rd, getParent()->name, pos, 0.03 * distance, Color3::white(), Color3::black(), G3D::GFont::XALIGN_CENTER, G3D::GFont::YALIGN_CENTER);
-            fnt->draw3D(rd, RBX::Format("humanoidState = %d", humanoidState), pos + Vector3(0, 3, 0), 0.03 * distance, Color3::white(), Color3::black(), G3D::GFont::XALIGN_CENTER, G3D::GFont::YALIGN_CENTER);
             drawHealthbar(rd, pos, distance);
 
             glEnable(GL_DEPTH_TEST);

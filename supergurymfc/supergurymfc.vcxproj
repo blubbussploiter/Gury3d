@@ -202,6 +202,7 @@
     <ClInclude Include="CCommandBar.h" />
     <ClInclude Include="cframebridge.h" />
     <ClInclude Include="CInsertObjectDlg.h" />
+    <ClInclude Include="collisionTest.h" />
     <ClInclude Include="diagnosticsWorldDrawer.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="DragTool.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="gametool.h" />
     <ClInclude Include="guid.h" />
     <ClInclude Include="GuiRoot.h" />
+    <ClInclude Include="hinge.h" />
     <ClInclude Include="hopperbin.h" />
     <ClInclude Include="humanoid.h" />
     <ClInclude Include="ICameraOwner.h" />
@@ -278,6 +280,7 @@
     <ClCompile Include="DragTool.cpp" />
     <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="exp_jointsService.cpp" />
+    <ClCompile Include="hinge.cpp" />
     <ClCompile Include="hopperbin.cpp" />
     <ClCompile Include="humanoidPhysicsStuff.cpp" />
     <ClCompile Include="iobfix.cpp" />
@@ -286,6 +289,7 @@
     <ClCompile Include="kernel.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="motor.cpp" />
+    <ClCompile Include="normalId.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="serializer.h" />
@@ -320,7 +324,7 @@
   <ItemGroup>
     <ClCompile Include="poll.cpp" />
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="appSteps.cpp" />
+    <ClCompile Include="guryApplication.cpp" />
     <ClCompile Include="backpack.cpp" />
     <ClCompile Include="backpackItem.cpp" />
     <ClCompile Include="brickcolor.cpp" />
@@ -382,6 +386,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
     <ClCompile Include="ToneMap.cpp" />
+    <ClCompile Include="toolbarTools.cpp" />
     <ClCompile Include="valuebridge.cpp" />
     <ClCompile Include="vector3mt.cpp" />
     <ClCompile Include="view.cpp" />
@@ -419,7 +424,7 @@
     <ClCompile Include="..\include\lua\print.c" />
     <ClCompile Include="appmanager.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
-    <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="ExplorerClass.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="pch.cpp">
@@ -432,7 +437,7 @@
     <ClCompile Include="supergurymfc.cpp" />
     <ClCompile Include="supergurymfcDoc.cpp" />
     <ClCompile Include="supergurymfcView.cpp" />
-    <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="ExplorerWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="supergurymfc.rc" />
@@ -471,6 +476,9 @@
     <Image Include="res\userimages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\cursor.cur" />
+    <None Include="res\cursor1.cur" />
+    <None Include="res\gursor.cur" />
     <None Include="res\supergurymfc.rc2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

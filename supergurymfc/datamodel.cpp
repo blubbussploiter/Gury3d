@@ -18,6 +18,8 @@
 #include "jointsservice.h"
 #include "soundservice.h"
 
+#include "selection.h"
+
 RTTR_REGISTRATION
 {
     rttr::registration::class_<RBX::Datamodel>("Datamodel")
@@ -46,6 +48,8 @@ void RBX::Datamodel::close()
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel::close()");
     RBX::Scene::singleton()->close();
+    Kernel::get()->cleanup();
+    RBX::Log::cleanup();
     emptyExplorerWindow();
 }
 
@@ -98,6 +102,7 @@ void RBX::Datamodel::open()
     soundService = new SoundService();
     players = new RBX::Network::Players();   
     jointService = new JointsService();
+    selectionService = new Selection();
     guiRoot = Gui::singleton();
     runService->scriptContext = scriptContext;
     yieldingThreads = new Lua::YieldingThreads(scriptContext);

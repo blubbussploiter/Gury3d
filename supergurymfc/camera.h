@@ -32,9 +32,12 @@ namespace RBX
 		Vector3 startFocus;
 	public:
 
+		bool panning;
+
 		GCamera* camera;
 		CameraType cameraType;
 
+		float oldZoom;
 		float yaw, pitch, zoom;
 
 		RBX::PartInstance* focusPart;
@@ -45,6 +48,9 @@ namespace RBX
 		CoordinateFrame cframe;
 
 		/* blocks3d stuff */
+
+		void doCameraCollisionLogic(); /* player cool camera, cant go out of bounds or nothin */
+		bool canZoom(bool inout); /* check if its colliding or will collide */
 
 		void lookAt(const Vector3& position);
 		void setFrame(const CoordinateFrame& cf);
@@ -79,7 +85,7 @@ namespace RBX
 
 		void refreshZoom(const CoordinateFrame& frame);
 
-		void pan(CoordinateFrame* frame, float spdX, float spdY);
+		void pan(CoordinateFrame* frame, float spdX, float spdY, bool lookAt = true);
 		void panLock(CoordinateFrame* frame, float spdX, float spdY);
 
 		void Zoom(short delta);

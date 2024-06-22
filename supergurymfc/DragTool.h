@@ -9,9 +9,11 @@ namespace RBX
 	{
 		class DragTool : public StudioTool
 		{
+		private:
+			bool isDragging;
 		public:
-			void getAccordingY(ISelectable* s, float& y);
-			void doGraphics(RenderDevice* rd);
+			void onDrag();
+			void doGraphics(RenderDevice* rd) {}
 			void doLogic(UserInput* userInput);
 		};
 	}

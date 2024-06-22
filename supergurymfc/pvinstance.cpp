@@ -38,14 +38,17 @@ RTTR_REGISTRATION
          .property("LeftSurface", &RBX::PVInstance::getLeftSurface, &RBX::PVInstance::setLeftSurface)(rttr::metadata("Type", RBX::Surface))
          .property("rawFormFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
          .property("formFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
+         //.property("FormFactor", &RBX::PVInstance::getFormFactor, &RBX::PVInstance::setFormFactor)
          .property("Transparency", &RBX::PVInstance::getFauxTransparency, &RBX::PVInstance::setTransparency)(rttr::metadata("Type", RBX::Appearance));
 }
 
 /* hurl */
 
-void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+/* every side, no decals */
+
+void drawFace(RBX::NormalId face, Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
-    glNormal((v2 - v1).cross(v3 - v1).direction());
+    glNormal((v0 - v2).cross(v1 - v3).direction());
 
     glTexCoord2d(uv.x, uv.y);
     glVertex(v0);
@@ -57,9 +60,11 @@ void drawFace(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
     glVertex(v3);
 }
 
+/* every side, for surfaces */
+
 void drawFaceStudsUV(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, Vector2 studs)
 {
-    glNormal((v2 - v1).cross(v3 - v1).direction());
+    glNormal((v0 - v2).cross(v1 - v3).direction());
 
     /* thumbs up */
 
@@ -77,9 +82,11 @@ void drawFaceStudsUV(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3,
 
 }
 
+/* (decals) bottom, back, left, right */
+
 void drawFaceThree(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
-    glNormal((v2 - v1).cross(v3 - v1).direction());
+    glNormal((v0 - v2).cross(v1 - v3).direction());
 
     glTexCoord2d(uv.x, 0);
     glVertex(v0);
@@ -90,9 +97,12 @@ void drawFaceThree(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
     glTexCoord2d(uv.x, uv.y);
     glVertex(v3);
 }
+
+/* (decals) front, top */
+
 void drawFaceTwoOooOoOOoOoO(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
-    glNormal((v0 - v1).cross(v0 - v2).direction());
+    glNormal((v0 - v2).cross(v1 - v3).direction());
 
     glTexCoord2d(0, uv.y);
     glVertex(v0);
@@ -159,7 +169,7 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
 {
     if (!specialShape)
     {
-        glColor(1, 1, 1, 1 - (color.r * 0.1f));
+        glColor(1, 1, 1, 1 - (color.g * 0.2f));
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
         renderSurface(rd, this, RIGHT, right, idRight);
@@ -279,7 +289,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     {
     case NormalId::TOP:
     {
-        drawFace(uv0,
+        drawFace(face, uv0,
             Vector3(size.x, size.y, -size.z),
             Vector3(-size.x, size.y, -size.z),
             Vector3(-size.x, size.y, size.z),
@@ -288,7 +298,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     }
     case NormalId::BOTTOM:
     {
-        drawFace(uv0,
+        drawFace(face, uv0,
             Vector3(size.x, -size.y, size.z),
             Vector3(-size.x, -size.y, size.z),
             Vector3(-size.x, -size.y, -size.z),
@@ -297,7 +307,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     }
     case NormalId::FRONT:
     {
-        drawFace(uv1,
+        drawFace(face, uv1,
             Vector3(size.x, -size.y, -size.z),
             Vector3(-size.x, -size.y, -size.z),
             Vector3(-size.x, size.y, -size.z),
@@ -306,7 +316,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     }
     case NormalId::BACK:
     {
-        drawFace(uv1,
+        drawFace(face, uv1,
             Vector3(size.x, size.y, size.z),
             Vector3(-size.x, size.y, size.z),
             Vector3(-size.x, -size.y, size.z),
@@ -315,7 +325,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     }
     case NormalId::LEFT:
     {
-        drawFace(uv2,
+        drawFace(face, uv2,
             Vector3(-size.x, size.y, size.z),
             Vector3(-size.x, size.y, -size.z),
             Vector3(-size.x, -size.y, -size.z),
@@ -324,7 +334,7 @@ void RBX::PVInstance::renderFace(RenderDevice* rd, NormalId face)
     }
     case NormalId::RIGHT:
     {
-        drawFace(uv2,
+        drawFace(face, uv2,
             Vector3(size.x, size.y, -size.z),
             Vector3(size.x, size.y, size.z),
             Vector3(size.x, -size.y, size.z),
@@ -612,6 +622,9 @@ void RBX::PVInstance::initializeForKernel()
         primitive->createPrimitive(shape, size);
         body->attachPrimitive(primitive);
 
+        body->modifyUserdata(this);
+        primitive->modifyUserdata(this);
+
         setAnchored(getAnchored());
         setCanCollide(getCanCollide());
     }
@@ -644,10 +657,7 @@ RBX::PVInstance::PVInstance()
     shape = part;
 
     body = new Body();
-    body->modifyUserdata(this);
-
     primitive = new Primitive(body);
-    primitive->modifyUserdata(this);
 
     Kernel::get()->addPrimitive(primitive);
 

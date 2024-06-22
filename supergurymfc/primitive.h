@@ -36,6 +36,7 @@ namespace RBX
 		void modifyCollisions(bool canCollide);
 
 		void modifyUserdata(void* data);
+		void modifyGeomData(void* data);
 
 		void modifyOffsetWorldCoordinateFrame(CoordinateFrame offset);
 

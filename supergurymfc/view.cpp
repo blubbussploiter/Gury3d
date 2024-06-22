@@ -75,19 +75,14 @@ void RBX::View::renderScene(RenderDevice* rd)
 	rd->enableLighting();
 	rd->setPolygonOffset(-0.02);
 
-	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
-
 	turnOnLights(rd);
+
+	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
 
 	RBX::Scene::singleton()->opaquePass(rd);
 	RBX::Scene::singleton()->transparentPass(rd);
 
 	rd->disableLighting();
-
-	if (!effectSettings->toneMap.isNull())
-	{
-		effectSettings->toneMap->endFrame(rd);
-	}
 
 	RBX::Scene::singleton()->darkPass(rd);
 	RBX::Scene::singleton()->lastPass(rd);
@@ -99,6 +94,14 @@ void RBX::View::renderScene(RenderDevice* rd)
 
 	glCullFace(GL_NONE);
 
+	rd->pushState();
+
+	if (!effectSettings->toneMap.isNull())
+	{
+		effectSettings->toneMap->endFrame(rd);
+	}
+
+	rd->popState();
 }
 
 void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef sky)
@@ -108,7 +111,6 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	presetLighting();
 
 	renderDevice->beginFrame();
-	//shadows->generateShadowMap(renderDevice);
 
 	renderDevice->clear();
 	renderDevice->setProjectionAndCameraMatrix(*projection->getCamera());
@@ -123,9 +125,8 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	}
 
 	renderDevice->pushState();
-	//shadows->render(renderDevice);
 
-	Selection::renderSelection(renderDevice);
+	Selection::get()->renderSelection(renderDevice);
 
 	if (RBX::Studio::current_Tool)
 	{
@@ -133,6 +134,8 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	}
 
 	renderScene(renderDevice);
+
+	RBX::Diagnostics::get_Renderer()->render(renderDevice);
 
 	renderDevice->popState();
 
@@ -146,7 +149,7 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	datamodel->guiRoot->render(renderDevice);
 	datamodel->message->render(renderDevice);
 
-	Selection::renderDragBox(renderDevice);
+	Selection::get()->renderDragBox(renderDevice);
 
 	renderDevice->pop2D();
 
