@@ -31,7 +31,7 @@ PluginReceiveResult RBX::Network::Replicator::OnReceive(Packet* p)
     BitStream data(p->data, p->length, false);
 
     switch (p->data[0])
-    {
+        {
         case ID_SEND_INSTANCE:
         {
             RBX::Instance* instance;
@@ -46,8 +46,20 @@ PluginReceiveResult RBX::Network::Replicator::OnReceive(Packet* p)
 
             item = new RBX::GuidItem(instance, id.guid);
             item->assign();
-
+        
             DeserializeProperties(data, instance);
+
+            /* brick countage.. */
+
+            if (Scene::isRenderable(instance))
+            {
+                Datamodel* root = Datamodel::getDatamodel();
+                if (root && root->uiBrickcount)
+                {
+                    root->setMessage(Format("Bricks: %d", receivedBrickCount));
+                    receivedBrickCount++;
+                }
+            }
 
             RBX::StandardOut::print(RBX::MESSAGE_INFO, "Replication: %s >> %s-%d", server.ToString(), instance->getName().c_str(), instance->id->guid->data.index);
 
@@ -85,7 +97,7 @@ void RBX::Network::Replicator::SendSceneInfo()
     BitStream stream;
 
     RBX::Scene* scene = RBX::Scene::singleton();
-    inScene = scene->renderObjects.size();
+    inScene = scene->sceneObjects.size();
 
     stream << (unsigned char)ID_BRICK_COUNT;
     stream << inScene;
@@ -276,6 +288,8 @@ void RBX::Network::Replicator::DeserializeProperties(BitStream& stream, RBX::Ins
 {
     size_t numOfProperties;
     stream >> numOfProperties;
+    
+    if (!numOfProperties) { return; }
 
     for (size_t i = 0; i < numOfProperties; i++)
     {
@@ -314,7 +328,7 @@ void RBX::Network::Replicator::DeserializeProperty(BitStream& stream, RBX::Insta
                 if (string_size > 0)
                 {
                     str = Help::read(stream, string_size);
-                    property.set_value(instance,str);
+                    property.set_value(instance, str);
                 }
             }
 

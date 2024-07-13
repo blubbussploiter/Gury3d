@@ -3,20 +3,21 @@
 #include "instance.h"
 #include "sounds.h"
 
+#include "rbx.h"
+
 static RBX::Sound* pageTurn = RBX::Sound::fromFile(GetFileInPath("/content/sounds/pageturn.wav"));
 
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<RBX::Instance>("Instance")
 		 .constructor<>()
-		 .property("archivable", &RBX::Instance::getArchivable,
-			 &RBX::Instance::setArchivable)
-		 .property("className", &RBX::Instance::getClassName,
-			 &RBX::Instance::setClassName)
 		 .property("Name", &RBX::Instance::getName,
-			&RBX::Instance::setName)
+			&RBX::Instance::setName)(rttr::metadata("Type", RBX::Data))
+		 .property_readonly("className", &RBX::Instance::getClassName)(rttr::metadata("Type", RBX::Data))
+		 .property("archivable", &RBX::Instance::getArchivable, &RBX::Instance::setArchivable)(rttr::metadata("Type", RBX::Behavior))
 		 .property("Parent", &RBX::Instance::getParent,
 			 &RBX::Instance::setParent)
+		.method("remove", &RBX::Instance::remove)
 		.method("children", &RBX::Instance::getChildren)
 		.method("findFirstChild", &RBX::Instance::findFirstChild);
 }
@@ -91,6 +92,7 @@ void RBX::Instance::signalOnDescendentRemoved(RBX::Instance* newParent, RBX::Ins
 		RBX::Instance* in = c->at(i);
 		child->signalOnDescendentRemoved(child, in);
 	}
+
 }
 
 void RBX::Instance::setParent(Instance* instance)
@@ -100,6 +102,10 @@ void RBX::Instance::setParent(Instance* instance)
 
 	if (isParentLocked)
 		return;
+
+	if (instance == this)
+		throw std::runtime_error(RBX::Format("Attempt to set %s as its own parent", getName().c_str()));
+
 	if (oldParent)
 	{
 		if (std::find(parent->getChildren()->begin(), parent->getChildren()->end(), this) != parent->getChildren()->end())
@@ -132,8 +138,6 @@ void RBX::Instance::remove()
 	}
 
 	setParent(0);
-	pageTurn->play();
-
 	onRemove();
 }
 

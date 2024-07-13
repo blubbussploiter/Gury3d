@@ -1,51 +1,66 @@
 #include "controller.h"
 #include "datamodel.h"
 
+void RBX::Controller::addDirection(MovementDirections direction)
+{
+	if (justReleased)
+	{
+		justReleased = false;
+		return;
+	}
+	if (std::find(directions.begin(),
+		directions.end(),
+		direction) == directions.end())
+	{
+		directions.push_back(direction);
+	}
+}
+
+void RBX::Controller::removeDirection(MovementDirections direction)
+{
+	directions.erase(std::remove(directions.begin(), directions.end(), direction));
+}
+
 void RBX::Controller::handleInput(G3D::UserInput* ui)
 {
-
 	if (ui->keyDown(SDLK_w))
 	{
-		direction = MovementDirections::Forward;
+		addDirection(Forward);
 	}
 	if (ui->keyDown(SDLK_s))
 	{
-		direction = MovementDirections::Backwards;
+		addDirection(Backwards);
 	}
-
 	if (ui->keyDown(SDLK_a))
 	{
-		switch (direction)
-		{
-		case Forward: direction = ForwardLeft; break;
-		case Backwards: direction = BackwardsLeft; break;
-		default: {	direction = MovementDirections::Left; break; }
-		}
+		addDirection(Left);
 	}
 	if (ui->keyDown(SDLK_d))
 	{
-		switch (direction)
-		{
-		case Forward: direction = ForwardRight; break;
-		case Backwards: direction = BackwardsRight; break;
-		default: {	direction = MovementDirections::Right; break; }
-		}
+		addDirection(Right);
 	}
-	if (ui->keyPressed(SDLK_SPACE))
-		direction = MovementDirections::Jump;
+	if (ui->keyReleased(SDLK_SPACE))
+	{
+		addDirection(Jump);
+	}
 
 	if (ui->keyReleased(SDLK_w) ||
 		ui->keyReleased(SDLK_a) ||
 		ui->keyReleased(SDLK_s) ||
 		ui->keyReleased(SDLK_d))
+	{
+		directions.clear();
+		justReleased = true;
 		isMoving = false;
+	}
 
 	if (ui->keyDown(SDLK_w) ||
 		ui->keyDown(SDLK_a) ||
 		ui->keyDown(SDLK_s) ||
-		ui->keyDown(SDLK_d) ||
-		ui->keyPressed(SDLK_SPACE))
+		ui->keyDown(SDLK_d))
+	{
 		isMoving = true;
+	}
 }
 
 void RBX::ControllerService::updateControllers(G3D::UserInput* ui)
@@ -56,8 +71,8 @@ void RBX::ControllerService::updateControllers(G3D::UserInput* ui)
 		if (c && !c->disabled())
 		{
 			c->handleInput(ui);
-			c->mv_update();
 			c->move();
+			c->mv_update();
 		}
 	}
 }

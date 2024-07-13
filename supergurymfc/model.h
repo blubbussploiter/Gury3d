@@ -12,7 +12,7 @@
 namespace RBX
 {
 	class ModelInstance :
-		public RBX::Render::Renderable,
+		public RBX::Render::IRenderable,
 		public RBX::ISelectable,
 		public ICameraOwner
 	{
@@ -52,10 +52,14 @@ namespace RBX
 		RBX::Extents computeVisibleExtents();
 
 		void translate(CoordinateFrame cframe);
+		
+		static void translateInstances(Instances i, PVInstance* rootPart, CoordinateFrame cframe);
+		static Extents getInstancesExtents(Instances i);
+		static PVInstance* getRootPart(Instances i);
 
-		SelectableBox getBoundingBox()
+		Render::Geometry getBoundingBox()
 		{
-			return SelectableBox();
+			return Render::Geometry();
 		}
 
 		ModelInstance()

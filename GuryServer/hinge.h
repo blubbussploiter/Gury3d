@@ -1,19 +1,27 @@
-#ifndef HINGE_H
-#define HINGE_H
+#pragma once
 
-#include "joints.h"
+#include "jointsservice.h"
 
 namespace RBX
 {
-	class HingeJoint : public RBX::Joint
+	class HingeConnector : public Connector
 	{
+	private:
+
+		Body* body0, * body1;
+		dJointID hinge;
+
 	public:
-		HingeJoint()
+
+		void build();
+
+		HingeConnector(Primitive* prim0, Primitive* prim1, NormalId connectedAt) : Connector(prim0, prim1, connectedAt)
 		{
+			body0 = prim0->body;
+			body1 = prim1->body;
+			hinge = 0;
 			setName("Hinge");
 			setClassName("Hinge");
 		}
 	};
 }
-
-#endif

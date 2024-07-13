@@ -45,13 +45,11 @@ namespace RBX
 		void updateSteppers();
 
 		/* called after reset and before run, sets all pv's pv position back to its starting position, body position set when restartpvs called */
-		void resetPvs();
-		/* called after run after reset, to keep physics kernel consistent */
-		void restartPvs();                                                             
+		void resetPvs();    
 
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 
-		static RunService* singleton();
+		static RunService* get();
 
 		RunService()
 		{

@@ -24,7 +24,7 @@ static const unsigned char base64_table[65] =
 * Returns: Allocated buffer of out_len bytes of encoded data,
 * or empty string on failure
 */
-std::string base64_encode(const unsigned char* src, size_t len)
+static std::string base64_encode(const unsigned char* src, size_t len)
 {
     unsigned char* out, * pos;
     const unsigned char* end, * in;

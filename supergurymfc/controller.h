@@ -8,15 +8,6 @@
 
 namespace RBX
 {
-	enum MovementDirections
-	{
-		Idle,
-		Forward,
-		Backwards,
-		Left,
-		Right,
-		Jump
-	};
 
 	enum ControllerTypes
 	{
@@ -31,13 +22,14 @@ namespace RBX
 	private:
 		bool isMoving;
 		bool isDisabled;
+		bool justReleased;
 		float speed;
 	public:
 
-		std::vector<MovementDirections> directions;
+		bool jumping;
 
-		void addDirection(MovementDirections direction);
-		void removeDirection(MovementDirections direction);
+		/* horizontal - W & S, vertical - A & D*/
+		float horizontal, vertical;
 
 		float getSpeed() { return speed; }
 		void setSpeed(float s) { speed = s; }
@@ -45,7 +37,6 @@ namespace RBX
 		bool moving() { return isMoving; }
 
 		void setmoving(bool m) { isMoving = m; }
-		void setdir(MovementDirections d) { directions.push_back(d); }
 
 		void disable(bool d) { isDisabled = d; }
 		bool disabled() { return isDisabled; }
@@ -70,9 +61,13 @@ namespace RBX
 	private:
 		std::vector<Controller*> controllers;
 	public:
+
+		void mapControllers(G3D::UserInput*& ui);
+
 		void updateControllers(G3D::UserInput* ui);
 		void addController(Controller* c);
-		static ControllerService* singleton();
+
+		static ControllerService* get();
 		ControllerService()
 		{
 			setClassName("ControllerService");

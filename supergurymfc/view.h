@@ -14,9 +14,9 @@ namespace RBX
 	private:
 
 		Color3 colorClearValue;
-		
-		bool graphicsInitialized;
 
+		bool readyForToneMap;
+		bool graphicsInitialized;
 	public:
 
 		Render::EffectSettings* effectSettings;
@@ -40,7 +40,7 @@ namespace RBX
 			{
 				effectSettings = new Render::EffectSettings();
 				effectSettings->_hemisphereLighting = 0;
-				effectSettings->toneMap->setEnabled(0);
+				effectSettings->toneMap->setEnabled(false);
 			}
 			return effectSettings;
 		}
@@ -67,11 +67,11 @@ namespace RBX
 		View()
 		{
 			lighting = G3D::Lighting::create();
-			params.source = LightingParameters::MOON;
+			params = G3D::LightingParameters();
 			shadows = new Shadows();
 		}
 
-		static View* singleton();
+		static View* get();
 	};
 }
 

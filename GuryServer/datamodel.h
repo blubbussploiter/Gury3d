@@ -1,7 +1,7 @@
-#ifndef DATAMODEL_H
-#define DATAMODEL_H
+#pragma once
 
 #include "GuiRoot.h"
+#include "kernel.h"
 
 namespace RBX
 {
@@ -9,21 +9,29 @@ namespace RBX
 	class RunService;
 	class ControllerService;
 	class ThumbnailGenerator;
+	class ScriptContext;
 	class Lighting;
 	class Scene;
-	class JointService;
+	class SoundService;
+	class Selection;
+	class JointsService;
 
 	namespace Network { class Players; }
+	namespace Lua { class YieldingThreads; }
 
-	class Datamodel : public RBX::Instance
+	class Datamodel : 
+		public RBX::Instance
 	{
 	public:
 
 		Workspace* workspace;
 		RunService* runService;
-		JointService* jointService;
+		JointsService* jointService;
 		ControllerService* controllerService;
 		ThumbnailGenerator* thumbnailGenerator;
+		ScriptContext* scriptContext;
+		SoundService* soundService;
+		Selection* selectionService;
 		Lighting* lighting;
 		Scene* scene;
 
@@ -31,6 +39,7 @@ namespace RBX
 		Gui::GuiRoot* guiRoot;
 
 		RBX::Network::Players* players;
+		Lua::YieldingThreads* yieldingThreads;
 
 		bool uiBrickcount;
 	public:
@@ -41,12 +50,21 @@ namespace RBX
 		void setMessage(std::string msg) { message->text = msg; }
 		void setMessageBrickCount() { uiBrickcount = !uiBrickcount; }
 
+		void onDescendentAdded(RBX::Instance* i);
+		void onDescendentRemoved(RBX::Instance* i);
+
 		bool messageBrickCount() { return uiBrickcount; }
+
+		void fillExplorerWindow();
+		void emptyExplorerWindow();
+
+		void addToExplorerWindow(RBX::Instance* i);
+		void removeFromExplorerWindow(RBX::Instance* i);
 
 		void open();
 		void close();
 
-		void step();
+		void step(double deltaTime);
 
 		Datamodel()
 		{
@@ -59,5 +77,3 @@ namespace RBX
 		RTTR_ENABLE(RBX::Instance)
 	};
 }
-
-#endif

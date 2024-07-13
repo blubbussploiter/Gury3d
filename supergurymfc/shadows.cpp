@@ -24,7 +24,7 @@ void RBX::Shadows::generateShadowMap(RenderDevice* renderDevice)
 
 	renderDevice->setPolygonOffset(4);
 
-	RBX::View::singleton()->renderScene(renderDevice);
+	RBX::View::get()->renderScene(renderDevice);
 
 	renderDevice->popState();
 

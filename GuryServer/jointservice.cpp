@@ -14,51 +14,30 @@
 
 RBX::JointService* jointService;
 
-RBX::NormalId RBX::JointService::getIntersectingFace(RBX::PVInstance* p0, RBX::PVInstance* p1) /* not 100% sure this works */
+RBX::NormalId RBX::JointService::getIntersectingFace(btPersistentManifold* manifold, int index) /* thank you RNR */
 {
-	RBX::World::Ray* ray;
-	RBX::NormalId face;
-	Vector3 normal;
+	btManifoldPoint& pt = manifold->getContactPoint(index);
+	btVector3 ptN = pt.m_normalWorldOnB;
 
-	face = RBX::NormalId::UNDEFINED;
-	ray = new RBX::World::Ray(p1->getPosition(), p0->getPosition());
+	if (ptN == btVector3(1, 0, 0))
+		return LEFT;
+	else if (ptN == btVector3(-1, 0, 0))
+		return RIGHT;
+	else if (ptN == btVector3(0, 1, 0))
+		return BOTTOM;
+	else if (ptN == btVector3(0, -1, 0))
+		return TOP;
+	else if (ptN == btVector3(0, 0, 1))
+		return BACK;
+	else if (ptN == btVector3(0, 0, -1))
+		return FRONT;
 
-	normal = ray->getNormalFromRay();
-	if (normal != Vector3::zero())
-	{
-		float x, y, z;
-		float v5, v6, v7, v9;
+	return UNDEFINED;
+}
 
-		x = dot(normal, Vector3::unitX());
-		y = dot(normal, Vector3::unitY());
-		z = dot(normal, Vector3::unitZ());
-		v6 = fabs(x);
-		v7 = fabs(z);
-		v5 = v7;
-
-		if (v6 > v5)
-		{
-			if (v7 < v6)
-			{
-				if (x <= 0.0)
-					return RBX::LEFT;
-				return RBX::RIGHT;
-			}
-			v9 = z;
-		}
-		v9 = z;
-		if (v7 >= v5)
-		{
-			if (v9 <= 0.0)
-				return RBX::FRONT;
-			return RBX::BACK;
-		}
-		if (y <= 0.0)
-			return RBX::BOTTOM;
-		return RBX::TOP;
-	}
-
-	return face;
+bool RBX::JointService::areJointed(RBX::PVInstance* p0, RBX::PVInstance* p1)
+{
+	return p0 && p1 && p0->body->_body == p1->body->_body;
 }
 
 void RBX::JointService::applyJoint(RBX::PVInstance* p0, RBX::PVInstance* p1, NormalId intersect)
@@ -70,15 +49,17 @@ void RBX::JointService::applyJoint(RBX::PVInstance* p0, RBX::PVInstance* p1, Nor
 	case RBX::SurfaceType::Motor:
 	{
 		RBX::MotorJoint* motor = new RBX::MotorJoint();
-		motor->setParent(this);
 		motor->make(p0, p1);
 		break;
 	}
-	default:
+	case RBX::SurfaceType::Weld:
+	case RBX::SurfaceType::Glue:
+	case RBX::SurfaceType::Studs:
+	case RBX::SurfaceType::Inlet:
 	{
 		RBX::SnapJoint* snap = new RBX::SnapJoint();
-		snap->setParent(this);
 		snap->make(p0, p1);
+		snap->createJoint();
 		break;
 	}
 	}
@@ -86,18 +67,20 @@ void RBX::JointService::applyJoint(RBX::PVInstance* p0, RBX::PVInstance* p1, Nor
 
 void RBX::JointService::manualBuild(RBX::PVInstance* p0, RBX::PVInstance* p1)
 {
-	NormalId intersect = getIntersectingFace(p0, p1);
-	applyJoint(p1, p0, intersect);
+	buildJoints(p0, p1);
 }
 
-bool RBX::JointService::areJointed(RBX::PVInstance* p0, RBX::PVInstance* p1)
+
+RBX::PVInstance* compoundShapeHelper(btCollisionShape* compound, btManifoldPoint point)
 {
-	return (p0->body->connector == p1->body->connector);
+	RBX::StandardOut::print(RBX::MESSAGE_INFO, "unk %f", point.getDistance());
+	return 0;
 }
 
-void RBX::JointService::buildJoints(RBX::Instance* holder)
+void RBX::JointService::buildJoints(RBX::Instance* holder, RBX::PVInstance* p0, RBX::PVInstance* p1)
 {
 	btDynamicsWorld* dynamicsWorld = RBX::RunService::singleton()->getPhysics()->_world;
+
 	dynamicsWorld->performDiscreteCollisionDetection();
 
 	int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -109,32 +92,40 @@ void RBX::JointService::buildJoints(RBX::Instance* holder)
 		const btCollisionObject* obj0 = contact->getBody0();
 		const btCollisionObject* obj1 = contact->getBody1();
 
-		PVInstance* part0 = (PVInstance*)obj0->getUserPointer();
-		PVInstance* part1 = (PVInstance*)obj1->getUserPointer();
-
-		if (part0 && part1)
+		if (obj0 && obj1)
 		{
-			if (!areJointed(part0, part1))
+			for (int m = 0; m < contact->getNumContacts(); m++)
 			{
-				NormalId intersect = getIntersectingFace(part0, part1);
-				applyJoint(part1, part0, intersect);
+				btCollisionShape* cs0 = (btCollisionShape*)(obj0->getCollisionShape());
+				btCollisionShape* cs1 = (btCollisionShape*)(obj1->getCollisionShape());
+
+				PVInstance* part0 = (PVInstance*)(obj0->getUserPointer());
+				PVInstance* part1 = (PVInstance*)(obj1->getUserPointer());
+				
+				NormalId intersect = getIntersectingFace(contact, m);
+				 
+				if (!part0 || !part1) /* probaby a  snap'd shape -> compoundshape */
+				{
+					btCompoundShape* cps0 = dynamic_cast<btCompoundShape*>(cs0);
+					btCompoundShape* cps1 = dynamic_cast<btCompoundShape*>(cs1);
+					if (cps0) part0 = compoundShapeHelper(cps0, contact->getContactPoint(m));
+					if (cps1) part1 = compoundShapeHelper(cps1, contact->getContactPoint(m));
+				}
+
+				if (p0 && p1 && !(part0 == p0 || part1 == p1)) continue;
+				if (areJointed(part0, part1)) continue;
+
+				if (intersect != UNDEFINED)
+				{
+					RBX::StandardOut::print(RBX::MESSAGE_INFO, "snapping at %d, %s, %s", intersect, part0->getName().c_str(), part1->getName().c_str());
+					applyJoint(part1, part0, intersect);
+				}
 			}
 		}
 	}
-}
 
-void RBX::JointService::update()
-{
-	RBX::Instances* children = getChildren();
-	if (children->size() > 0)
-	{
-		for (unsigned int i = 0; i < children->size(); i++)
-		{
-			RBX::Joint* joint = (RBX::Joint*)(children->at(i));
-			if (!joint->isCreated)
-				joint->createJoint();
-		}
-	}
+	RBX::StandardOut::print(RBX::MESSAGE_INFO, "JointService::buildJoints(), building %d joints", getChildren()->size());
+
 }
 
 RBX::JointService* RBX::JointService::singleton()
@@ -146,6 +137,5 @@ void RBX::Joint::make(RBX::PVInstance* p0, RBX::PVInstance* p1)
 {
 	part0 = p0;
 	part1 = p1;
-	//p0->body->connector = this;
-	//p1->body->connector = this;
+	setParent(JointService::singleton());
 }

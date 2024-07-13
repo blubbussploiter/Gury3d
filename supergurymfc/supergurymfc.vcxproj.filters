@@ -160,12 +160,6 @@
     <Filter Include="Source Files\rbx\game\physics\connectors">
       <UniqueIdentifier>{2a1ac9f4-fb7b-4b6d-ad72-85c2e601a1ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\dep">
-      <UniqueIdentifier>{9a90b68d-4341-4b20-a34d-d290743f734d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\dep\lua">
-      <UniqueIdentifier>{cf23b88f-72e6-4da8-942a-b2d02ad0fb01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\rbx\studio\tools">
       <UniqueIdentifier>{50d949fb-01bb-49f6-9307-ba768eab0553}</UniqueIdentifier>
     </Filter>
@@ -195,6 +189,15 @@
     </Filter>
     <Filter Include="Header Files\game\rendering\objects\offscreen">
       <UniqueIdentifier>{847c621d-7484-466b-80b3-7e999952cbec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dependency">
+      <UniqueIdentifier>{9a90b68d-4341-4b20-a34d-d290743f734d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dependency\lua">
+      <UniqueIdentifier>{cf23b88f-72e6-4da8-942a-b2d02ad0fb01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dependency\ode">
+      <UniqueIdentifier>{7be3af97-4cab-4169-8f82-63ec0216be14}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -423,57 +426,6 @@
     <ClInclude Include="encode.h">
       <Filter>Header Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files\misc</Filter>
-    </ClInclude>
-    <ClInclude Include="ChildFrm.h">
-      <Filter>Header Files\studio\base</Filter>
-    </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>Header Files\studio\base</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfc.h">
-      <Filter>Header Files\studio\base</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfcView.h">
-      <Filter>Header Files\studio\base</Filter>
-    </ClInclude>
-    <ClInclude Include="supergurymfcDoc.h">
-      <Filter>Header Files\studio\base</Filter>
-    </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files\studio\base\de</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files\studio\base\de</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files\studio\base\de</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewTree.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="CCommandBar.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="CInsertObjectDlg.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="ClassView.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputWnd.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="PropertiesWnd.h">
-      <Filter>Header Files\studio\tools\wnds</Filter>
-    </ClInclude>
-    <ClInclude Include="StudioTool.h">
-      <Filter>Header Files\studio\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="DragTool.h">
-      <Filter>Header Files\studio\tools</Filter>
-    </ClInclude>
     <ClInclude Include="diagnosticsWorldDrawer.h">
       <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
@@ -491,6 +443,69 @@
     </ClInclude>
     <ClInclude Include="hinge.h">
       <Filter>Header Files\game\physics\connectors</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\pch.h">
+      <Filter>Header Files\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\ChildFrm.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\MainFrm.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\supergurymfc.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\supergurymfcDoc.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\supergurymfcView.h">
+      <Filter>Header Files\studio\base</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\resource.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\framework.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\targetver.h">
+      <Filter>Header Files\studio\base\de</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\DragTool.h">
+      <Filter>Header Files\studio\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\MoveTool.h">
+      <Filter>Header Files\studio\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\StudioTool.h">
+      <Filter>Header Files\studio\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\CCommandBar.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\CInsertObjectDlg.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\ClassView.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\OutputWnd.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\PropertiesWnd.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="studio\ViewTree.h">
+      <Filter>Header Files\studio\tools\wnds</Filter>
+    </ClInclude>
+    <ClInclude Include="signal.h">
+      <Filter>Header Files\game\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry.h">
+      <Filter>Header Files\game\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="renderMesh.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -512,7 +527,7 @@
     <ClCompile Include="backpackItem.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="camera_utils.cpp">
+    <ClCompile Include="cameraUtilities.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="clonebin.cpp">
@@ -588,97 +603,97 @@
       <Filter>Source Files\rbx\game\services\network</Filter>
     </ClCompile>
     <ClCompile Include="iobfix.cpp">
-      <Filter>Source Files\dep</Filter>
+      <Filter>Source Files\dependency</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lapi.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lauxlib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lbaselib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lcode.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ldblib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ldebug.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ldo.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ldump.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lfunc.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lgc.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\linit.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\liolib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\llex.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lmathlib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lmem.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\loadlib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lobject.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lopcodes.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\loslib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lparser.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lstate.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lstring.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lstrlib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ltablib.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ltable.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\ltm.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lundump.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lvm.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\lzio.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="..\include\lua\print.c">
-      <Filter>Source Files\dep\lua</Filter>
+      <Filter>Source Files\dependency\lua</Filter>
     </ClCompile>
     <ClCompile Include="MenuBar.cpp">
       <Filter>Source Files\rbx\game\menus</Filter>
@@ -699,7 +714,7 @@
       <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
     <ClCompile Include="md5.cpp">
-      <Filter>Source Files\dep</Filter>
+      <Filter>Source Files\dependency</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
@@ -719,7 +734,7 @@
     <ClCompile Include="players.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="primitives.cpp">
+    <ClCompile Include="drawPrimitives.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
@@ -734,7 +749,7 @@
     <ClCompile Include="keyboard.cpp">
       <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
     </ClCompile>
-    <ClCompile Include="plr_controller.cpp">
+    <ClCompile Include="playerController.cpp">
       <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
     </ClCompile>
     <ClCompile Include="runservice.cpp">
@@ -801,7 +816,7 @@
       <Filter>Source Files\rbx\game\lua</Filter>
     </ClCompile>
     <ClCompile Include="ToneMap.cpp">
-      <Filter>Source Files\dep</Filter>
+      <Filter>Source Files\dependency</Filter>
     </ClCompile>
     <ClCompile Include="kernel.cpp">
       <Filter>Source Files\rbx\game\physics\world</Filter>
@@ -830,48 +845,6 @@
     <ClCompile Include="IRenderable.cpp">
       <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
-    <ClCompile Include="supergurymfc.cpp">
-      <Filter>Source Files\rbx\studio\base</Filter>
-    </ClCompile>
-    <ClCompile Include="supergurymfcDoc.cpp">
-      <Filter>Source Files\rbx\studio\base</Filter>
-    </ClCompile>
-    <ClCompile Include="supergurymfcView.cpp">
-      <Filter>Source Files\rbx\studio\base</Filter>
-    </ClCompile>
-    <ClCompile Include="CCommandBar.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="CInsertObjectDlg.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplorerClass.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputWnd.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplorerWnd.cpp">
-      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
-    </ClCompile>
-    <ClCompile Include="ChildFrm.cpp">
-      <Filter>Source Files\rbx\studio\base</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files\rbx\studio\base</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files\rbx\studio\base\de</Filter>
-    </ClCompile>
-    <ClCompile Include="DragTool.cpp">
-      <Filter>Source Files\rbx\studio\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="StudioTool.cpp">
-      <Filter>Source Files\rbx\studio\tools</Filter>
-    </ClCompile>
     <ClCompile Include="diagnosticsWorldDrawer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -899,8 +872,176 @@
     <ClCompile Include="normalId.cpp">
       <Filter>Source Files\rbx\game\services\physics</Filter>
     </ClCompile>
-    <ClCompile Include="toolbarTools.cpp">
+    <ClCompile Include="studio\CCommandBar.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\CInsertObjectDlg.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\OutputWnd.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\PropertiesWnd.cpp">
+      <Filter>Source Files\rbx\studio\tools\wnds</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\MoveTool.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\DragTool.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\StudioTool.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\pch.cpp">
+      <Filter>Source Files\rbx\studio\base\de</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\toolbarTools.cpp">
+      <Filter>Source Files\rbx\studio\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\supergurymfc.cpp">
       <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\supergurymfcDoc.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\supergurymfcView.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\MainFrm.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\ChildFrm.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\ExplorerWnd.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="studio\ExplorerClass.cpp">
+      <Filter>Source Files\rbx\studio\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\timer.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\convex.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\ode.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_kernel.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\quickstep.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\step.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\stepfast.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_quadtreespace.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_util.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\cylinder.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_cylinder_plane.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\box.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\capsule.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\plane.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\ray.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\sphere.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\joint.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\lcp.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\testing.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\export-dif.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\mass.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_space.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_transform.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\util.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_cylinder_box.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\collision_cylinder_sphere.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\misc.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\odemath.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\error.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\rotation.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\memory.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\obstack.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\array.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\mat.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\matrix.cpp">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\fastltsolve.c">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\fastlsolve.c">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\fastdot.c">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ode\src\fastldlt.c">
+      <Filter>Source Files\dependency\ode</Filter>
+    </ClCompile>
+    <ClCompile Include="frustumCulling.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="renderMesh.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

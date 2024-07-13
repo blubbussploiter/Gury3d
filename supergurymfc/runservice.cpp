@@ -27,20 +27,13 @@ void RBX::RunService::run()
     RBX::Network::Player* localPlayer;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
-    Scene::singleton()->saveStartPVs();
+    Scene::get()->saveStartPVs();
     Kernel::get()->spawnWorld();
 
     if (!hasStarted)
     {
         reset();
         hasStarted = 1;
-    }
-    else
-    {
-        if (!isPaused)
-        {
-            restartPvs();
-        }
     }
 
     if (localPlayer)
@@ -50,7 +43,7 @@ void RBX::RunService::run()
 
     if (scriptContext)
     {
-        //scriptContext->runScripts();
+        scriptContext->runScripts();
     }
 
     isRunning = true;
@@ -73,8 +66,8 @@ void RBX::RunService::reset()
 {
     if (!hasStarted) /* to do : make this dependent on the functions below! this doesnt check for new objects / objects added after run */
     {
-       JointsService::singleton()->buildGlobalJoints();
-       JointsService::singleton()->buildConnectors();
+        JointsService::get()->buildGlobalJoints();
+       JointsService::get()->buildConnectors();
     }
     else
     {
@@ -88,12 +81,13 @@ void RBX::RunService::update()
 
     if (isRunning)
     {
-        RBX::Scene::singleton()->updateSteppables();
-        RBX::Scene::singleton()->updateSteppablesKernelly();
+        RBX::Scene::get()->updateSteppables();
+        RBX::Scene::get()->updateSteppablesKernelly();
 
         for (int i = 0; i < 4; i++)
         {
-            Kernel::get()->step(0.04f);
+            Kernel::get()->step(0.05f, 4);
+            Kernel::get()->afterStep();
         }
 
     }
@@ -124,26 +118,17 @@ void RBX::RunService::updateSteppers()
 
 void RBX::RunService::resetPvs()
 {
-    Instances scene = Scene::singleton()->getArrayOfObjects();
+    Instances scene = Scene::get()->getArrayOfObjects();
     for (unsigned int i = 0; i < scene.size(); i++)
     {
         PVInstance* pv = toInstance<PVInstance>(scene.at(i));
         if (pv)
         {
+            if (pv->getBody())
+            {
+                pv->getBody()->setDisabled(false);
+            }
             pv->resetPV();
-        }
-    }
-}
-
-void RBX::RunService::restartPvs()
-{
-    Instances scene = Scene::singleton()->getArrayOfObjects();
-    for (unsigned int i = 0; i < scene.size(); i++)
-    {
-        PVInstance* pv = toInstance<PVInstance>(scene.at(i));
-        if (pv)
-        {
-            pv->restartPV();
         }
     }
 }
@@ -153,7 +138,7 @@ void RBX::RunService::onWorkspaceDescendentAdded(RBX::Instance* descendent)
 
 }
 
-RBX::RunService* RBX::RunService::singleton()
+RBX::RunService* RBX::RunService::get()
 {
     return RBX::Datamodel::getDatamodel()->runService;
 }

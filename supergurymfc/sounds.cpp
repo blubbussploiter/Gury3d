@@ -14,7 +14,7 @@ void RBX::SoundService::init()
 	mpSystem->init(32, FMOD_INIT_NORMAL, 0);
 }
 
-RBX::SoundService* RBX::SoundService::singleton()
+RBX::SoundService* RBX::SoundService::get()
 {
 	if (!soundService)
 	{

@@ -28,7 +28,7 @@ namespace RBX
 		Vector3 normal;
 	};
 
-	class Humanoid : public RBX::ISteppable, public RBX::Render::Renderable
+	class Humanoid : public RBX::ISteppable, public RBX::Render::IRenderable
 	{
 	private:
 
@@ -51,8 +51,10 @@ namespace RBX
 		bool currentlyJumping;
 		bool canJump;
 
-		float genieHeight;
+		float hipHeight;
 		float jumpClock, jumpTimer;
+
+		float walkSpeed;
 
 	public:
 
@@ -74,10 +76,11 @@ namespace RBX
 			jumpTimer = 1.5f;
 			jumpClock = 0.0f;
 			jumping = 0;
-			genieHeight = 3.9f;
+			hipHeight = 4.5f;
 			canJump = 1;
 			currentlyJumping = 0;
 			renderedLast = 1;
+			walkSpeed = 6;
 			setClassName("Humanoid");
 			setName("Humanoid");
 		}
@@ -90,8 +93,10 @@ namespace RBX
 		bool isFalling();
 		bool isGrounded();
 		bool isJoined();
+		bool isTripped();
 
 		void setLegCollisions(bool collidable);
+		void setArmCollisions(bool collidable);
 
 		void adjustLimbPhysics();
 		void buildJoints();
@@ -99,6 +104,7 @@ namespace RBX
 		void setLocalTransparency(float transparency);
 
 		/* sets humanoidRootPart and humanoidHead accordingly */
+
 		void setHumanoidAttributes();
 
 		void setWalkDirection(Vector3 walkDir);
@@ -112,6 +118,8 @@ namespace RBX
 		void onTurn();
 		void onMovement();
 		void onJump();
+
+		void doSounds();
 
 		void jumpTimeStep();
 		void resetJumpTimer();
@@ -128,7 +136,7 @@ namespace RBX
 		/* balancing physics stuff */
 
 		void getFeetOffGround(float damper=0.2f, float multiplier=2.f); /* balancing */
-		void genieFloat();
+		void applyHipHeight();
 
 		void tryEnable();
 
@@ -139,7 +147,7 @@ namespace RBX
 
 		virtual ~Humanoid() {}
 
-		RTTR_ENABLE(RBX::Render::Renderable);
+		RTTR_ENABLE(RBX::Render::IRenderable);
 	};
 }
 #endif

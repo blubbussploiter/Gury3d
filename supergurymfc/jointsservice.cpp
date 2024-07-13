@@ -84,7 +84,7 @@ RBX::Linkage RBX::JointsService::makeLinkage(SurfaceType s0, SurfaceType s1)
 
 RBX::NormalId RBX::JointsService::fromNormal(PVInstance* object, Vector3 normal)
 {
-	float tolerance = 1 - 0.01f;
+	float tolerance = 0.001f;
 	
 	for (unsigned int i = 0; i < 6; i++)
 	{
@@ -106,15 +106,30 @@ void RBX::JointsService::addConnector(Connector* connector)
 
 void RBX::JointsService::buildConnectors()
 {
+	/* build connectors */
+
 	for (int i = 0; i < connectors.size(); i++)
 	{
 		Connector* connector = connectors[i];
 		if (!connector->connected())
 		{
-			connector->build();
+			connector->build(); 
 			connector->setParent(this);
 		}
 	}
+
+	/* clear out old bodies from world */
+
+	for (int i = 0; i < old_Bodies.size(); i++)
+	{
+		Body* body = old_Bodies[i];
+		if (body && body->body)
+		{
+			body->destroyBody();
+		}
+	}
+
+	RBX::StandardOut::print(RBX::MESSAGE_INFO, "JointsService::buildConnectors() finalized, %d connectors, %d primitives and %d bodies in world", connectors.size(), Kernel::get()->getPrimitivesInWorld(), Kernel::get()->getBodiesInWorld());
 }
 
 void RBX::JointsService::buildGlobalJoints()
@@ -122,7 +137,7 @@ void RBX::JointsService::buildGlobalJoints()
 	Experiment::buildGlobalJoints();
 }
 
-RBX::JointsService* RBX::JointsService::singleton()
+RBX::JointsService* RBX::JointsService::get()
 {
     return RBX::Datamodel::getDatamodel()->jointService;
 }

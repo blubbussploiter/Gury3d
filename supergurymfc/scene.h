@@ -15,8 +15,8 @@ namespace RBX
 
 		Instances sceneObjects;
 
-		void onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent);
-		void onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent);
+		void onWorkspaceDescendentAdded(RBX::Render::IRenderable* descendent);
+		void onWorkspaceDescendentRemoved(RBX::Render::IRenderable* descendent);
 
 		void updateSteppables();
 		void updateSteppablesKernelly();
@@ -31,9 +31,9 @@ namespace RBX
 		void initializeKernel();
 		void saveStartPVs();
 
-		static bool isRenderable(RBX::Instance* instance) { return dynamic_cast<RBX::Render::Renderable*>(instance) != 0; }
+		static bool isRenderable(RBX::Instance* instance) { return dynamic_cast<RBX::Render::IRenderable*>(instance) != 0; }
 
-		static Scene* singleton();
+		static Scene* get();
 		void close();
 
 		Scene()

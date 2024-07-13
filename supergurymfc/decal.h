@@ -1,5 +1,4 @@
-#ifndef DECAL_H
-#define DECAL_H
+#pragma once
 
 #include <G3DAll.h>
 
@@ -15,18 +14,18 @@ namespace RBX
 
 	namespace Render
 	{
-		void rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, bool repeat=1);
+		void rawDecal(RenderDevice* d, RBX::Render::IRenderable* pv, NormalId face, int texture, bool repeat=1);
 	}
 
 	class Decal : 
 		public RBX::Instance
 	{
-	private:
+	protected:
 
 		Content tContent;
 
-		Texture::InterpolateMode interpolateMode;
-		Texture::WrapMode wrapMode;
+		G3D::Texture::InterpolateMode interpolateMode;
+		G3D::Texture::WrapMode wrapMode;
 
 	public:
 
@@ -45,7 +44,9 @@ namespace RBX
 		NormalId getFace() { return face; }
 		void setFace(NormalId _face) { face = _face; }
 
-		void fromFile(std::string file, Texture::WrapMode wrap = Texture::TILE, Texture::InterpolateMode interpolate=Texture::NEAREST_MIPMAP);
+		void fromFile(std::string file, 
+			Texture::WrapMode wrap = Texture::TILE, 
+			Texture::InterpolateMode interpolate = Texture::BILINEAR_MIPMAP);
 
 		unsigned int getGLid() 
 		{ 
@@ -54,7 +55,7 @@ namespace RBX
 			return 0;
 		}
 
-		virtual void render(RenderDevice* rd, RBX::Render::Renderable* p);
+		virtual void render(RenderDevice* rd, RBX::Render::IRenderable* p);
 		void initContentTexture();
 
 		Decal() {
@@ -67,5 +68,3 @@ namespace RBX
 		RTTR_ENABLE(RBX::Instance);
 	};
 }
-
-#endif

@@ -10,7 +10,7 @@ RTTR_REGISTRATION
          .property("StudsPerTileV", &RBX::Texture::getStudsPerTileV, &RBX::Texture::setStudsPerTileV)(rttr::metadata("Type", RBX::Appearance));
 }
 
-void RBX::Texture::render(RenderDevice* rd, RBX::Render::Renderable* p)
+void RBX::Texture::render(RenderDevice* rd, RBX::Render::IRenderable* p)
 {
     if (texture.isNull())
     {

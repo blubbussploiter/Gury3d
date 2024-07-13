@@ -11,12 +11,29 @@
 
 namespace RBX
 {
-	template<class Derived>
-	class Derivable :
-		public Derived
+	enum Types
 	{
-		RTTR_ENABLE(Derived)
+		Data,
+		Behavior,
+		Appearance,
+		Game,
+		Part,
+		Surface
 	};
+
+	static std::string getType(Types t)
+	{
+		switch (t)
+		{
+		case Data: return "Data";
+		case Behavior: return "Behavior";
+		case Appearance: return "Appearance";
+		case Game: return "Game";
+		case Part: return "Part";
+		case Surface: return "Surface";
+		}
+		return "";
+	}
 }
 
 #endif

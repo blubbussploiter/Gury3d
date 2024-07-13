@@ -13,13 +13,14 @@ void RBX::Network::IdSerializer::serializeId(BitStream& stream, RBX::Instance* i
 
 	if (!item)
 	{
+		printf("No id for %s\n", instance->getName().c_str());
 		item = new GuidItem(instance);
 		item->assign();
 	}
 
 	className = instance->getClassName();
 	scope = item->guid->data.scope;
-	
+
 	stream << scope.size();
 	stream << scope.c_str();
 	stream << className.size();

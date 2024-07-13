@@ -4,9 +4,16 @@
 #include "stdout.h"
 #include "primitive.h"
 
+#include "camera.h"
+
 bool RBX::Primitive::collisionsEnabled()
 {
 	return dGeomIsEnabled(geom[0]);
+}
+
+RBX::Render::Geometry* RBX::Primitive::asGeometry()
+{
+	return new Render::Geometry(pv->position, size, shape);
 }
 
 void RBX::Primitive::modifySize(Vector3 size)
@@ -16,13 +23,17 @@ void RBX::Primitive::modifySize(Vector3 size)
 	this->size = size;
 	switch (shape)
 	{
-	case cylinder:
-	case ball:
+	case Cylinder:
 	{
-		dGeomSphereSetRadius(geom[0], size.y);
+		dGeomSphereSetRadius(geom[0], size.y/2);
 		break;
 	}
-	default:
+	case Ball:
+	{
+		dGeomSphereSetRadius(geom[0], size.y/2);
+		break;
+	}
+	case Block:
 	{
 		dGeomBoxSetLengths(geom[0], size.x * 2, size.y * 2, size.z * 2);
 		break;
@@ -80,6 +91,20 @@ void* RBX::Primitive::getUserdata()
 	return ud;
 }
 
+CoordinateFrame RBX::Primitive::getPosition()
+{
+	const dReal* position;
+	const dReal* rotation;
+
+	position = dGeomGetPosition(geom[0]);
+	rotation = dGeomGetRotation(geom[0]);
+
+	return CoordinateFrame(Matrix3(rotation[0], rotation[1], rotation[2],
+		rotation[4], rotation[5], rotation[6],
+		rotation[8], rotation[9], rotation[10]),
+		Vector3(position[0], position[1], position[2]));
+}
+
 void RBX::Primitive::modifyOffsetWorldCoordinateFrame(CoordinateFrame offset)
 {
 	if (!geom[0]) return;
@@ -88,8 +113,6 @@ void RBX::Primitive::modifyOffsetWorldCoordinateFrame(CoordinateFrame offset)
 	Matrix3 rotation = offset.rotation;
 
 	float dRotation[12] = { rotation[0][0], rotation[0][1], rotation[0][2], 0, rotation[1][0], rotation[1][1], rotation[1][2], 0, rotation[2][0], rotation[2][1], rotation[2][2], 0 };
-
-	/* ODE is goated for these functions */
 
 	dGeomSetOffsetWorldPosition(geom[0], position.x, position.y, position.z);
 	dGeomSetOffsetWorldRotation(geom[0], dRotation);
@@ -126,10 +149,15 @@ void RBX::Primitive::createPrimitive(RBX::Shape primitive, Vector3 size)
 	this->size = size;
 
 	switch (shape)
+	{
+		case Cylinder:
 		{
-		case ball:
+			geom[0] = dCreateSphere(Kernel::get()->space, size.y / 2);
+			break;
+		}
+		case Ball:
 		{
-			geom[0] = dCreateSphere(Kernel::get()->space, size.y);
+			geom[0] = dCreateSphere(Kernel::get()->space, size.y / 2);
 			break;
 		}
 		default:
@@ -150,30 +178,26 @@ void RBX::Primitive::createPrimitive(RBX::Shape primitive, Vector3 size)
 
 void RBX::Primitive::step()
 {
-	CoordinateFrame coord;
 
-	const dReal* position;
-	const dReal* rotation;
-
-	if (!geom[0]) return;
-
-	if (body)
+	if (!geom[0])
 	{
-		if (body->disabled) return; /* save cpu and stuff, dont step */
-
-		body->step();
-		pv->velocity = body->pv->velocity;
+		return;
 	}
 
-	position = dGeomGetPosition(geom[0]);
-	rotation = dGeomGetRotation(geom[0]);
-	
-	coord.translation = Vector3(position[0], position[1], position[2]);
-	coord.rotation = Matrix3(rotation[0], rotation[1], rotation[2],
-		rotation[4], rotation[5], rotation[6],
-		rotation[8], rotation[9], rotation[10]);
+	if (Camera::FrustumCulling::isGeometryVisibleInCameraPlane(asGeometry()))
+	{
+		if (body)
+		{
+			if (!body->disabled)
+			{
+				body->step();
+				pv->velocity = body->pv->velocity;
+			}
+		}
 
-	pv->position = coord;
+		pv->position = getPosition();
+
+	}
 
 }
 

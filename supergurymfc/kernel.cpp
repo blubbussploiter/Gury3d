@@ -4,8 +4,6 @@
 #include "pvinstance.h"
 #include "scene.h"
 
-#pragma comment(lib, "ode.lib")
-
 #define ENGINE_BOUNDS_Y 200
 
 RBX::Kernel* kernel;
@@ -25,15 +23,13 @@ void RBX::Kernel::addQueuedPrimitive(Primitive* primitive)
 	objectQueue.append(primitive);
 }
 
-void RBX::Kernel::step(float step)
+void RBX::Kernel::step(float stepInS, int iterations)
 {
 	/* ode stuff, step the simulation */
 
 	dJointGroupEmpty(contacts);
 	dSpaceCollide(space, 0, &Kernel::collisionCallback);
-	dWorldQuickStep(world, step);
-
-	Kernel::get()->afterStep();
+	dWorldStepFast1(world, stepInS, iterations);
 
 }
 
@@ -50,7 +46,10 @@ void RBX::Kernel::afterStep()
 	for (int i = 0; i < objects.size(); i++)
 	{
 		Primitive* prim = objects[i];
-		prim->step();
+		if (!outOfBoundCheck(prim))
+		{
+			prim->step();
+		}
 	}
 }
 
@@ -58,7 +57,7 @@ void RBX::Kernel::spawnWorld()
 {
 	/* not going by very inconsistent primitives anymore, going by pvinstances in scene */
 
-	RBX::Instances instances = Scene::singleton()->getArrayOfObjects();
+	RBX::Instances instances = Scene::get()->getArrayOfObjects();
 	for (unsigned int i = 0; i < instances.size(); i++)
 	{
 		PVInstance* pv = toInstance<PVInstance>(instances.at(i));
@@ -73,11 +72,33 @@ bool RBX::Kernel::outOfBoundCheck(Primitive* object)
 {
 	if (object->pv->position.translation.y <= -ENGINE_BOUNDS_Y)
 	{
-		object->body->destroyBody();
-		//removePrimitive(object);
+		if (object->body)
+		{
+			object->body->destroyBody();
+		}
+		removePrimitive(object);
 		return 1;
 	}
 	return 0;
+}
+
+int RBX::Kernel::getPrimitivesInWorld()
+{
+	return objects.size();
+}
+
+int RBX::Kernel::getBodiesInWorld()
+{
+	int hasAttachedBody = 0;
+	for (unsigned int i = 0; i < objects.size(); i++)
+	{
+		Primitive* primitive = objects[i];
+		if (primitive && primitive->body)
+		{
+			hasAttachedBody++;
+		}
+	}
+	return hasAttachedBody;
 }
 
 float RBX::Kernel::getGravity()
@@ -114,8 +135,8 @@ void RBX::Kernel::collisionCallback(void* data, dGeomID o1, dGeomID o2)
 
 			// Define contact surface properties
 
-			float fric = max(prim0->friction, prim1->friction);
-			float elas = max(prim0->elasticity, prim1->elasticity);
+			float fric = (prim0->friction + prim1->friction) / 2;
+			float elas = (prim0->elasticity + prim1->elasticity) / 2;
 
 			contact[i].surface.bounce = elas; //Elasticity
 			contact[i].surface.mu = fric; //Friction

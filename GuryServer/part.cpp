@@ -1,8 +1,9 @@
 
-#include "pvinstance.h"
 #include "lighting.h"
 #include "part.h"
 #include "mesh.h"
+
+#include "stdout.h"
 
 RTTR_REGISTRATION
 {
@@ -19,7 +20,31 @@ void RBX::PartInstance::render(RenderDevice* rd)
 	}
 	else
 	{
-		rd->setObjectToWorldMatrix(cframe);
 		specialShape->render(rd);
+	}
+	renderDecals(rd);
+}
+
+void RBX::PartInstance::renderDecals(RenderDevice* rd)
+{
+	/* render decals */
+
+	for (unsigned int i = 0; i < children->size(); i++)
+	{
+		Decal* decal = toInstance<Decal>(children->at(i));
+
+		if (!decal) continue;
+
+		rd->setObjectToWorldMatrix(pv->position);
+		rd->setColor(Color4(1, 1, 1));
+
+		if (specialShape)
+		{
+			specialShape->renderDecal(rd, decal);
+		}
+		else
+		{
+			renderDecal(rd, decal);
+		}
 	}
 }

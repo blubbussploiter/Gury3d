@@ -25,7 +25,7 @@ namespace RBX
 			Brick
 		};
 
-		class WedgeMesh : public Renderable
+		class WedgeMesh : public IRenderable
 		{
 		public:
 
@@ -102,7 +102,7 @@ namespace RBX
 			}
 			virtual ~SpecialMesh() {}
 
-			RTTR_ENABLE(RBX::Render::Renderable)
+			RTTR_ENABLE(RBX::Render::IRenderable)
 		};
 
 	}

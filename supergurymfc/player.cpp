@@ -67,22 +67,22 @@ void Player::loadCharacter()
 	Vector3 pos;
 
 	Workspace* workspace;
-	workspace = Workspace::singleton();
+	workspace = Workspace::get();
 
-	pos = Camera::singleton()->camera->getCoordinateFrame().translation;
+	pos = Camera::get()->camera->getCoordinateFrame().translation;
 
 	character->translate(pos);
 
 	controller = new PlayerController();
 	controller->init(this);
 
-	Camera::singleton()->focusPart = head;
-	Camera::singleton()->cameraType = Follow;
+	Camera::get()->cameraSubject = head;
+	Camera::get()->cameraType = Follow;
 
 	character->setName(getName());
 	character->setParent(workspace);
 
-	if (RBX::RunService::singleton()->isRunning)
+	if (RBX::RunService::get()->isRunning)
 	{
 		setAsController();
 	}
@@ -102,8 +102,8 @@ void Player::setAsController()
 {
 	if (character)
 	{
-		RBX::ControllerService::singleton()->addController(controller);
-		RBX::Camera::singleton()->disable(1);
+		RBX::ControllerService::get()->addController(controller);
+		RBX::Camera::get()->disable(1);
 	}
 }
 

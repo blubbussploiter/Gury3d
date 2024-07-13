@@ -11,7 +11,7 @@ namespace RBX
 
 	namespace Render
 	{
-		class Renderable : 
+		class IRenderable : 
 			public RBX::Instance
 		{
 		public:
@@ -19,7 +19,7 @@ namespace RBX
 			bool unaffectedByLight, renderedLast;
 			float alpha, transparency, reflectance;
 
-			Renderable* specialShape;
+			IRenderable* specialShape;
 
 			void renderDecals(RenderDevice* rd, Instance* parent=0);
 
@@ -32,11 +32,12 @@ namespace RBX
 			virtual void renderFace(RenderDevice* rd, NormalId face) {};
 
 			/* renderface but with (preferably) different uv mapping */
+
 			virtual void renderFaceFitForDecal(RenderDevice* rd, NormalId face) {};
 			virtual void renderFaceFitForTexture(RenderDevice* rd, NormalId face, Vector2 StudsUV) {};
 
-			virtual ~Renderable() {}
-			Renderable() 
+			virtual ~IRenderable() {}
+			IRenderable() 
 			{
 			}
 			RTTR_ENABLE(RBX::Instance);

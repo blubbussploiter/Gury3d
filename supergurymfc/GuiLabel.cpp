@@ -9,12 +9,12 @@ void RBX::Gui::GuiLabel::render(RenderDevice* d)
 		Vector2 pos;
 		Vector2 bounds;
 
-		bounds = singleton()->font->get2DStringBounds(title, sz);
+		bounds = get()->font->get2DStringBounds(title, sz);
 		pos = Vector2(d->width() - (position.x+bounds.x/2), position.y);
 
-		singleton()->font->draw2D(d, title, pos, sz, textColor, outlineColor);
+		get()->font->draw2D(d, title, pos, sz, textColor, outlineColor);
 		return;
 	}
 
-	singleton()->font->draw2D(d, title, position, sz, textColor, outlineColor);
+	get()->font->draw2D(d, title, position, sz, textColor, outlineColor);
 }

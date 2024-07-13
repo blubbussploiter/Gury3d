@@ -44,8 +44,8 @@ void RBX::ThumbnailGenerator::doClick(std::string fileType, int width, int heigh
 	dummyWindow = new DummyWindow(width, height);
 	dummyContext = new OSContext(width, height, 3+imageServerView);
 
-	application = RBX::AppManager::singleton()->getApplication();
-	view = RBX::View::singleton();
+	application = RBX::AppManager::get()->getApplication();
+	view = RBX::View::get();
 
 	dummyContext->reallyMakeCurrent();
 

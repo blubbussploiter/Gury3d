@@ -5,24 +5,24 @@
 
 void RBX::Gui::CameraPanMenu::onArrowUpBtnClick(GuiButton* btn)
 {
-	Camera::singleton()->tiltDown();
+	Camera::get()->tiltDown();
 	Camera::switch3->play();
 }
 
 void RBX::Gui::CameraPanMenu::onArrowDwnBtnClick(GuiButton* btn)
 {
-	Camera::singleton()->tiltUp();
+	Camera::get()->tiltUp();
 	Camera::switch3->play();
 }
 
 void RBX::Gui::CameraPanMenu::onZoomOutBtnClick(GuiButton* btn)
 {
-	Camera::singleton()->cam_zoom(0);
+	Camera::get()->cam_zoom(0);
 	Camera::switch3->play();
 }
 
 void RBX::Gui::CameraPanMenu::onZoomInBtnClick(GuiButton* btn)
 {
-	Camera::singleton()->cam_zoom(1);
+	Camera::get()->cam_zoom(1);
 	Camera::switch3->play();
 }

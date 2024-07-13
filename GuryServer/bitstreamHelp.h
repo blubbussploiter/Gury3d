@@ -13,7 +13,7 @@ namespace RBX
 		{
 			static const char* read(BitStream& stream, int len)
 			{
-				char* c = new char[len + 1];
+				char* c = new char[len+1];
 				stream.Read(c);
 				c[len] = '\0';
 				return c;

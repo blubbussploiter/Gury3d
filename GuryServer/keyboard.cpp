@@ -3,43 +3,18 @@
 
 void RBX::KeyboardController::moveCharacter(RBX::Instance* character)
 {
-	RBX::ModelInstance* characterModel;
-	RBX::PVInstance* primaryPart;
-
-	btRigidBody* body;
-
-	if (!moving()) return;
-
-	if (character->getClassName() != "Model")
-	{
-		return;
-	}
-
-	characterModel = (RBX::ModelInstance*)(character);
-	primaryPart = characterModel->getPrimaryPart();
-
-	body = primaryPart->body->_body;
-	if (!body) return;
-
-	switch (dir())
-	{
-		case Forward:
-		{
-			
-			break;
-		}
-	}
-
 }
 
 void RBX::KeyboardController::bindCharacter(RBX::Instance* character)
 {
-	RBX::ModelInstance* characterModel;
-	if (character->getClassName() != "Model")
+	if (!RBX::IsA<ModelInstance>(character))
 	{
 		return;
 	}
-	characterModel = (RBX::ModelInstance*)(character);
+
+	RBX::ModelInstance* characterModel;
+	characterModel = dynamic_cast<RBX::ModelInstance*>(character);
+
 	bindMotors(characterModel);
 }
 

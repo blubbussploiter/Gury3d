@@ -500,14 +500,14 @@ void ToneMap::resizeImages(RenderDevice* rd) {
         screenImage = Texture::createEmpty
         ("Copied Screen Image",
             (int)viewport.width(), (int)viewport.height(),
-            TextureFormat::RGB16,
+            TextureFormat::RGB8,
             Texture::DIM_2D_NPOT,
             Texture::Settings::video());
 
         bloomMapIntermediate = Texture::createEmpty
         ("Bloom map intermediate",
             (int)viewport.width() / 4, (int)viewport.height(),
-            TextureFormat::RGB16,
+            TextureFormat::RGB8,
             Texture::DIM_2D_NPOT,
             Texture::Settings::video());
 
@@ -532,7 +532,7 @@ void ToneMap::resizeBloomMap(int w, int h) {
 
 LightingParameters ToneMap::prepareLightingParameters(const LightingParameters& L) const {
 
-    bool on = mEnabled && (profile != NO_TONE);
+    bool on = mEnabled && (profile != NO_TONE); 
 
     double lightScale = on ? 0.75 : 1.0;
     LightingParameters params = L;
@@ -549,7 +549,7 @@ LightingParameters ToneMap::prepareLightingParameters(const LightingParameters& 
 
 LightingRef ToneMap::prepareLighting(const LightingRef& L) const {
 
-    double lightScale = (mEnabled && (profile != NO_TONE)) ? 0.75 : 1.0;
+      double lightScale = (mEnabled && (profile != NO_TONE)) ? 0.75 : 1.0; 
 
     LightingRef lighting = Lighting::create();
     *lighting = *L;

@@ -10,7 +10,7 @@ namespace RBX
 
 		Vector2 studsPerTile;
 
-		void render(RenderDevice* rd, RBX::Render::Renderable* p); /* render with renderFace instead of renderFaceFitForDecal */
+		void render(RenderDevice* rd, RBX::Render::IRenderable* p); /* render with renderFace instead of renderFaceFitForDecal */
 
 		int getStudsPerTileU() { return studsPerTile.x; }
 		int getStudsPerTileV() { return studsPerTile.y; }
@@ -19,6 +19,7 @@ namespace RBX
 
 		Texture()
 		{
+			wrapMode = G3D::Texture::WrapMode::TILE;
 			setName("Texture");
 			setClassName("Texture");
 		}

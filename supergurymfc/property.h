@@ -1,11 +1,10 @@
-
-#ifndef PROPERTY_H
-#define PROPERTY_H
+#pragma once
 
 #include <string>
 #include <vector>
 
 #include "rttr/registration.h"
+#include "signal.h"
 
 #pragma comment(lib, "librttr_core.lib")
 
@@ -35,5 +34,3 @@ namespace RBX
 		return "";
 	}
 }
-
-#endif

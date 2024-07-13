@@ -21,7 +21,7 @@ void RBX::Diagnostics::Renderer::render(RenderDevice* rd)
 	if (joints_shouldRenderWebs)
 	{
 
-		RBX::Instances* joints = JointsService::singleton()->getChildren();
+		RBX::Instances* joints = JointsService::get()->getChildren();
 		for (size_t i = 0; i < joints->size(); i++)
 		{
 			RBX::Connector* joint = toInstance<Connector>(joints->at(i));
@@ -47,7 +47,7 @@ void RBX::Diagnostics::Renderer::preRender(RenderDevice* rd)
 	if (joints_shouldRenderOutlines)
 	{
 
-		RBX::Instances* joints = JointsService::singleton()->getChildren();
+		RBX::Instances* joints = JointsService::get()->getChildren();
 		for (size_t i = 0; i < joints->size(); i++)
 		{
 			RBX::Connector* joint = toInstance<Connector>(joints->at(i));
@@ -66,12 +66,12 @@ void RBX::Diagnostics::Renderer::render2D(RenderDevice* rd)
 
 	if (!addedButtons)
 	{
-		RBX::Gui::singleton()->add(&diag_button3);
-		RBX::Gui::singleton()->add(&diag_button4);
+		RBX::Gui::get()->add(&diag_button3);
+		RBX::Gui::get()->add(&diag_button4);
 		addedButtons = true;
 	}
 
-	diag_label1.title = RBX::Format("Joints in world: %d", JointsService::singleton()->getChildren()->size());
+	diag_label1.title = RBX::Format("Joints in world: %d", JointsService::get()->getChildren()->size());
 	diag_label2.title = RBX::Format("Primitives in world: %d", Kernel::get()->objects.size());
 	diag_label3.title = RBX::Format("Kernel: good");
 	diag_button3.title = RBX::Format("joints_renderWebs: %d", joints_shouldRenderWebs);

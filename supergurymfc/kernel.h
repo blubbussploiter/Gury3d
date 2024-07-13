@@ -28,7 +28,7 @@ namespace RBX
 
 		void addQueuedPrimitive(Primitive* primitive);
 
-		void step(float step=0.02f);
+		void step(float stepInS=0.02f, int iterations=64);
 
 		void afterStep();
 
@@ -38,6 +38,10 @@ namespace RBX
 
 		bool outOfBoundCheck(Primitive* object);
 
+		int getPrimitivesInWorld();
+
+		int getBodiesInWorld();
+
 		static void collisionCallback(void* data, dGeomID o1, dGeomID o2);
 
 		static Kernel* get();
@@ -45,15 +49,18 @@ namespace RBX
 		Kernel()
 		{
 			world = dWorldCreate();
+
 			space = dHashSpaceCreate(0);
+			dHashSpaceSetLevels(space, 1, 16);
+
 			contacts = dJointGroupCreate(0);
 
 			dWorldSetGravity(world, 0, -9.81F, 0);
 			dWorldSetAutoDisableFlag(world, 1);
 			dWorldSetAutoDisableLinearThreshold(world, 0.5f);
 			dWorldSetAutoDisableAngularThreshold(world, 0.5f);
-			//dWorldSetCFM(world, 1^-5);
-			//dWorldSetERP(world, 0.8f);
+			dWorldSetERP(world, 0.8f);
+			dWorldSetCFM(world, 0.1f);
 		}
 	};
 }

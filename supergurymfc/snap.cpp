@@ -16,16 +16,32 @@ RBX::SnapConnector* RBX::SnapConnector::getConnectingSnap(Primitive* prim)
 	return 0;
 }
 
-void copyArray(G3D::Array<RBX::Primitive*>* array0, G3D::Array<RBX::Primitive*>* array1)
+bool isASnapConnector(RBX::Primitive* prim)
 {
-	(*array1) = (*array0); /* copy; */
-	array0->fastClear(); /* clear! */
+	return (RBX::SnapConnector::getConnectingSnap(prim) != 0);
+}
+
+void copyArray(G3D::Array<RBX::Primitive*>*& array0, G3D::Array<RBX::Primitive*>*& array1)
+{
+	for (int i = 0; i < array0->size(); i++)
+	{
+		RBX::Primitive* primitive = (*array0)[i];
+		if (primitive && 
+			!array1->contains(primitive))
+		{
+			array1->push_back(primitive);
+		}
+	}
+	array0->fastClear();
 }
 
 void RBX::SnapConnector::build()
 {
 	Vector3 offsetPosition;
 	Matrix3 offsetRotation;
+
+	JointsService* jointsService;
+	jointsService = JointsService::get();
 
 	if (!prim0->geom[0] || !prim1->geom[0]) return;
 
@@ -38,12 +54,18 @@ void RBX::SnapConnector::build()
 
 	if (connector0)
 	{
-		connector = connector0->connector;
+		if (!connector)
+		{
+			connector = connector0->connector;
+		}
 		copyArray(connector0->primitives, primitives);
 	}
-	if (connector1 && !connector)
+	if (connector1)
 	{
-		connector = connector1->connector;
+		if (!connector)
+		{
+			connector = connector1->connector;
+		}
 		copyArray(connector1->primitives, primitives);
 	}
 
@@ -68,9 +90,6 @@ void RBX::SnapConnector::build()
 
 			pos = (t0 + t1) / 2;
 			pos.rotation = m0 * m1;
-
-			body0->setDisabled(1);
-			body1->setDisabled(1);
 			
 			connector->modifyPosition(pos);
 		}
@@ -78,6 +97,10 @@ void RBX::SnapConnector::build()
 
 	primitives->push_back(prim0);
 	primitives->push_back(prim1);
+
+	connector->modifyUserdata(this);
+
+	bool notAnchored = (prim0->body != 0 && prim1->body != 0);
 
 	if (connector)
 	{
@@ -87,18 +110,23 @@ void RBX::SnapConnector::build()
 		for (int i = 0; i < primitives->size(); i++)
 		{
 			Primitive* prim = (*primitives)[i];
-
-			if (prim0->body != 0 && prim1->body != 0)
+			
+			if (notAnchored)
 			{
 				connector->attachPrimitive(prim);
 				prim->modifyOffsetWorldCoordinateFrame(prim->pv->position);
-				connector->setDisabled(0);
 			}
 			else
 			{
-				prim->body = 0;
+				if (prim->body)
+				{
+					if (!isASnapConnector(prim))
+					{
+						jointsService->old_Bodies.push_back(prim->body);
+					}
+				}
 				connector->detachPrimitive(prim);
-				connector->setDisabled(1);
+				connector->destroyBody();
 			}
 
 			size = prim->size;
@@ -110,15 +138,17 @@ void RBX::SnapConnector::build()
 			}
 
 		}
-		
-		dMass mass;
-		dBodyGetMass(connector->body, &mass);
-		mass.c[0] = cofm.x;
-		mass.c[1] = cofm.y;
-		mass.c[2] = cofm.z;
 
-		connector->modifyUserdata(this);
-		connector->modifyMass(mass);
+		if (connector->body)
+		{
+			dMass mass;
+			dBodyGetMass(connector->body, &mass);
+			mass.c[0] = cofm.x;
+			mass.c[1] = cofm.y;
+			mass.c[2] = cofm.z;
+
+			connector->modifyMass(mass);
+		}
 	}
 
 }

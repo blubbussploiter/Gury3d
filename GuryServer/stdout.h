@@ -5,13 +5,6 @@
 
 namespace RBX
 {
-	enum MessageType
-	{
-		MESSAGE_UNK,
-		MESSAGE_INFO,
-		MESSAGE_WARNING,
-		MESSAGE_ERROR,
-	};
 
 	class StandardOut
 	{

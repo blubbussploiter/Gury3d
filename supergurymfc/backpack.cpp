@@ -22,7 +22,7 @@ void RBX::Backpack::updateGui()
 			if (!items[bin])
 			{
 				items[bin] = createBackpackItem(bin);
-				RBX::Gui::singleton()->add(items[bin]);
+				RBX::Gui::get()->add(items[bin]);
 			}
 			else
 			{

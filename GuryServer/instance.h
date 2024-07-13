@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "property.h"
-#include "signal.h"
 
 namespace RBX
 {
@@ -16,9 +15,9 @@ namespace RBX
 
 	typedef std::vector<Instance*> Instances;
 
-	class Instance
+	class Instance 
 	{
-	private:
+	public:
 
 		std::string name;
 		std::string className;
@@ -32,15 +31,15 @@ namespace RBX
 
 		GuidItem* id;
 
-		bool isRenderable;
-		bool isAffectedByPhysics; /* derived from PVInstance? */
-
 		bool isParentLocked;
-		bool isSteppable;
-
-		//Reflection::signal<void, RBX::Instance*> descendantAdded;
 
 		bool isAncestorOf(RBX::Instance* i);
+
+		template <typename T>
+		inline T* findFirstChild(std::string name)
+		{
+			return (T*)findFirstChild(name);
+		}
 
 		template<typename T>
 		inline T* findFirstChildOfClass(std::string name)
@@ -50,7 +49,7 @@ namespace RBX
 			{
 				child = getChildren()->at(i);
 				if (child && child->getClassName() == name)
-					return reinterpret_cast<T*>(child);
+					return dynamic_cast<T*>(child);
 			}
 			return 0;
 		}
@@ -58,9 +57,10 @@ namespace RBX
 		void setName(std::string newName) { name = newName; }
 		std::string getName() { return name; }
 
+		void setClassName2(std::string newClassName) { }
 		void setClassName(std::string newClassName) { className = newClassName; }
 
-		void setClassName2(std::string newClassName) { }
+		std::string getClassName() { return className; }
 
 		bool getArchivable() { return archivable; }
 		void setArchivable(bool narchivable) { archivable = narchivable; }
@@ -71,7 +71,10 @@ namespace RBX
 		virtual void onRemove() {};
 		virtual void onStep() {};
 
-		virtual void onDescendentAdded(RBX::Instance* child) {};
+		virtual void onDescendentAdded(RBX::Instance* child) 
+		{
+		};
+
 		virtual void onDescendentRemoved(RBX::Instance* child) {};
 
 		virtual void onChildAdded(RBX::Instance* child) {};
@@ -82,8 +85,6 @@ namespace RBX
 		void signalOnDescendentRemoved(RBX::Instance* newParent, RBX::Instance* oldParent);
 
 		Instances* getChildren() { return children; }
-
-		std::string getClassName() { return className; }
 
 		void setParent(Instance* instance);
 		Instance* getParent();
@@ -96,8 +97,20 @@ namespace RBX
 		}
 
 		virtual ~Instance() { }
-		RTTR_ENABLE();
+		RTTR_ENABLE()
 	};
+
+	template <class Type>
+	static bool IsA(RBX::Instance* i)
+	{
+		return (i && dynamic_cast<Type*>(i) != 0);
+	}
+
+	template <class Type>
+	static Type* toInstance(Instance* i)
+	{
+		return dynamic_cast<Type*>(i);
+	}
 
 }
 

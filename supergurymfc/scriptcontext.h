@@ -23,6 +23,8 @@ namespace RBX
 		void execute(std::string script); /* try: except wrapper for executeInNewThread */
 
 		int resume(lua_State* L, int narg);
+		/* resume nested within a try - catch */
+		int resumeProtected(lua_State* L, int narg);
 
 		void onWorkspaceDescendentAdded(RBX::Instance* descendent);
 		void onWorkspaceDescendentRemoved(RBX::Instance* descendent);
@@ -30,7 +32,7 @@ namespace RBX
 		void runScripts();
 		void runScript(RBX::BaseScript* script);
 
-		static ScriptContext* singleton();
+		static ScriptContext* get();
 
 		/* custom funcs */
 

@@ -15,27 +15,19 @@ namespace RBX
 	{
 	public:
 
-		BrickColor* brickColor;
+		BrickColor brickColor;
 
 		void setBrickColor(int bc)
 		{
-			Color3* b;
-
-			brickColor = BrickColor::fromNumber(bc);
-			b = brickColor->getColor();
-
-			color = Color3(b->r, b->g, b->b);
+			color = BrickColor::BrickMap::singleton()->fromNumber(bc);
 		}
 
 		int getBrickColor()
 		{
-			if (brickColor)
-			{
-				return brickColor->getNumber();
-			}
-			return 0;
+			return brickColor.number.number;
 		}
 
+		void renderDecals(RenderDevice* rd);
 		virtual void render(RenderDevice* rd);
 		virtual ~PartInstance() {}
 
@@ -45,6 +37,9 @@ namespace RBX
 			setName("Part");
 
 			shape = Shape::part;
+
+			//setTopSurface(Studs);
+			//setBottomSurface(Inlet);
 
 		}
 

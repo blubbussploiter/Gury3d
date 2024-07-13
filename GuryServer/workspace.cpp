@@ -3,7 +3,10 @@
 #include "model.h"
 
 #include "stdout.h"
+
+#include "workspace.h"
 #include "datamodel.h"
+#include "scriptcontext.h"
 
 #include "camera.h"
 #include "appmanager.h"
@@ -12,7 +15,7 @@ RTTR_REGISTRATION
 {
     rttr::registration::class_<RBX::Workspace>("Workspace")
         .constructor<>()
-        .property("currentCamera", &RBX::Workspace::getCurrentCamera, &RBX::Workspace::setCurrentCamera);
+        .property_readonly("CurrentCamera", &RBX::Workspace::getCurrentCamera);
 }
 
 void RBX::Workspace::wakeUpModels()
@@ -23,28 +26,13 @@ void RBX::Workspace::wakeUpModels()
     for (unsigned int i = 0; i < children->size(); i++)
     {
         RBX::Instance* child;
+        RBX::ModelInstance* model;
         child = children->at(i);
-        if (child->getClassName() == "Model")
+        model = dynamic_cast<RBX::ModelInstance*>(child);
+        if (model)
         {
-            static_cast<RBX::ModelInstance*>(child)->buildJoints();
-            static_cast<RBX::ModelInstance*>(child)->createController();
-        }
-    }
-}
-
-void updatePVInstances(RBX::Instances* PVInstances)
-{
-    RBX::PVInstance* part;
-    for (size_t i = 0; i < PVInstances->size(); i++)
-    {
-        RBX::Instance* child = PVInstances->at(i);
-        if (child->isRenderable || child->isAffectedByPhysics)
-        {
-            if (child->getClassName() == "PVInstance")
-            {
-                part = (RBX::PVInstance*)child;
-                RBX::RunService::singleton()->getPhysics()->createBody(part);
-            }
+            model->buildJoints();
+            model->createController();
         }
     }
 }
@@ -55,11 +43,24 @@ void RBX::getPVInstances(RBX::Instances* instances, RBX::Instances* pvs)
     {
         RBX::Instance* child = instances->at(i);
 
-        if (child->getClassName() == "PVInstance")
+        if (RBX::IsA<RBX::PVInstance>(child))
             pvs->push_back(child);
 
         getPVInstances(child->getChildren(), pvs);
     }
+}
+
+void RBX::Workspace::onDescendentAdded(RBX::Instance* descendent)
+{
+    RBX::RunService::singleton()->onWorkspaceDescendentAdded(descendent);
+    RBX::ScriptContext::singleton()->onWorkspaceDescendentAdded(descendent);
+    RBX::View::singleton()->onWorkspaceDescendentAdded(descendent);
+}
+
+void RBX::Workspace::onDescendentRemoved(RBX::Instance* descendent)
+{
+    RBX::View::singleton()->onWorkspaceDescendentRemoved(descendent);
+    RBX::ScriptContext::singleton()->onWorkspaceDescendentRemoved(descendent);
 }
 
 bool RBX::Workspace::setImageServerView()
@@ -69,8 +70,6 @@ bool RBX::Workspace::setImageServerView()
 
     children = getChildren();
     numChildren = children->size();
-
-    getCurrentCamera()->setImageServerViewNoLerp(CoordinateFrame());
 
     if (numChildren)
     {
@@ -92,19 +91,17 @@ bool RBX::Workspace::setImageServerView()
     return true;
 }
 
-void RBX::Workspace::onDescendentAdded(RBX::Instance* descendent)
-{
-    RBX::View::singleton()->onWorkspaceDescendentAdded(descendent);
-}
-
-void RBX::Workspace::onDescendentRemoved(RBX::Instance* descendent)
-{
-    RBX::View::singleton()->onWorkspaceDescendentRemoved(descendent);
-}
-
 RBX::Extents RBX::Workspace::computeCameraOwnerExtents()
 {
-    return computeVisibleExtents();
+    RBX::PartInstance* primaryPart;
+    primaryPart = getPrimaryPart();
+
+    if (primaryPart)
+    {
+        return primaryPart->getWorldExtents();
+    }
+
+    return RBX::Extents();
 }
 
 RBX::Workspace* RBX::Workspace::singleton()
@@ -117,9 +114,4 @@ RBX::Workspace* RBX::Workspace::singleton()
 RBX::Camera* RBX::Workspace::getCurrentCamera()
 {
     return RBX::AppManager::singleton()->getApplication()->getCamera();
-}
-
-void RBX::Workspace::setCurrentCamera(Camera* camera)
-{
-
 }

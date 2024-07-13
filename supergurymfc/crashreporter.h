@@ -8,7 +8,7 @@ namespace RBX
 	class CrashReporter
 	{
 	public:
-		static CrashReporter* singleton();
+		static CrashReporter* get();
 		int processException(_EXCEPTION_POINTERS* ExceptionInfo);
 		void start();
 	};

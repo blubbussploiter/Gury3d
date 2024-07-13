@@ -1,8 +1,8 @@
 
 #include "scene.h"
 #include "workspace.h"
-#include "jointservice.h"
 #include "thumbnailGenerator.h"
+#include "yieldingthreads.h"
 #include "controller.h"
 #include "lighting.h"
 #include "players.h"
@@ -11,12 +11,17 @@
 #include "serializer.h"
 #include "stdout.h"
 
+#include "jointsservice.h"
+#include "soundservice.h"
+
+#include "selection.h"
+
 RTTR_REGISTRATION
 {
     rttr::registration::class_<RBX::Datamodel>("Datamodel")
          .constructor<>()
-         .method("load", &RBX::Datamodel::loadContent)
-         .method("Load", &RBX::Datamodel::loadContent);
+         .method("SetMessageBrickCount", &RBX::Datamodel::setMessageBrickCount)
+         .method("load", &RBX::Datamodel::loadContent);
 }
 
 RBX::Datamodel* RBX::Datamodel::getDatamodel()
@@ -33,44 +38,76 @@ void RBX::Datamodel::loadContent(std::string contentId)
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel loading %s", contentId.c_str());
     RBX::Serializer::load(contentId);
-    runService->reset();
 }
 
 void RBX::Datamodel::close()
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel::close()");
-    RBX::RunService::singleton()->getPhysics()->close();
+    RBX::Scene::singleton()->close();
+    Kernel::get()->cleanup();
+    RBX::Log::cleanup();
+    emptyExplorerWindow();
+}
+
+void RBX::Datamodel::onDescendentAdded(RBX::Instance* i)
+{
+    if (i->parent != this)
+    {
+        addToExplorerWindow(i);
+    }
+}
+
+void RBX::Datamodel::onDescendentRemoved(RBX::Instance* i)
+{
+    removeFromExplorerWindow(i);
+}
+
+void RBX::Datamodel::fillExplorerWindow()
+{
+    addToExplorerWindow(workspace);
+    addToExplorerWindow(players);
+    addToExplorerWindow(lighting);
+    addToExplorerWindow(soundService);
+    addToExplorerWindow(jointService);
+}
+
+void RBX::Datamodel::emptyExplorerWindow()
+{
+}
+
+void RBX::Datamodel::addToExplorerWindow(RBX::Instance* i)
+{
+}
+
+void RBX::Datamodel::removeFromExplorerWindow(RBX::Instance* i)
+{
 }
 
 void RBX::Datamodel::open()
 {
     workspace = new Workspace();
     runService = new RunService();
-    jointService = new JointService();
     lighting = new Lighting();
     scene = new Scene();
     controllerService = new ControllerService();
     thumbnailGenerator = new ThumbnailGenerator();
-    players = new RBX::Network::Players();
+    scriptContext = new ScriptContext();
+    soundService = new SoundService();
+    players = new RBX::Network::Players();   
+    jointService = new JointsService();
+    selectionService = new Selection();
     guiRoot = Gui::singleton();
+    runService->scriptContext = scriptContext;
+    yieldingThreads = new Lua::YieldingThreads(scriptContext);
 
-    workspace->setParent(this);
-    runService->setParent(this);
-    jointService->setParent(this);
-    lighting->setParent(this);
-    controllerService->setParent(this);
-    thumbnailGenerator->setParent(this);
-    players->setParent(this);
+    fillExplorerWindow();
+
     /* if not server */
     // guiRoot->initFont();
 }
 
-void RBX::Datamodel::step()
+void RBX::Datamodel::step(double deltaTime)
 {
-    if (runService->isRunning)
-    {
-        runService->heartbeat();
-        jointService->update();
-    }
-
+    runService->heartbeat(deltaTime);
+    yieldingThreads->resume(deltaTime);
 }

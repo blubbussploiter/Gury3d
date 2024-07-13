@@ -8,8 +8,6 @@
 
 #define CROSS Color3(0.5f, 0.5f, 0.5f)
 
-/* dear user: I CANT WRITE 3D RENDER STUFF CODE!!! OKAY ITS A LITTLE SLOPPY BUT IT GETS THE JOB DONE! :)))))))))) */
-
 RTTR_REGISTRATION
 {
     rttr::registration::class_ <RBX::PVInstance>("PVInstance")
@@ -44,11 +42,19 @@ RTTR_REGISTRATION
 
 /* hurl */
 
+bool faceInCameraView(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+{
+    return (RBX::Camera::FrustumCulling::isPointVisibleInCameraPlane(v0) 
+        || RBX::Camera::FrustumCulling::isPointVisibleInCameraPlane(v1)
+        || RBX::Camera::FrustumCulling::isPointVisibleInCameraPlane(v2)
+        || RBX::Camera::FrustumCulling::isPointVisibleInCameraPlane(v3));
+}
+
 /* every side, no decals */
 
 void drawFace(RBX::NormalId face, Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 {
-    glNormal((v0 - v2).cross(v1 - v3).direction());
+    glNormal((v0 - v2).cross(v1 - v3));
 
     glTexCoord2d(uv.x, uv.y);
     glVertex(v0);
@@ -64,7 +70,8 @@ void drawFace(RBX::NormalId face, Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2
 
 void drawFaceStudsUV(Vector2 uv, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, Vector2 studs)
 {
-    glNormal((v0 - v2).cross(v1 - v3).direction());
+
+    glNormal((v0 - v2).cross(v1 - v3).direction() / 2);
 
     /* thumbs up */
 
@@ -169,7 +176,7 @@ void RBX::PVInstance::renderSurfaces(RenderDevice* rd)
 {
     if (!specialShape)
     {
-        glColor(1, 1, 1, 1 - (color.g * 0.2f));
+        glColor(1, 1, 1, 0.8f);
         renderSurface(rd, this, TOP, top, idTop);
         renderSurface(rd, this, BOTTOM, bottom, idBottom);
         renderSurface(rd, this, RIGHT, right, idRight);
@@ -228,6 +235,7 @@ void RBX::renderSurface(RenderDevice* rd, RBX::PVInstance* pv, NormalId n, Surfa
 
 void RBX::PVInstance::render(RenderDevice* d)
 {
+    Render::Geometry geometry = getInstanceGeometry();
     if (transparency < 1)
     {
         d->setObjectToWorldMatrix(getCFrame());
@@ -237,32 +245,32 @@ void RBX::PVInstance::render(RenderDevice* d)
 
         switch (shape)
         {
-        case part:
-        {
-            renderFace(d, TOP);
-            renderFace(d, BOTTOM);
-            renderFace(d, FRONT);
-            renderFace(d, BACK);
-            renderFace(d, LEFT);
-            renderFace(d, RIGHT);
+            case Block:
+            {
+                renderFace(d, TOP);
+                renderFace(d, BOTTOM);
+                renderFace(d, FRONT);
+                renderFace(d, BACK);
+                renderFace(d, LEFT);
+                renderFace(d, RIGHT);
 
-            renderSurfaces(d);
-            
-            break;
-        }
-        case ball:
-        {
-            RBX::Primitives::drawBall(d, this);
-            break;
-        }
-        case cylinder:
-        {
-            RBX::Primitives::drawCylinder(d, this);
-            break;
-        }
+                renderSurfaces(d);
+
+                break;
+            }
+            case Ball:
+            {
+                d->setShininess(80.f);
+                RBX::Primitives::drawBall(d, this);
+                break;
+            }
+            case Cylinder:
+            {
+                RBX::Primitives::drawCylinder(d, this);
+                break;
+            }
         }
     }
-    
 }
 
 void RBX::PVInstance::calculateCylinderOffsets()
@@ -566,8 +574,8 @@ void RBX::PVInstance::render3dSurface(RenderDevice* d, NormalId face)
         case SurfaceType::SteppingMotor:
         case SurfaceType::Motor:
         {
-
-            RBX::Primitives::rawCylinderAlongX(Color3::gray(), 0.4f, 0.2f, 6); /* change for controller type in the future.... YES!!!! */
+            /* change for controller type in the future.... YES!!!! */
+            RBX::Primitives::rawCylinderAlongX(Color3::gray(), 0.4f, 0.2f, 6); 
             RBX::Primitives::rawCylinderAlongX(Color3::yellow(), 0.2f, 1.0f, 6);
 
             break;
@@ -615,19 +623,29 @@ RBX::SurfaceType RBX::PVInstance::getSurface(NormalId face)
 
 void RBX::PVInstance::initializeForKernel()
 {
-    if (!body->created())
+    if (!primitive->geom[0])
     {
-        body->createBody(size);
 
         primitive->createPrimitive(shape, size);
-        body->attachPrimitive(primitive);
-
-        body->modifyUserdata(this);
         primitive->modifyUserdata(this);
 
-        setAnchored(getAnchored());
-        setCanCollide(getCanCollide());
     }
+
+    if (primitive->body && !primitive->body->created())
+    {
+        primitive->body->createBody(size);
+
+        primitive->body->attachPrimitive(primitive);
+        primitive->body->modifyUserdata(this);
+    }
+
+    setAnchored(getAnchored());
+    setCanCollide(getCanCollide());
+}
+
+RBX::PVInstance::~PVInstance()
+{
+
 }
 
 RBX::PVInstance::PVInstance()
@@ -648,17 +666,15 @@ RBX::PVInstance::PVInstance()
     idLeft = -1;
 
     elasticity = 0.5f;
-    friction = 0.300000012f;
+    friction = 0.1f;
 
     canCollide = true;
     anchored = false;
 
     alpha = 1;
-    shape = part;
+    shape = Block;
 
-    body = new Body();
-    primitive = new Primitive(body);
-
+    primitive = new Primitive(new Body());
     Kernel::get()->addPrimitive(primitive);
 
     pv = primitive->pv;

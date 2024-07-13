@@ -37,6 +37,8 @@ namespace RBX
 			SkyRef sky;
 
 			bool justReceivedFocus, inFocus;
+			bool inEditMode;
+
 			int width, height;
 			float fps;
 
@@ -62,6 +64,8 @@ namespace RBX
 			void onGraphics();
 			void onLogic();
 			void onInit();
+
+			void exitEditMode(bool inEditMode=false);
 
 			void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 			void doUserInput();

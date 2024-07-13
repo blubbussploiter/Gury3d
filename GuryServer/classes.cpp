@@ -5,7 +5,10 @@
 #include "lighting.h"
 #include "workspace.h"
 #include "humanoid.h"
+#include "basescript.h"
+#include "hopperbin.h"
 #include "decal.h"
+#include "texture.h"
 #include "model.h"
 #include "mesh.h"
 
@@ -33,10 +36,26 @@ RBX::Instance* RBX::fromName(std::string className)
 		return new RBX::Humanoid();
 	}
 
-	//if (className == "Decal")
-	//{
-	//	return new RBX::Decal();
-	//}
+	if (className == "Decal")
+	{
+		return new RBX::Decal();
+	}
+
+	if (className == "Texture")
+	{
+		return new RBX::Texture();
+	}
+
+	if (className == "Script" ||
+		className == "BaseScript")
+	{
+		return new RBX::BaseScript();
+	}
+
+	if (className == "HopperBin")
+	{
+		return new RBX::HopperBin();
+	}
 
 	if (className == "Lighting")
 	{

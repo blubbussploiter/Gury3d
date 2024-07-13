@@ -96,7 +96,7 @@ void RBX::Network::Replicator::SendSceneInfo()
     int inScene;
     BitStream stream;
 
-    RBX::Scene* scene = RBX::Scene::singleton();
+    RBX::Scene* scene = RBX::Scene::get();
     inScene = scene->sceneObjects.size();
 
     stream << (unsigned char)ID_BRICK_COUNT;

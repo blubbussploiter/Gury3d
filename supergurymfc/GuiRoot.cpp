@@ -17,11 +17,9 @@ Vector2 RBX::Gui::getPosition(float width, float height, Vector2 position, bool 
 	return position;
 }
 
-RBX::Gui::GuiRoot* RBX::Gui::singleton()
+RBX::Gui::GuiRoot* RBX::Gui::get()
 {
-	if (!root)
-		root = new RBX::Gui::GuiRoot();
-	return root;
+	return Datamodel::getDatamodel()->guiRoot;
 }
 
 void RBX::Gui::GuiRoot::render(RenderDevice* d)

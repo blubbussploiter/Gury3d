@@ -42,7 +42,6 @@ namespace RBX
 			return 0;
 		}
 
-
 		Guid();
 	};
 

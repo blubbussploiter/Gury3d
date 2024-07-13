@@ -36,12 +36,10 @@ namespace RBX
 	}
 	 
 	class PVInstance :
-		public Render::Renderable, public RBX::ISelectable
+		public Render::IRenderable, public RBX::ISelectable
 	{
 		friend class RBX::PartInstance;
 	private:
-
-		Body* body;
 
 		float elasticity, friction, erp, cfm;
 		float surfaceAlpha;
@@ -79,16 +77,11 @@ namespace RBX
 		void resetPV()
 		{
 			pv->position = startPV->position;
-		}
-
-		void restartPV()
-		{
-			pv->position = startPV->position;
 			pv->velocity = startPV->velocity;
 			primitive->modifyPosition(pv->position);
-			if (body)
+			if (primitive->body)
 			{
-				body->modifyVelocity(pv->velocity);
+				primitive->body->modifyVelocity(pv->velocity);
 			}
 		}
 
@@ -166,14 +159,17 @@ namespace RBX
 		void setAnchored(bool a)
 		{
 			anchored = a;
-			if (anchored)
+			if (primitive->body)
 			{
-				body->detachPrimitive(primitive);
-				primitive->body = 0;
-			}
-			else
-			{
-				body->attachPrimitive(primitive);
+				if (anchored)
+				{
+					primitive->body->detachPrimitive(primitive);
+					primitive->body = 0;
+				}
+				else
+				{
+					primitive->body->attachPrimitive(primitive);
+				}
 			}
 		}
 
@@ -231,17 +227,17 @@ namespace RBX
 
 			size = s;
 			size /= 2;
-			size.y *= getAffectedFormFactor(this);
+			//size.y *= getAffectedFormFactor(this);
 
 			switch (shape)
 			{
-			case cylinder:
+			case Cylinder:
 			{
 				size.y *= 2;
 				calculateCylinderOffsets();
 				break;
 			}
-			case ball: break;
+			case Ball: break;
 			}
 
 			calculateUvs();
@@ -250,9 +246,9 @@ namespace RBX
 			{
 				primitive->modifySize(size);
 			}
-			if (body)
+			if (primitive->body)
 			{
-				body->modifySize(size);
+				primitive->body->modifySize(size);
 			}
 		}
 
@@ -325,14 +321,14 @@ namespace RBX
 
 		void setLocked(bool l) { locked = l; }
 
-		Box getBox() {
-			Box box = Box(-getSize(), getSize());
-			return getCFrame().toWorldSpace(box);
+		Box getBox() 
+		{
+			return getInstanceGeometry().getBox();
 		}
 
-		SelectableBox getBoundingBox()
+		Render::Geometry getInstanceGeometry()
 		{
-			return SelectableBox(pv->position, size);
+			return Render::Geometry(getCoordinateFrame(), size, shape);
 		}
 
 		CoordinateFrame getCenter()
@@ -345,7 +341,7 @@ namespace RBX
 			return new PVInstance(*this);
 		}
 
-		Extents getLocalExtents() { return Extents(-getSize() / 2, getSize() / 2); }
+		Extents getLocalExtents() { return Extents(-getSize(), getSize()); }
 		Extents getWorldExtents()
 		{
 			Extents localExtents = getLocalExtents();
@@ -376,9 +372,11 @@ namespace RBX
 			}
 		}
 
+		~PVInstance();
+
 		PVInstance();
 
-		RTTR_ENABLE(RBX::Render::Renderable)
+		RTTR_ENABLE(RBX::Render::IRenderable)
 	};
 
 	namespace Primitives

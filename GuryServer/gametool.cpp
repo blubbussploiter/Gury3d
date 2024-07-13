@@ -6,21 +6,9 @@
 
 TextureRef dragCursor, grabRotateCursor;
 
-float getOccludingY(RBX::PVInstance* p)
-{
-	RBX::PVInstance* target;
-	target = RBX::Mouse::getTarget(p);
-	if (target && (target != p))
-	{ 
-		float y;
-		y = ceil(p->getSize().z / 2) + 1.2;
-		return target->getPosition().y + y;
-	}
-	return p->getPosition().y;
-}
-
 void RBX::GameTool::update(RenderDevice* rd, G3D::UserInput* ui)
 {
+	/*
 	RBX::PVInstance* pv = RBX::Selection::selection, *i;
 	Vector3 vec, hit, pos;
 
@@ -95,10 +83,12 @@ void RBX::GameTool::update(RenderDevice* rd, G3D::UserInput* ui)
 
 		Rendering::cursor_custom = grabRotateCursor;
 	}
+	*/
 }
 
 void RBX::GameTool::deactivate()
 {
+	/*
 	RBX::Selection::canSelect = 0;
 	RBX::Selection::selection = 0;
 	RBX::Selection::down = 0;
@@ -115,11 +105,12 @@ void RBX::GameTool::deactivate()
 	}
 
 	Rendering::cursor_custom = 0;
-	
+	*/
 }
 
 void RBX::GameTool::activate() /* g3d doesnt like static TextureRefs */
 {
+	/*
 	RBX::Selection::canSelect = 1;
 	if (dragCursor.isNull())
 	{
@@ -129,4 +120,5 @@ void RBX::GameTool::activate() /* g3d doesnt like static TextureRefs */
 	{
 		grabRotateCursor = Texture::fromFile(GetFileInPath("/content/textures/GrabRotateCursor.png"));
 	}
+	*/
 }

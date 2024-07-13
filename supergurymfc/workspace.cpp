@@ -52,15 +52,15 @@ void RBX::getPVInstances(RBX::Instances* instances, RBX::Instances* pvs)
 
 void RBX::Workspace::onDescendentAdded(RBX::Instance* descendent)
 {
-    RBX::RunService::singleton()->onWorkspaceDescendentAdded(descendent);
-    RBX::ScriptContext::singleton()->onWorkspaceDescendentAdded(descendent);
-    RBX::View::singleton()->onWorkspaceDescendentAdded(descendent);
+    RBX::RunService::get()->onWorkspaceDescendentAdded(descendent);
+    RBX::ScriptContext::get()->onWorkspaceDescendentAdded(descendent);
+    RBX::View::get()->onWorkspaceDescendentAdded(descendent);
 }
 
 void RBX::Workspace::onDescendentRemoved(RBX::Instance* descendent)
 {
-    RBX::View::singleton()->onWorkspaceDescendentRemoved(descendent);
-    RBX::ScriptContext::singleton()->onWorkspaceDescendentRemoved(descendent);
+    RBX::View::get()->onWorkspaceDescendentRemoved(descendent);
+    RBX::ScriptContext::get()->onWorkspaceDescendentRemoved(descendent);
 }
 
 bool RBX::Workspace::setImageServerView()
@@ -104,7 +104,7 @@ RBX::Extents RBX::Workspace::computeCameraOwnerExtents()
     return RBX::Extents();
 }
 
-RBX::Workspace* RBX::Workspace::singleton()
+RBX::Workspace* RBX::Workspace::get()
 {
     return RBX::Datamodel::getDatamodel()->workspace;
 }
@@ -113,5 +113,5 @@ RBX::Workspace* RBX::Workspace::singleton()
 
 RBX::Camera* RBX::Workspace::getCurrentCamera()
 {
-    return RBX::AppManager::singleton()->getApplication()->getCamera();
+    return RBX::AppManager::get()->getApplication()->getCamera();
 }

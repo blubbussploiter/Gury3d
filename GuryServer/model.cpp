@@ -1,7 +1,7 @@
 #include "model.h"
 
 #include "runservice.h"
-#include "jointservice.h"
+#include "jointsservice.h"
 
 #include "workspace.h"
 #include "stdout.h"
@@ -12,7 +12,15 @@ RTTR_REGISTRATION
 {
 	rttr::registration::class_ <RBX::ModelInstance>("Model")
 		 .constructor<>()
-		 .property("ControllerType", &RBX::ModelInstance::getController, &RBX::ModelInstance::setController);
+		 .property("primaryPart", &RBX::ModelInstance::getPrimaryPart, &RBX::ModelInstance::setPrimaryPart)(rttr::metadata("Type", RBX::Behavior))
+		 .property("ControllerType", &RBX::ModelInstance::getController, &RBX::ModelInstance::setController)(rttr::metadata("Type", RBX::Behavior))
+		 .method("breakJoints", &RBX::ModelInstance::breakJoints);
+	rttr::registration::enumeration<RBX::ControllerTypes>("ControllerType")
+		(
+			rttr::value("None", RBX::None),
+			rttr::value("KeyboardRight", RBX::KeyboardRight),
+			rttr::value("KeyboardLeft", RBX::KeyboardLeft)
+		);
 }
 
 void RBX::ModelInstance::createController()
@@ -55,14 +63,44 @@ void RBX::ModelInstance::makeController()
 	//RBX::ControllerService::singleton()->addController(controller);
 }
 
+void RBX::ModelInstance::drawControllerFlag(RenderDevice* rd, Color3 color)
+{
+	RBX::PVInstance* primaryPart = getPrimaryPart();
+	if (!primaryPart) return;
+
+	rd->setObjectToWorldMatrix(primaryPart->getCFrame());
+	/* draw the flag stand */
+
+	Draw::line(Line::fromTwoPoints(Vector3::zero(), Vector3(0, 4, 0)), rd, color);
+}
+
+void RBX::ModelInstance::render(RenderDevice* rd)
+{
+	Color3 color;
+	switch (controllerType)
+	{
+	case KeyboardRight: color = Color3::BLUE; break;
+	case KeyboardLeft: color = Color3::RED; break;
+	case None: return;
+	}
+	drawControllerFlag(rd, color);
+}
+
 void RBX::ModelInstance::setPrimaryPartCFrame(CoordinateFrame cframe)
 {
-	getPrimaryPart()->setCFrame(cframe);
+	if (getPrimaryPart())
+	{
+		primaryPart->setCFrame(cframe);
+	}
 }
 
 CoordinateFrame RBX::ModelInstance::getPrimaryPartCFrame()
 {
-	return getPrimaryPart()->getCFrame();
+	if (getPrimaryPart())
+	{
+		return primaryPart->getCFrame();
+	}
+	return CoordinateFrame();
 }
 
 RBX::PartInstance* RBX::ModelInstance::getPrimaryPart()
@@ -89,12 +127,57 @@ RBX::Extents RBX::ModelInstance::computeCameraOwnerExtents()
 
 RBX::Extents RBX::ModelInstance::computeVisibleExtents()
 {
+	return getInstancesExtents(*getChildren());
+}
+
+void RBX::ModelInstance::translateInstances(Instances instances, PVInstance* rootPart, CoordinateFrame cframe)
+{
+	CoordinateFrame frame = rootPart->getCFrame();
+	RBX::Instances* children = new Instances();
+
+	RBX::getPVInstances(&instances, children);
+
+	for (unsigned int i = 0; i < children->size(); i++)
+	{
+		PVInstance* pv = toInstance<PVInstance>(children->at(i));
+		if (pv)
+		{
+			CoordinateFrame pvFrame = pv->getCFrame();
+			Vector3 t = pvFrame.translation - frame.translation;
+			Vector3 l = cframe.translation + t;
+			Matrix3 r = pvFrame.rotation * cframe.rotation;
+			pv->setCFrame(CoordinateFrame(r, l));
+		}
+	}
+}
+
+RBX::Extents RBX::ModelInstance::getInstancesExtents(Instances instances) /* modified version of: https://github.com/MaximumADHD/Super-Nostalgia-Zone/blob/4467be1ecec455a46cac919f26fddfbbc04169d9/join.client.lua#L59 */
+{
 	float minX = inf(), minY = inf(), minZ = inf();
 	float maxX = -inf(), maxY = -inf(), maxZ = -inf();
 
-	for (unsigned int i = 0; i < getChildren()->size(); i++)
+	if (instances.size() == 2)
 	{
-		RBX::Instance* instance = getChildren()->at(i);
+		PVInstance* pvInstance;
+		ModelInstance* modelInstance;
+
+		modelInstance = toInstance<ModelInstance>(instances.at(0));
+		pvInstance = toInstance<PVInstance>(instances.at(0));
+
+		if (pvInstance)
+		{
+			return pvInstance->getWorldExtents();
+		}
+
+		if (modelInstance)
+		{
+			return modelInstance->computeVisibleExtents();
+		}
+	}
+
+	for (unsigned int i = 0; i < instances.size(); i++)
+	{
+		RBX::Instance* instance = instances.at(i);
 		RBX::ModelInstance* model;
 		RBX::PVInstance* pvinstance;
 
@@ -162,17 +245,17 @@ RBX::Extents RBX::ModelInstance::computeVisibleExtents()
 			maxZ - minZ));
 }
 
-RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
+RBX::PVInstance* RBX::ModelInstance::getRootPart(Instances i)
 {
-	RBX::PartInstance* result = 0;
+	RBX::PVInstance* result = 0;
 	RBX::Instances* children = new Instances();
 
 	float lastArea = -1;
-	RBX::getPVInstances(getChildren(), children);
+	RBX::getPVInstances(&i, children);
 
 	for (unsigned int i = 0; i < children->size(); i++)
 	{
-		RBX::PartInstance* pv = (RBX::PartInstance*)(children->at(i));
+		RBX::PVInstance* pv = (RBX::PVInstance*)(children->at(i));
 		RBX::Extents extents = pv->getWorldExtents();
 		float area = extents.area();
 		if (area > lastArea)
@@ -186,26 +269,38 @@ RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
 	return result;
 }
 
+RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
+{
+	return toInstance<PartInstance>(getRootPart(*getChildren()));
+}
+
+void RBX::ModelInstance::translate(CoordinateFrame cframe)
+{
+	translateInstances(*children, getPrimaryPart(), cframe);
+}
+
 /* joints */
 
 void RBX::ModelInstance::buildJoints()
 {
-	RBX::Instances* children;
-	if (!primaryPart) primaryPart = getPrimaryPartInternal();
-	children = getChildren();
-	for (unsigned int i = 0; i < children->size(); i++)
-	{
-		RBX::Instance* child;
-		child = children->at(i);
-		if (child->getClassName() == "Model")
-		{
-			static_cast<RBX::ModelInstance*>(child)->buildJoints();
-		}
-	}
-	RBX::JointService::singleton()->buildJoints(this);
+
 }
 
 void RBX::ModelInstance::breakJoints()
 {
-	/* update for jointservice */
+	Instances* instances = new Instances();
+	getPVInstances(getChildren(), instances);
+
+	for (unsigned int i = 0; i < instances->size(); i++)
+	{
+		PVInstance* pv = toInstance<PVInstance>(instances->at(i));
+		Body* body = pv->primitive->body;
+
+		if (body)
+		{
+			void* ud = body->getUserdata();
+			Connector* connector = (Connector*)(ud);
+			if(connector) connector->unlink();
+		}
+	}
 }

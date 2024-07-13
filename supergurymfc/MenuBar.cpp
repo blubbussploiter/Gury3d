@@ -13,7 +13,7 @@ void setFullScreen(bool s)
 
 void RBX::Gui::MenuBar::onExitBtnClick(RBX::Gui::GuiButton* btn)
 {
-	RBX::AppManager::singleton()->getApplication()->sendClose();
+	//RBX::AppManager::get()->getApplication()->sendClose();
 }
 
 void RBX::Gui::MenuBar::onFullscreenBtnClick(GuiButton* btn)
@@ -32,4 +32,21 @@ void RBX::Gui::MenuBar::onFullscreenBtnClick(GuiButton* btn)
 
 	setFullScreen(inFullScreen);
 
+}
+
+void RBX::Gui::MenuBar::onEditModeBtnClick(GuiButton* btn)
+{
+	RBX::Experimental::Application* app;
+	app = RBX::AppManager::get()->getApplication();
+
+	app->exitEditMode(!app->inEditMode);
+
+	if (!app->inEditMode)
+	{
+		btn->title = "Edit Mode";
+	}
+	else
+	{
+		btn->title = "x Edit Mode";
+	}
 }

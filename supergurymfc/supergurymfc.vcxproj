@@ -143,6 +143,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOW;_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\include;..\include\studio;..\include\include;..\include\fmod\inc;..\include\fmod\studio;..\include\bullet;..\include\bullet\vectormathlibrary\include\vectormath\scalar\cpp\;..\include\lua</AdditionalIncludeDirectories>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -199,13 +200,10 @@
   <ItemGroup>
     <ClInclude Include="basescript.h" />
     <ClInclude Include="body.h" />
-    <ClInclude Include="CCommandBar.h" />
     <ClInclude Include="cframebridge.h" />
-    <ClInclude Include="CInsertObjectDlg.h" />
     <ClInclude Include="collisionTest.h" />
     <ClInclude Include="diagnosticsWorldDrawer.h" />
     <ClInclude Include="decode.h" />
-    <ClInclude Include="DragTool.h" />
     <ClInclude Include="effectsetting.h" />
     <ClInclude Include="encode.h" />
     <ClInclude Include="application.h" />
@@ -224,6 +222,7 @@
     <ClInclude Include="enum.h" />
     <ClInclude Include="extents.h" />
     <ClInclude Include="gametool.h" />
+    <ClInclude Include="geometry.h" />
     <ClInclude Include="guid.h" />
     <ClInclude Include="GuiRoot.h" />
     <ClInclude Include="hinge.h" />
@@ -244,9 +243,28 @@
     <ClInclude Include="luabridge.h" />
     <ClInclude Include="motor.h" />
     <ClInclude Include="primitive.h" />
+    <ClInclude Include="renderMesh.h" />
     <ClInclude Include="shadows.h" />
+    <ClInclude Include="signal.h" />
     <ClInclude Include="snap.h" />
-    <ClInclude Include="StudioTool.h" />
+    <ClInclude Include="studio\CCommandBar.h" />
+    <ClInclude Include="studio\ChildFrm.h" />
+    <ClInclude Include="studio\CInsertObjectDlg.h" />
+    <ClInclude Include="studio\ClassView.h" />
+    <ClInclude Include="studio\DragTool.h" />
+    <ClInclude Include="studio\framework.h" />
+    <ClInclude Include="studio\MainFrm.h" />
+    <ClInclude Include="studio\MoveTool.h" />
+    <ClInclude Include="studio\OutputWnd.h" />
+    <ClInclude Include="studio\pch.h" />
+    <ClInclude Include="studio\PropertiesWnd.h" />
+    <ClInclude Include="studio\resource.h" />
+    <ClInclude Include="studio\StudioTool.h" />
+    <ClInclude Include="studio\supergurymfc.h" />
+    <ClInclude Include="studio\supergurymfcDoc.h" />
+    <ClInclude Include="studio\supergurymfcView.h" />
+    <ClInclude Include="studio\targetver.h" />
+    <ClInclude Include="studio\ViewTree.h" />
     <ClInclude Include="surfaceFactory.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="mesh.h" />
@@ -268,16 +286,52 @@
     <ClInclude Include="rightkeyboard.h" />
     <ClInclude Include="runservice.h" />
     <ClInclude Include="scene.h" />
+    <ClCompile Include="..\include\ode\src\array.cpp" />
+    <ClCompile Include="..\include\ode\src\box.cpp" />
+    <ClCompile Include="..\include\ode\src\capsule.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_cylinder_box.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_cylinder_plane.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_cylinder_sphere.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_kernel.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_quadtreespace.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_space.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_transform.cpp" />
+    <ClCompile Include="..\include\ode\src\collision_util.cpp" />
+    <ClCompile Include="..\include\ode\src\convex.cpp" />
+    <ClCompile Include="..\include\ode\src\cylinder.cpp" />
+    <ClCompile Include="..\include\ode\src\error.cpp" />
+    <ClCompile Include="..\include\ode\src\export-dif.cpp" />
+    <ClCompile Include="..\include\ode\src\fastdot.c" />
+    <ClCompile Include="..\include\ode\src\fastldlt.c" />
+    <ClCompile Include="..\include\ode\src\fastlsolve.c" />
+    <ClCompile Include="..\include\ode\src\fastltsolve.c" />
+    <ClCompile Include="..\include\ode\src\joint.cpp" />
+    <ClCompile Include="..\include\ode\src\lcp.cpp" />
+    <ClCompile Include="..\include\ode\src\mass.cpp" />
+    <ClCompile Include="..\include\ode\src\mat.cpp" />
+    <ClCompile Include="..\include\ode\src\matrix.cpp" />
+    <ClCompile Include="..\include\ode\src\memory.cpp" />
+    <ClCompile Include="..\include\ode\src\misc.cpp" />
+    <ClCompile Include="..\include\ode\src\obstack.cpp" />
+    <ClCompile Include="..\include\ode\src\ode.cpp" />
+    <ClCompile Include="..\include\ode\src\odemath.cpp" />
+    <ClCompile Include="..\include\ode\src\plane.cpp" />
+    <ClCompile Include="..\include\ode\src\quickstep.cpp" />
+    <ClCompile Include="..\include\ode\src\ray.cpp" />
+    <ClCompile Include="..\include\ode\src\rotation.cpp" />
+    <ClCompile Include="..\include\ode\src\sphere.cpp" />
+    <ClCompile Include="..\include\ode\src\step.cpp" />
+    <ClCompile Include="..\include\ode\src\stepfast.cpp" />
+    <ClCompile Include="..\include\ode\src\testing.cpp" />
+    <ClCompile Include="..\include\ode\src\timer.cpp" />
+    <ClCompile Include="..\include\ode\src\util.cpp" />
     <ClCompile Include="basescript.cpp" />
     <ClCompile Include="body.cpp" />
     <ClCompile Include="brickmap.cpp" />
-    <ClCompile Include="CCommandBar.cpp" />
     <ClCompile Include="cframemt.cpp" />
-    <ClCompile Include="CInsertObjectDlg.cpp" />
     <ClCompile Include="connector.cpp" />
     <ClCompile Include="contentprovider.cpp" />
     <ClCompile Include="diagnosticsWorldDrawer.cpp" />
-    <ClCompile Include="DragTool.cpp" />
     <ClCompile Include="effectsetting.cpp" />
     <ClCompile Include="exp_jointsService.cpp" />
     <ClCompile Include="hinge.cpp" />
@@ -290,8 +344,10 @@
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="motor.cpp" />
     <ClCompile Include="normalId.cpp" />
+    <ClCompile Include="frustumCulling.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="primitive.cpp" />
+    <ClCompile Include="renderMesh.cpp" />
     <ClCompile Include="serializer.h" />
     <ClInclude Include="scriptcontext.h" />
     <ClInclude Include="selection.h" />
@@ -307,19 +363,6 @@
     <ClInclude Include="weld.h" />
     <ClInclude Include="workspace.h" />
     <ClInclude Include="yieldingthreads.h" />
-    <ClInclude Include="ChildFrm.h" />
-    <ClInclude Include="ClassView.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="OutputWnd.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="PropertiesWnd.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="supergurymfc.h" />
-    <ClInclude Include="supergurymfcDoc.h" />
-    <ClInclude Include="supergurymfcView.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="poll.cpp" />
@@ -330,7 +373,7 @@
     <ClCompile Include="brickcolor.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="CameraControlMenu.cpp" />
-    <ClCompile Include="camera_utils.cpp" />
+    <ClCompile Include="cameraUtilities.cpp" />
     <ClCompile Include="classes.cpp" />
     <ClCompile Include="clonebin.cpp" />
     <ClCompile Include="content.cpp" />
@@ -365,8 +408,8 @@
     <ClCompile Include="oscontext.cpp" />
     <ClCompile Include="part.cpp" />
     <ClCompile Include="players.cpp" />
-    <ClCompile Include="plr_controller.cpp" />
-    <ClCompile Include="primitives.cpp" />
+    <ClCompile Include="playerController.cpp" />
+    <ClCompile Include="drawPrimitives.cpp" />
     <ClCompile Include="pvinstance.cpp" />
     <ClCompile Include="replicator.cpp" />
     <ClCompile Include="rightkeyboard.cpp" />
@@ -380,13 +423,27 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdout.cpp" />
-    <ClCompile Include="StudioTool.cpp" />
+    <ClCompile Include="studio\CCommandBar.cpp" />
+    <ClCompile Include="studio\ChildFrm.cpp" />
+    <ClCompile Include="studio\CInsertObjectDlg.cpp" />
+    <ClCompile Include="studio\DragTool.cpp" />
+    <ClCompile Include="studio\ExplorerClass.cpp" />
+    <ClCompile Include="studio\ExplorerWnd.cpp" />
+    <ClCompile Include="studio\MainFrm.cpp" />
+    <ClCompile Include="studio\MoveTool.cpp" />
+    <ClCompile Include="studio\OutputWnd.cpp" />
+    <ClCompile Include="studio\pch.cpp" />
+    <ClCompile Include="studio\PropertiesWnd.cpp" />
+    <ClCompile Include="studio\StudioTool.cpp" />
+    <ClCompile Include="studio\supergurymfc.cpp" />
+    <ClCompile Include="studio\supergurymfcDoc.cpp" />
+    <ClCompile Include="studio\supergurymfcView.cpp" />
+    <ClCompile Include="studio\toolbarTools.cpp" />
     <ClCompile Include="surfaceFactory.cpp" />
     <ClCompile Include="surfaces.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thumbnailGenerator.cpp" />
     <ClCompile Include="ToneMap.cpp" />
-    <ClCompile Include="toolbarTools.cpp" />
     <ClCompile Include="valuebridge.cpp" />
     <ClCompile Include="vector3mt.cpp" />
     <ClCompile Include="view.cpp" />
@@ -423,21 +480,6 @@
     <ClCompile Include="..\include\lua\lzio.c" />
     <ClCompile Include="..\include\lua\print.c" />
     <ClCompile Include="appmanager.cpp" />
-    <ClCompile Include="ChildFrm.cpp" />
-    <ClCompile Include="ExplorerClass.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="OutputWnd.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="PropertiesWnd.cpp" />
-    <ClCompile Include="supergurymfc.cpp" />
-    <ClCompile Include="supergurymfcDoc.cpp" />
-    <ClCompile Include="supergurymfcView.cpp" />
-    <ClCompile Include="ExplorerWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="supergurymfc.rc" />

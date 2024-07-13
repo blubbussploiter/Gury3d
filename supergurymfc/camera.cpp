@@ -55,7 +55,7 @@ void RBX::Camera::characterFade()
     RBX::Network::Player* player;
     player = RBX::Network::getPlayers()->localPlayer;
 
-    if (!focusPart) return;
+    if (!cameraSubject) return;
     if (!player || player && !player->character) return;
 
     RBX::ModelInstance* character = player->character;
@@ -64,7 +64,7 @@ void RBX::Camera::characterFade()
     if (!humanoid) return;
 
     Vector3 pos = cframe.translation;
-    Vector3 ppos = focusPart->getPosition();
+    Vector3 ppos = cameraSubject->getPosition();
 
     float dist = (ppos - pos).magnitude();
 
@@ -107,10 +107,11 @@ void RBX::Camera::reset()
 
 void RBX::Camera::follow()
 {
-    if (!focusPart) return;
-    CoordinateFrame focus = focusPart->getCoordinateFrame();
-    focusPosition = focus.translation;
-    pan(&cframe, 0, 0, 1);
+    if (cameraSubject)
+    {
+        goal = cameraSubject->getPosition();
+        pan(&cframe, 0, 0);
+    }
 }
 
 void RBX::Camera::update(bool rightMouseDown)
@@ -124,14 +125,14 @@ void RBX::Camera::update(bool rightMouseDown)
     {
         case Follow:
         {
-            smoothness = 0.95f;
+            smoothness = 0.9f;
             characterFade();
             follow();
             break;
         }
         default: 
         {
-            smoothness = 0.55f;
+            smoothness = 0.45f;
             break;
         }
     }
@@ -141,8 +142,8 @@ void RBX::Camera::update(bool rightMouseDown)
         if (oldMouse.x != 0 && oldMouse.y != 0)
         {
             GetCursorPos(&mouse);
-            pan(&cframe, (mouse.x - oldMouse.x) / 80.f, (mouse.y - oldMouse.y) / 80.f);
             SetCursorPos(oldMouse.x, oldMouse.y);
+            pan(&cframe, (mouse.x - oldMouse.x) / 100.f, (mouse.y - oldMouse.y) / 100.f);
         }
     }
 
@@ -161,33 +162,10 @@ void RBX::Camera::move()
     if (!moving())
         return;
 
-    for (unsigned int i = 0; i < directions.size(); i++)
-    {
-        MovementDirections dir = directions.at(i);
-        switch (dir)
-            {
-            case RBX::Forward:
-            {
-                cframe.translation += cframe.lookVector() * getSpeed();
-                break;
-            }
-            case RBX::Backwards:
-            {
-                cframe.translation -= cframe.lookVector() * getSpeed();
-                break;
-            }
-            case RBX::Right:
-            {
-                cframe.translation += cframe.rightVector() * getSpeed();
-                break;
-            }
-            case RBX::Left:
-            {
-                cframe.translation -= cframe.rightVector() * getSpeed();
-                break;
-            }
-        }
-    }
+    Vector3 horizontalVector = vertical *cframe.lookVector();
+    Vector3 verticalVector = horizontal * cframe.rightVector();
+
+    cframe.translation += (horizontalVector + verticalVector) * getSpeed();
 
     camera->setCoordinateFrame(cframe);
     setFrame(cframe);
@@ -205,7 +183,8 @@ void RBX::Camera::lookAtSelected()
 
 void RBX::Camera::zoomExtents()
 {
-    zoomExtents(RBX::Workspace::singleton()->computeVisibleExtents());
+    zoomExtents(RBX::Workspace::
+        get()->computeVisibleExtents());
 }
 
 void RBX::Camera::zoomExtents(RBX::Extents extents, bool lerp)
@@ -268,7 +247,7 @@ void RBX::Camera::setImageServerViewNoLerp(CoordinateFrame modelCoord)
         zoomExtents(owner->computeCameraOwnerExtents(), 0);
     }
 
-    focusPosition = modelCoord.translation;
+    goal = modelCoord.translation;
 
     pan(&cframe, 0, 0);
     update(0);
@@ -296,12 +275,14 @@ RBX::ICameraOwner* RBX::Camera::getCameraOwner()
 
 void RBX::Camera::doCameraCollisionLogic()
 {
-    if (!focusPart) return;
+    return;
+
+    if (!cameraSubject) return;
 
     CoordinateFrame cameraFrame = camera->getCoordinateFrame();
     Ray ray = Ray::fromOriginAndDirection(cameraFrame.translation, -cameraFrame.lookVector());
 
-    Vector3 hit = World::getHitFromRay<Instance>(ray, true, *focusPart->getParent()->getChildren());
+    Vector3 hit = World::getHitFromRay<Instance>(ray, true, *cameraSubject->getParent()->getChildren());
     if (hit != Vector3::zero())
     {
         float distance = (cameraFrame.translation - hit).magnitude();
@@ -334,7 +315,7 @@ void RBX::Camera::doCameraCollisionLogic()
 bool RBX::Camera::canZoom(bool inout)
 {
     
-    if (cameraType != Follow || !focusPart) return 1;
+    if (cameraType != Follow || !cameraSubject) return 1;
 
     CoordinateFrame cameraFrame = camera->getCoordinateFrame();
     Ray ray;
@@ -348,7 +329,7 @@ bool RBX::Camera::canZoom(bool inout)
         ray = Ray::fromOriginAndDirection(cframe.translation, -cframe.lookVector());
     }
 
-    Vector3 hit = World::getHitFromRay<Instance>(ray, true, *focusPart->getParent()->getChildren());
+    Vector3 hit = World::getHitFromRay<Instance>(ray, true, *cameraSubject->getParent()->getChildren());
     if (hit != Vector3::zero())
     {
         return ((cameraFrame.translation - hit).magnitude() > 5);
@@ -363,7 +344,7 @@ bool RBX::Camera::canZoom(bool inout)
 
 /* same as `workspace.CurrentCamera` */
 
-RBX::Camera* RBX::Camera::singleton()
+RBX::Camera* RBX::Camera::get()
 {
-    return RBX::AppManager::singleton()->getApplication()->getCamera();
+    return RBX::AppManager::get()->getApplication()->getCamera();
 }

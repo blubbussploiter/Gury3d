@@ -11,6 +11,7 @@ RBX::PVInstance* lastClone, *lastSelection;
 
 void RBX::CloneBin::update(RenderDevice* rd, G3D::UserInput* ui)
 {
+	/*
 	if (RBX::Selection::clicked)
 	{
 		if (!RBX::Selection::selection) return;
@@ -55,22 +56,26 @@ void RBX::CloneBin::update(RenderDevice* rd, G3D::UserInput* ui)
 			}
 		}
 	}
-
+	*/
 }
 
 void RBX::CloneBin::activate()
 {
+	/*
 	RBX::Selection::canSelect = 1;
 	if (cloneCursor.isNull()) cloneCursor = Texture::fromFile(GetFileInPath("/content/textures/CloneCursor.png"));
 	if (cloneDown.isNull()) cloneDown = Texture::fromFile(GetFileInPath("/content/textures/CloneDownCursor.png"));
 	if (cloneOver.isNull()) cloneOver = Texture::fromFile(GetFileInPath("/content/textures/CloneOverCursor.png"));
+	*/
 }
 
 void RBX::CloneBin::deactivate()
 {
+	/*
 	Rendering::cursor_custom = 0;
 	lastSelection = 0;
 	lastClone = 0;
 	RBX::Selection::canSelect = 0;
 	RBX::Selection::selection = 0;
+	*/
 }

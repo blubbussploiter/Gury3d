@@ -1,3 +1,8 @@
+
+#include "studio/pch.h"
+#include "studio/StudioTool.h"
+#include "studio/MainFrm.h"
+
 #include "appmanager.h"
 
 #include "selection.h"
@@ -14,10 +19,6 @@
 
 #include "soundservice.h"
 #include "diagnosticsWorldDrawer.h"
-
-#include "StudioTool.h"
-
-HCURSOR original;
 
 RBX::Datamodel* RBX::Experimental::Application::getDatamodel()
 {
@@ -48,14 +49,15 @@ void RBX::Experimental::Application::doUserInput()
 
 	while (pollEvent(mouse, e) || pollEvent(key, e))
 	{
+		if (mouse.message != 0)
+		{
+			mouse.message = 0;
+		}
 
-		mouse.message = 0;
-		mouse.wParam = 0;
-		mouse.lParam = 0;
-
-		key.message = 0;
-		key.wParam = 0;
-		key.lParam = 0;
+		if (key.message != 0)
+		{
+			key.message = 0;
+		}
 
 		userInput->processEvent(e);
 	}
@@ -67,19 +69,19 @@ void RBX::Experimental::Application::doUserInput()
 
 void RBX::Experimental::Application::onSimulation(RealTime rdt, SimTime sdt, SimTime idt)
 {
-	SoundService::singleton()->update();
 	getDatamodel()->step(idt);
+	SoundService::get()->update();
 }
 
 void RBX::Experimental::Application::onLogic()
 {
 	if (userInput->keyPressed(SDLK_o))
 	{
-		RBX::Camera::singleton()->cam_zoom(0);
+		RBX::Camera::get()->cam_zoom(0);
 	}
 	if (userInput->keyPressed(SDLK_i))
 	{
-		RBX::Camera::singleton()->cam_zoom(1);
+		RBX::Camera::get()->cam_zoom(1);
 	}
 	if (RBX::Studio::current_Tool)
 	{
@@ -89,10 +91,12 @@ void RBX::Experimental::Application::onLogic()
 	Mouse::getMouse()->update(userInput);
 	getCamera()->update(userInput->keyDown(SDL_RIGHT_MOUSE_KEY));
 
-	RBX::Gui::singleton()->doButtonLogic(userInput, renderDevice);
+	/* todo: add something that puts the window into focus if it gets clicked on... for escaping explorer wnd grasps */
+
+	RBX::Gui::get()->doButtonLogic(userInput, renderDevice);
 	RBX::Network::getPlayers()->onStep();
 
-	RBX::ControllerService::singleton()->updateControllers(userInput);
+	RBX::ControllerService::get()->updateControllers(userInput);
 	RBX::Selection::get()->update(userInput);
 
 }
@@ -119,14 +123,7 @@ void RBX::Experimental::Application::onKillFocus()
 
 void RBX::Experimental::Application::onGraphics()
 {
-	View::singleton()->oneFrame(renderDevice, getCamera(), sky);
-
-	renderDevice->push2D();
-
-	Diagnostics::get_Renderer()->render2D(renderDevice);
-	Mouse::getMouse()->render(renderDevice);
-
-	renderDevice->pop2D();
+	View::get()->oneFrame(renderDevice, getCamera(), sky);
 }
 
 void RBX::Experimental::Application::onInit()
@@ -134,30 +131,63 @@ void RBX::Experimental::Application::onInit()
 	Diagnostics::get_Renderer()->diagnostics_enabled = false;
 
 	RBX::StandardOut::print(RBX::MESSAGE_INFO, "Application::onInit()");
-	RBX::AppManager::singleton()->initOneTimeAppliances();
+	RBX::AppManager::get()->initOneTimeAppliances();
 
 	setWindowLong();
-
-	original = GetCursor();
 
 	getCamera();
 	getDatamodel();
 
-	RBX::ControllerService::singleton()->addController(RBX::Camera::singleton());
+	RBX::ControllerService::get()->mapControllers(userInput);
+	RBX::ControllerService::get()->addController(RBX::Camera::get());
 	
 	RBX::ScriptContext* context = getDatamodel()->scriptContext;
 	context->openState();
+	
+	inEditMode = true;
 
 	if (!rbxlFile.empty())
 	{
-		getDatamodel()->name = RBX::AppManager::singleton()->fileName;
+		getDatamodel()->name = RBX::AppManager::get()->fileName;
 		getDatamodel()->loadContent(rbxlFile);
 	}
 
 }
 
+void RBX::Experimental::Application::exitEditMode(bool _inEditMode)
+{
+	CMainFrame* mainFrame = CMainFrame::mainFrame;
+	if (!mainFrame) return;
+
+	inEditMode = _inEditMode;
+	int n;
+	n = inEditMode ? SW_RESTORE : SW_HIDE;
+
+	mainFrame->m_wndMainTools.ShowWindow(n);
+	mainFrame->m_wndCameraTools.ShowWindow(n);
+	mainFrame->m_wndClassView.ShowWindow(n);
+	mainFrame->m_wndStudioTools.ShowWindow(n);
+	mainFrame->m_wndRunServiceTools.ShowWindow(n);
+	mainFrame->m_wndProperties.ShowWindow(n);
+	mainFrame->m_wndOutput.ShowWindow(n);
+	mainFrame->m_wndMenuBar.ShowWindow(n);
+	mainFrame->m_wndStatusBar.ShowWindow(n);
+
+	if (inEditMode)
+	{
+		ShowWindow(parent, SW_RESTORE);
+	}
+	else
+	{
+		ShowWindow(parent, SW_MAXIMIZE);
+	}
+
+	resizeWithParent();
+}
+
 void RBX::Experimental::Application::mainProcessStep()
 {
+
 	if (isThinking)
 	{
 		RealTime desiredFrameDuration = 1.0 / fps;
@@ -167,6 +197,7 @@ void RBX::Experimental::Application::mainProcessStep()
 		RealTime timeStep = now - lastTime;
 		
 		doUserInput();
+
 		onLogic();
 
 		onGraphics();
@@ -180,7 +211,6 @@ void RBX::Experimental::Application::mainProcessStep()
 
 		now = System::time();
 
-		System::sleep(max(0.0, desiredFrameDuration - (now - lastWaitTime)));
 		lastWaitTime = System::time();
 	}
 

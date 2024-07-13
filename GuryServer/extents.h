@@ -16,7 +16,7 @@ namespace RBX
 			return high - low;
 		}
 		Vector3 getCenter() 
-		{ 
+		{
 			return (low + high) * 0.5f; 
 		}
 		float area()

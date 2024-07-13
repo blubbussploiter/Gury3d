@@ -26,19 +26,44 @@ namespace RBX
 		float volume;
 
 		std::string soundPath;
+
+		void playOnce();
 		void play();
 		void stop();
+
 		bool isPlaying()
 		{ 
 			bool b; 
 			channel->isPlaying(&b);
 			return b; 
 		}
-		double getStartPosition() { unsigned int position; channel->getPosition(&position, FMOD_TIMEUNIT_MS); return ((double)position) / 1000.0; }
+		double getStartPosition() 
+		{ 
+			unsigned int position; 
+			channel->getPosition(&position, FMOD_TIMEUNIT_MS); 
+			return ((double)position) / 1000.0; 
+		}
 		void setStartPosition(double value);
-		double getLength() { unsigned int len; sound->getLength(&len, FMOD_TIMEUNIT_MS); return ((double)len) / 1000.0; }
-		void setVolume(float vol) { volume = vol; }
-		float getVolume() { return volume; }
+
+		void setEndPosition(double value);
+
+		double getLength() 
+		{ 
+			unsigned int len;
+			sound->getLength(&len, FMOD_TIMEUNIT_MS);
+			return ((double)len) / 1000.0;
+		}
+
+		void setVolume(float vol)
+		{ 
+			volume = vol; 
+		}
+
+		float getVolume()
+		{ 
+			return volume;
+		}
+
 		static RBX::Sound* fromFile(std::string file, bool isLooped = 0)
 		{
 			RBX::Sound* s = new RBX::Sound();

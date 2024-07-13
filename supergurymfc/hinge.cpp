@@ -15,7 +15,7 @@ void RBX::HingeConnector::build()
 	axis = RBX::getNormalFromNormalId(pvInstance, connectedAt);
 	anchor = (body0->getPosition() + body1->getPosition()) / 2;
 
-	hinge = dJointCreateHinge(Kernel::get()->world, JointsService::singleton()->joints);
+	hinge = dJointCreateHinge(Kernel::get()->world, JointsService::get()->joints);
 	dJointAttach(hinge, body0->body, body1->body);
 
 	dJointSetHingeAnchor(hinge, anchor.x, anchor.y, anchor.z);

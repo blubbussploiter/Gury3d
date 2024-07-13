@@ -31,8 +31,8 @@ void RBX::Decal::initContentTexture()
             {
                 Texture::Parameters params;
 
-                params.wrapMode = Texture::WrapMode::TILE;
-                params.interpolateMode = Texture::NEAREST_MIPMAP;
+                params.wrapMode = wrapMode;
+                params.maxAnisotropy = 1.0f;
 
                 texture = Texture::fromGImage(getName(), image, TextureFormat::RGBA8, Texture::DIM_2D, params);
             }
@@ -47,7 +47,7 @@ void RBX::Decal::fromFile(std::string file, Texture::WrapMode wrap, Texture::Int
     tContent = Content::fromImageFile(file);
 }
 
-void RBX::Decal::render(RenderDevice* rd, RBX::Render::Renderable* p)
+void RBX::Decal::render(RenderDevice* rd, RBX::Render::IRenderable* p)
 {
     if (texture.isNull())
     {
@@ -58,7 +58,7 @@ void RBX::Decal::render(RenderDevice* rd, RBX::Render::Renderable* p)
     Render::rawDecal(rd, p, face, getGLid(), 0);
 }
 
-void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::Renderable* pv, NormalId face, int texture, bool repeat)
+void RBX::Render::rawDecal(RenderDevice* d, RBX::Render::IRenderable* pv, NormalId face, int texture, bool repeat)
 {
 
     glEnable(GL_TEXTURE_2D);

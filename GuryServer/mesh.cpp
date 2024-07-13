@@ -1,13 +1,47 @@
 #include "mesh.h"
 #include "lighting.h"
 
+#include "part.h"
+
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<RBX::Render::SpecialMesh>("SpecialMesh")
 		.constructor<>()
 		.property("Scale", &RBX::Render::SpecialMesh::getMeshScale, &RBX::Render::SpecialMesh::setMeshScale)
 		.property("MeshId", &RBX::Render::SpecialMesh::getMeshId, &RBX::Render::SpecialMesh::setMeshId)
-		.property("MeshType", &RBX::Render::SpecialMesh::getMeshType, &RBX::Render::SpecialMesh::setMeshType);
+		.property("MeshType", &RBX::Render::SpecialMesh::getMeshType, &RBX::Render::SpecialMesh::setMeshType)(rttr::metadata("Type", RBX::Data));
+	rttr::registration::enumeration<RBX::Render::MeshType>("MeshType")
+		(
+			rttr::value("Head", RBX::Render::Head),
+			rttr::value("Torso", RBX::Render::Torso),
+			rttr::value("Wedge", RBX::Render::Wedge),
+			rttr::value("Sphere", RBX::Render::Sphere),
+			rttr::value("Cylinder", RBX::Render::Cylinder),
+			rttr::value("FileMesh", RBX::Render::Filemesh),
+			rttr::value("Brick", RBX::Render::Brick)
+		);
+
+}
+
+void RBX::Render::SpecialMesh::renderSpecialMesh(RenderDevice* d)
+{
+
+	glBegin(GL_TRIANGLES);
+
+	for (int i = 0; i < num_faces; ++i)
+	{
+		glTexCoord(uvs[i]);
+		glNormal(normals[i].direction());
+		glVertex(vertices[i] * mesh_scale);
+	}
+
+	glEnd();
+
+}
+
+void RBX::Render::SpecialMesh::fromMeshType(MeshType types)
+{
+	setMeshType(types);
 }
 
 void RBX::Render::SpecialMesh::fromFile(std::string path)
@@ -35,74 +69,104 @@ void RBX::Render::SpecialMesh::fromFile(std::string path)
 			uvs.push_back(Vector3(ux, uy, uz));
 		}
 	}
-	
+
 	fclose(f);
 
 	num_faces = faces * 3;
-	meshId = Content(path);
-}
-
-void RBX::Render::SpecialMesh::fromMeshType(MeshType types)
-{
-	setMeshType(types);
+	meshId = Content::fromContent(path);
 }
 
 void RBX::Render::SpecialMesh::setMeshId(Content SpecialMeshId)
 {
 	std::string contentPath;
 
-	RBX::ContentProvider::singleton()->downloadContent(SpecialMeshId, contentPath);
+	if (meshType != Filemesh)
+	{
+		return;
+	}
 
-	if (contentPath.empty()) return;
+	/* something... */
 
 	vertices.clear();
 	normals.clear();
 	uvs.clear();
 
 	fromFile(contentPath);
-
-	RBX::ContentProvider::singleton()->cleanupContent(SpecialMeshId);
 }
 
-void RBX::Render::SpecialMesh::renderDecals(RenderDevice* rd)
+void RBX::Render::SpecialMesh::renderFaceFitForDecal(RenderDevice* rd, NormalId face)
 {
-	RBX::Instances* children;
-	children = getParent()->getChildren();
-	for (unsigned int i = 0; i < children->size(); i++)
-	{
-		RBX::Decal* d = dynamic_cast<RBX::Decal*>(children->at(i));
-		if (d)
-		{
-			d->render(rd, this);
-		}
-	}
+	renderFace(rd, face);
 }
 
-void RBX::Render::SpecialMesh::render(RenderDevice* d)
+void RBX::Render::SpecialMesh::renderFace(RenderDevice* d, NormalId face)
 {
 	switch (meshType)
 	{
 		case Head:
+		case Filemesh:
 		{
-			buildHeadMesh(mesh_scale);
+			renderSpecialMesh(d);
 			break;
 		}
-		default: break;
+		case Wedge:
+		{
+			renderWedgeFace(face);
+			break;
+		}
 	}
 }
 
-void RBX::Render::SpecialMesh::renderFace(RBX::NormalId face, bool isDrawingDecal)
+void RBX::Render::SpecialMesh::renderDecal(RenderDevice* rd, Decal* decal)
 {
-	glBegin(GL_TRIANGLES);
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
 
-	for (int i = 0; i < num_faces; ++i) 
+	if (!part->transparency)
 	{
-		glNormal(normals[i]);
-		glTexCoord(uvs[i]);
-		glVertex(vertices[i]);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	glEnd();
+	rd->setShininess(100.0f);
+	decal->render(rd, this);
+
+	if (!part->transparency)
+	{
+		glBlendFunc(GL_ZERO, GL_ZERO);
+		glDisable(GL_BLEND);
+	}
+
+}
+
+void RBX::Render::SpecialMesh::render(RenderDevice* d)
+{
+	PartInstance* part = toInstance<PartInstance>(getParent());
+	if (!part) return;
+
+	d->setObjectToWorldMatrix(part->pv->position);
+	d->setShininess(100.0f);
+
+	d->setColor(Color4(part->color, part->alpha));
+
+	switch (meshType)
+		{
+		case Wedge:
+		{
+			renderFace(d, LEFT);
+			renderFace(d, RIGHT);
+			renderFace(d, BACK);
+			renderFace(d, FRONT);
+			renderFace(d, BOTTOM);
+			renderFace(d, TOP);
+			break;
+		}
+		default:
+		{
+			renderFace(d, UNDEFINED);
+			break;
+		}
+	}
 }
 
 void RBX::Render::buildHeadMesh(Vector3 size)

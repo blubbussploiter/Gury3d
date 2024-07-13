@@ -19,25 +19,32 @@ namespace RBX
 	private:
 		float latitude;
 
-		Color3 ambientTop, ambientBottom;
+		Color3 ambientTop, ambientBottom, spotLight;
 		Color4 clear_color;
 
-		GameTime timeOfDay;
+		void adjust() /* same color for top and front(maybe) sides */
+		{
+			params->lightDirection.x = -params->lightDirection.y;
+			params->lightColor = spotLight;
+		}
+
 	public:
 
-		LightingParameters params;
+		GameTime timeOfDay;
+
+		LightingParameters* params;
 		LightingRef lighting;
 
 		void setTopAmbient(Color3 c)
 		{
-			lighting->ambientTop = c;
 			ambientTop = c;
+			lighting->ambientTop = ambientTop;
 		}
 
 		void setBottomAmbient(Color3 c) 
 		{
-			lighting->ambientBottom = c;
 			ambientBottom = c;
+			lighting->ambientBottom = ambientBottom;
 		}
 
 		void setClearColor(Color3 c) 
@@ -47,48 +54,36 @@ namespace RBX
 
 		void setSpotLight(Color3 c)
 		{
-			params.lightColor = c;
+			spotLight = c;
+			params->lightColor = spotLight;
 		}
 
 		void setTimeOfDay(std::string t) 
 		{
 			timeOfDay = Time::fromString(t.c_str());
-			params.setTime(timeOfDay);
+
+			params->setTime(timeOfDay);
+			adjust();
 		}
 
 		void setGeoLatitude(float l)
-		{ 
+		{
 			latitude = l;
-			params.setLatitude(latitude);
+			params->setLatitude(latitude);
+			adjust();
 		}
 
 		std::string getTimeOfDay() { return Time::toString(timeOfDay); }
-		Color3 getSpotLight() { return params.lightColor; }
+		Color3 getSpotLight() { return spotLight; }
 		Color3 getTopAmbient() { return ambientTop; }
 		Color3 getBottomAmbient() { return ambientBottom; }
 		Color3 getClearColor() { return clear_color; }
 
 		float getGeoLatitude() { return latitude; }
 
-		static Lighting* singleton();
+		static Lighting* get();
 
-		Lighting()
-		{
-			params = LightingParameters();
-
-			setGeoLatitude(41.7f);
-			setTimeOfDay("14:0:0");
-			setSpotLight(Color3(0.59607846f, 0.53725493f, 0.40000001f));
-
-			lighting = G3D::Lighting::create();
-
-			clear_color = Color4(0.0f, 0.0f, 0.0f);
-			setTopAmbient(Color3(0.81960785f, 0.81568629f, 0.8509804f));
-			setBottomAmbient(Color3(0.47843137f, 0.52549022f, 0.47058824f));
-
-			setName("Lighting");
-			setClassName("Lighting");
-		}
+		Lighting();
 		RTTR_ENABLE(RBX::Instance);
 	};
 }

@@ -60,7 +60,7 @@ void RBX::ModelInstance::makeController()
 	}
 	default: return;
 	}
-	//RBX::ControllerService::singleton()->addController(controller);
+	//RBX::ControllerService::get()->addController(controller);
 }
 
 void RBX::ModelInstance::drawControllerFlag(RenderDevice* rd, Color3 color)
@@ -125,14 +125,59 @@ RBX::Extents RBX::ModelInstance::computeCameraOwnerExtents()
 	return RBX::Extents();
 }
 
-RBX::Extents RBX::ModelInstance::computeVisibleExtents() /* modified version of: https://github.com/MaximumADHD/Super-Nostalgia-Zone/blob/4467be1ecec455a46cac919f26fddfbbc04169d9/join.client.lua#L59 */
+RBX::Extents RBX::ModelInstance::computeVisibleExtents()
+{
+	return getInstancesExtents(*getChildren());
+}
+
+void RBX::ModelInstance::translateInstances(Instances instances, PVInstance* rootPart, CoordinateFrame cframe)
+{
+	CoordinateFrame frame = rootPart->getCFrame();
+	RBX::Instances* children = new Instances();
+
+	RBX::getPVInstances(&instances, children);
+
+	for (unsigned int i = 0; i < children->size(); i++)
+	{
+		PVInstance* pv = toInstance<PVInstance>(children->at(i));
+		if (pv)
+		{
+			CoordinateFrame pvFrame = pv->getCFrame();
+			Vector3 t = pvFrame.translation - frame.translation;
+			Vector3 l = cframe.translation + t;
+			Matrix3 r = pvFrame.rotation * cframe.rotation;
+			pv->setCFrame(CoordinateFrame(r, l));
+		}
+	}
+}
+
+RBX::Extents RBX::ModelInstance::getInstancesExtents(Instances instances) /* modified version of: https://github.com/MaximumADHD/Super-Nostalgia-Zone/blob/4467be1ecec455a46cac919f26fddfbbc04169d9/join.client.lua#L59 */
 {
 	float minX = inf(), minY = inf(), minZ = inf();
 	float maxX = -inf(), maxY = -inf(), maxZ = -inf();
 
-	for (unsigned int i = 0; i < getChildren()->size(); i++)
+	if (instances.size() == 2)
 	{
-		RBX::Instance* instance = getChildren()->at(i);
+		PVInstance* pvInstance;
+		ModelInstance* modelInstance;
+
+		modelInstance = toInstance<ModelInstance>(instances.at(0));
+		pvInstance = toInstance<PVInstance>(instances.at(0));
+
+		if (pvInstance)
+		{
+			return pvInstance->getWorldExtents();
+		}
+
+		if (modelInstance)
+		{
+			return modelInstance->computeVisibleExtents();
+		}
+	}
+
+	for (unsigned int i = 0; i < instances.size(); i++)
+	{
+		RBX::Instance* instance = instances.at(i);
 		RBX::ModelInstance* model;
 		RBX::PVInstance* pvinstance;
 
@@ -159,9 +204,9 @@ RBX::Extents RBX::ModelInstance::computeVisibleExtents() /* modified version of:
 				sx = size.x,
 				sy = size.y,
 				sz = size.z;
-			float 
-				x = cf.translation.x, 
-				y = cf.translation.y, 
+			float
+				x = cf.translation.x,
+				y = cf.translation.y,
 				z = cf.translation.z,
 				r00 = cf.rotation.elt[0][0],
 				r01 = cf.rotation.elt[0][1],
@@ -188,7 +233,7 @@ RBX::Extents RBX::ModelInstance::computeVisibleExtents() /* modified version of:
 		}
 	}
 
-	if(minX == inf()) 
+	if (minX == inf())
 	{
 		return Extents();
 	}
@@ -200,37 +245,17 @@ RBX::Extents RBX::ModelInstance::computeVisibleExtents() /* modified version of:
 			maxZ - minZ));
 }
 
-void RBX::ModelInstance::translate(CoordinateFrame cframe)
+RBX::PVInstance* RBX::ModelInstance::getRootPart(Instances i)
 {
-
-	CoordinateFrame frame = getPrimaryPartCFrame();
-
-	for (unsigned int i = 0; i < children->size(); i++)
-	{
-		PVInstance* pv = toInstance<PVInstance>(children->at(i));
-		if (pv)
-		{
-			CoordinateFrame pvFrame = pv->getCFrame();
-			Vector3 t = pvFrame.translation - frame.translation;
-			Vector3 l = cframe.translation + t;
-			Matrix3 r = pvFrame.rotation * cframe.rotation;
-			pv->setCFrame(CoordinateFrame(r, l));
-		}
-	}
-
-}
-
-RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
-{
-	RBX::PartInstance* result = 0;
+	RBX::PVInstance* result = 0;
 	RBX::Instances* children = new Instances();
 
 	float lastArea = -1;
-	RBX::getPVInstances(getChildren(), children);
+	RBX::getPVInstances(&i, children);
 
 	for (unsigned int i = 0; i < children->size(); i++)
 	{
-		RBX::PartInstance* pv = (RBX::PartInstance*)(children->at(i));
+		RBX::PVInstance* pv = (RBX::PVInstance*)(children->at(i));
 		RBX::Extents extents = pv->getWorldExtents();
 		float area = extents.area();
 		if (area > lastArea)
@@ -242,6 +267,16 @@ RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
 	children->clear();
 	delete children;
 	return result;
+}
+
+RBX::PartInstance* RBX::ModelInstance::getPrimaryPartInternal()
+{
+	return toInstance<PartInstance>(getRootPart(*getChildren()));
+}
+
+void RBX::ModelInstance::translate(CoordinateFrame cframe)
+{
+	translateInstances(*children, getPrimaryPart(), cframe);
 }
 
 /* joints */

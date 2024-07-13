@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -13,664 +9,895 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\dep">
-      <UniqueIdentifier>{7c31ed3e-861f-441b-a7f9-94546369fbab}</UniqueIdentifier>
+    <Filter Include="Header Files\game">
+      <UniqueIdentifier>{c642c43f-1000-42f1-a192-1f8fa88e04bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\dep">
-      <UniqueIdentifier>{9f9e6a03-85f4-4219-b3d7-4d16c5bf667a}</UniqueIdentifier>
+    <Filter Include="Header Files\game\content">
+      <UniqueIdentifier>{2f3b6edf-e7c3-4f28-99c7-9427e39da3b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\network">
+      <UniqueIdentifier>{0f527ec9-69b6-477b-ab89-53949d920b18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\network\def">
+      <UniqueIdentifier>{2b0a23a1-b7e4-46f3-ad6f-f1b27f443951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\network\guid">
+      <UniqueIdentifier>{c5091eb5-123a-4276-9cea-e7f6138b667d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\network\replication">
+      <UniqueIdentifier>{8137b1b9-14e2-4276-8b90-8f89f487378f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\objects">
+      <UniqueIdentifier>{c8d09ff2-6d3f-4ea6-8edf-7f476b790048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\objects\hopperbins">
+      <UniqueIdentifier>{f96b2a24-8f65-446d-b1c6-94b1d3abeaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\objects\joints">
+      <UniqueIdentifier>{a649a1d7-5bda-44a0-b23b-493e6d7154f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\objects\enums">
+      <UniqueIdentifier>{845da405-b12b-4536-b3d5-219299471967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\reflection">
+      <UniqueIdentifier>{518357b2-4a3e-4cd2-a145-18f345544718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering">
+      <UniqueIdentifier>{fb1a85cf-f3d5-427e-bc02-12d600219102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering\decals">
+      <UniqueIdentifier>{7da73b67-cb17-4855-bd7a-fbf6348f1950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering\gui">
+      <UniqueIdentifier>{96c77fa9-d00b-4757-a781-389379d49bca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering\gui\mouse">
+      <UniqueIdentifier>{6044f3db-ccf9-4cde-aab0-53249c456cc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering\objects">
+      <UniqueIdentifier>{a7ad6bb3-d916-424d-a017-196e1528df73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\services">
+      <UniqueIdentifier>{1aa7e503-b5a0-46c5-9dd0-be8a8bb088a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\services\lua">
+      <UniqueIdentifier>{0984d12e-a178-40c9-b2be-94bc85879bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\lua">
+      <UniqueIdentifier>{4cadd160-e539-4620-bd28-4134361d06b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\services\virtual">
+      <UniqueIdentifier>{e851f478-15aa-4606-aed0-94b8574b33ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dep">
+      <UniqueIdentifier>{3538588c-39c7-43d8-84f9-9f37d61be974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\app">
+      <UniqueIdentifier>{b2aeb5ff-e4b0-441d-884b-8ff3ecc02f45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics">
+      <UniqueIdentifier>{7438efc6-ba59-4865-b131-c32c05b6f18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\world">
+      <UniqueIdentifier>{9e62f621-253f-41f0-af10-3a70013a3f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\service">
+      <UniqueIdentifier>{0da217a2-76f9-4dc7-95de-40b4422e168a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\physics\connectors">
+      <UniqueIdentifier>{83e747fa-0b33-41c9-930e-2d1f743ae062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Source Files\rbx">
-      <UniqueIdentifier>{f693b4c9-b552-4816-9832-6efd67afa0e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx">
-      <UniqueIdentifier>{78105b5c-998a-4513-9673-d6a53c529b47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game">
-      <UniqueIdentifier>{7fe08461-812b-4180-8326-706f74297cdf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\content">
-      <UniqueIdentifier>{68706521-942a-4401-b028-06d95fcc863c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\objects">
-      <UniqueIdentifier>{e7554af4-8f2c-4961-9641-cb549d9489ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\objects\hopperbins">
-      <UniqueIdentifier>{c3976ade-2400-4a1b-8320-a3510570d9f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\objects\joints">
-      <UniqueIdentifier>{f496c0f1-d726-43bf-8400-5d4e8c42891e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\objects\enums">
-      <UniqueIdentifier>{7d47bfc4-8ac1-4a44-a08b-caa378a72e53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\reflection">
-      <UniqueIdentifier>{7bbff898-848f-4068-8439-4f72eddf97a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering">
-      <UniqueIdentifier>{a50b56d9-e913-4ad0-b4c7-8aff30e8f742}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering\gui">
-      <UniqueIdentifier>{eea65c59-8df7-4e7e-987c-e3e32fafb350}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering\gui\mouse">
-      <UniqueIdentifier>{491a9c0d-8f8c-4eb7-be3b-11d907b05247}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering\decals">
-      <UniqueIdentifier>{0c8ed168-a800-412c-a4a3-6fd2ae1a0697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering\objects">
-      <UniqueIdentifier>{41df741c-bc0c-4d86-9c8c-7d8de4d0a6ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services">
-      <UniqueIdentifier>{42795df9-6821-4357-bbc3-08b43618d5d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\lighting">
-      <UniqueIdentifier>{e2c13f9e-8ab5-4cc8-949c-249295cb7dbe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\players">
-      <UniqueIdentifier>{14e4f16c-f785-438d-b131-9710ebe8957c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\players\chat">
-      <UniqueIdentifier>{d39d66a3-ed18-4ec2-a15b-a7c24350936e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\players\char">
-      <UniqueIdentifier>{b1f1bdab-63a4-473e-9b00-5e6649021b78}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\camera">
-      <UniqueIdentifier>{b2543c27-1454-4299-8942-61f3d2ee8edd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\movement">
-      <UniqueIdentifier>{373d5a0d-852e-42ef-bcda-01c9f3400d15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\movement\controllers">
-      <UniqueIdentifier>{aa229497-8016-4f88-86da-24707d4ac82d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\movement\controllers\devices">
-      <UniqueIdentifier>{a935c932-a7e3-4327-a611-d7707598309b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\sounds">
-      <UniqueIdentifier>{0e5aacdd-70a0-4651-a69b-fc6575c122ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\runservice">
-      <UniqueIdentifier>{1ff36645-8ea8-4afa-9b74-1f1014a339ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\serializer">
-      <UniqueIdentifier>{337376d2-4322-4536-b8b0-6386a4a8de7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\math">
-      <UniqueIdentifier>{6213abf9-cae1-4dff-ab12-52d93a734514}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\selection">
-      <UniqueIdentifier>{812738ae-1229-4e9d-925d-ad60b1a2910b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\log">
-      <UniqueIdentifier>{f356060d-ed17-48b1-8566-ddc8c2c8b2c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\datamodel">
-      <UniqueIdentifier>{552139e1-72b9-4a4a-9456-6d73ff82553f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\services\jointservice">
-      <UniqueIdentifier>{e9dc6e2a-a51a-4aa0-92ff-f4112090fbbe}</UniqueIdentifier>
+      <UniqueIdentifier>{11277c6d-a300-45d7-9367-e21ab33ee195}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game">
-      <UniqueIdentifier>{34f1cfd1-85da-405a-913b-ad7f5993d818}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\content">
-      <UniqueIdentifier>{90f9014e-e5fc-4100-bc5a-57f92bf9e191}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\reflection">
-      <UniqueIdentifier>{d2cde5cc-6553-461b-9eec-5bc15a5d71f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering">
-      <UniqueIdentifier>{c590e7da-fa85-403f-8f56-4fff97b0fb81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\gui">
-      <UniqueIdentifier>{fed4f256-c97f-4035-a42e-f106c40da212}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\gui\mouse">
-      <UniqueIdentifier>{32a91bea-376d-4929-91b0-f3e72ee77cd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\gui\rbx">
-      <UniqueIdentifier>{e8c8c73b-88fb-4f5a-a222-d3d2f74b997a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\objects">
-      <UniqueIdentifier>{0cf846e7-582c-4de2-84e5-580d9d562e60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\debug">
-      <UniqueIdentifier>{478e5fbe-46a4-45d4-8bc7-785856415060}</UniqueIdentifier>
+      <UniqueIdentifier>{b7122695-6c7a-4dbd-84d8-1de9c0e0eaf7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game\services">
-      <UniqueIdentifier>{41f2441f-3d4c-4cba-91e6-b75f78612b56}</UniqueIdentifier>
+      <UniqueIdentifier>{b7045f35-4a3f-449e-a96b-ea83423fa635}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\lighting">
-      <UniqueIdentifier>{31a40da5-979a-43f0-a366-64f9a23cc4bb}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\network">
+      <UniqueIdentifier>{a0f957b7-38c9-481a-be8c-8cb636d39a58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\players">
-      <UniqueIdentifier>{a5f40ca2-856e-4c16-a725-3c041c0da1ff}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\hopperbins">
+      <UniqueIdentifier>{c4a48fe5-909f-4b70-8202-5a22b5b76684}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\players\char">
-      <UniqueIdentifier>{66ddd8b7-6b3e-477f-b3ed-9f515ee6cb6a}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\reflection">
+      <UniqueIdentifier>{15252e7c-327d-48bc-89a5-febe87d9b3c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\camera">
-      <UniqueIdentifier>{7e4ee277-716a-4e66-9db2-9d5a952ab6fa}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\physics">
+      <UniqueIdentifier>{5b880678-d947-43ce-8bb0-3604436bfbe9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\movement">
-      <UniqueIdentifier>{59281e8f-74be-4515-9325-94c3fcd3ee3d}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\rendering">
+      <UniqueIdentifier>{65a65464-efd3-4391-a150-c76e702581b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\movement\controllers">
-      <UniqueIdentifier>{a202ea1b-56ef-4eba-aebf-d8cd912c3516}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\rendering\offscreen">
+      <UniqueIdentifier>{6ec0497e-4cd7-474a-bc53-ebf03a1c3f18}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\movement\controllers\player">
-      <UniqueIdentifier>{8746638c-b030-4394-9030-97130825a5c3}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\thinkers">
+      <UniqueIdentifier>{0ee9eb15-ef6a-4b9a-a7b3-f9c1d2fee311}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\movement\controllers\keyboard">
-      <UniqueIdentifier>{315e0683-b2a0-45a1-b34f-803137380e81}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\thinkers\world">
+      <UniqueIdentifier>{18efd9f6-fa38-4f8f-9b1a-aabe420c3713}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\objects">
-      <UniqueIdentifier>{71e2911c-a4fb-477b-8b5e-f3149c09a852}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\services\thinkers\ctrl">
+      <UniqueIdentifier>{563c6af2-5632-49dd-95af-b215063c17db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\objects\hopperbins">
-      <UniqueIdentifier>{41c4194a-82f2-4ea0-8623-7e9ff15cdde1}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\menus">
+      <UniqueIdentifier>{2f1fcc1c-9039-4d3b-91e6-3e3871b5dbc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\objects\joints">
-      <UniqueIdentifier>{8a780510-0a16-4cf2-bc92-c7d240a39eea}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\gui">
+      <UniqueIdentifier>{a57d1f60-de37-429f-af93-9e0af6d5059e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\sound">
-      <UniqueIdentifier>{f59ace4f-604c-4be9-804f-8412d162fce1}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\app">
+      <UniqueIdentifier>{b167a5ac-8deb-461a-beca-626dbdedccad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\runservice">
-      <UniqueIdentifier>{cbbe42f9-1955-49e3-992d-96ed8b17f5f3}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\app\window">
+      <UniqueIdentifier>{0f0acf1e-4670-4c7b-9d77-37d8152390e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\rbx\game\services\decals">
-      <UniqueIdentifier>{b9862c57-f912-4b71-af87-9b75a7e305ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\serializer">
-      <UniqueIdentifier>{7ed2cfae-c252-4c6a-bd8f-6bec47a9cf5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\selection">
-      <UniqueIdentifier>{120c6fce-7ad7-4605-aafc-569f64e19242}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\log">
-      <UniqueIdentifier>{88ed1d7b-ceb4-469d-8a43-1280ad9ff56a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\datamodel">
-      <UniqueIdentifier>{aca1d01d-42de-4d80-850a-dbac51143c77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\services\jointservice">
-      <UniqueIdentifier>{d1f0d22a-d08a-4949-978a-ea0a59fc78f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\studio">
-      <UniqueIdentifier>{b63bd137-071f-4b56-bf55-7c29f75644f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\studio">
-      <UniqueIdentifier>{35eb218c-c1bf-4f05-abe3-8beace6dfce9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\misc">
-      <UniqueIdentifier>{85bd7f50-29d8-4d31-9085-ec609e6b57f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\studio\manager">
-      <UniqueIdentifier>{423c24c2-9bbb-473d-aced-798006451734}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\studio\manager">
-      <UniqueIdentifier>{1b960ae0-9a25-4309-8038-5eb5ed50116e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\application">
-      <UniqueIdentifier>{8192191c-ec94-4d69-898f-482a9cd58197}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\rendering\offscreen">
-      <UniqueIdentifier>{841737ab-ad75-4d59-804e-dcf8946fa7bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\rendering\offscreen">
-      <UniqueIdentifier>{98b2de3c-54fa-4e0e-9927-4d1d823f6408}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\dep\base64">
-      <UniqueIdentifier>{e0ecc6e9-2b2f-4c5f-ad78-d80824c55ed9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\virtuals">
-      <UniqueIdentifier>{93a6f4d3-48a7-4d36-9fcb-60c70f9b48f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\network">
-      <UniqueIdentifier>{1cacf3f2-ca13-435c-818c-9b06684bdb01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\network">
-      <UniqueIdentifier>{5609968e-327f-4789-9a04-6cfc0a87c397}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\network\guid">
-      <UniqueIdentifier>{da573fd0-a5e5-40af-a39b-967c1160d5d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\network\guid">
-      <UniqueIdentifier>{afa8bb69-ce33-42a8-a938-ac09f6c5dc15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\network\def">
-      <UniqueIdentifier>{565703d2-4fc7-4106-b2ac-4ce2ddd1d63c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rbx\game\network\replication">
-      <UniqueIdentifier>{6adec725-ae59-4433-8763-07d9da4c0cda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\rbx\game\network\replication">
-      <UniqueIdentifier>{7e10c204-f1ef-4281-a4d5-03240affb6a9}</UniqueIdentifier>
+    <Filter Include="Source Files\rbx\game\lua">
+      <UniqueIdentifier>{82e0181b-c35e-4543-8b70-ab69074e7fb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\rbx\game\physics">
-      <UniqueIdentifier>{3db34d06-815f-4290-aa00-ebed564f632f}</UniqueIdentifier>
+      <UniqueIdentifier>{e7994c0f-eec4-4377-8ffd-7cd8077cfca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\world">
+      <UniqueIdentifier>{f384756d-b40d-421e-abe9-285c7dbacdf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\objects">
+      <UniqueIdentifier>{6036e0a9-75cc-4f1b-af91-d150eb4e3bc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rbx\game\physics\connectors">
+      <UniqueIdentifier>{2a1ac9f4-fb7b-4b6d-ad72-85c2e601a1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dep">
+      <UniqueIdentifier>{9a90b68d-4341-4b20-a34d-d290743f734d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dep\lua">
+      <UniqueIdentifier>{cf23b88f-72e6-4da8-942a-b2d02ad0fb01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\misc">
+      <UniqueIdentifier>{adb4174d-4ade-40f0-8307-31e3e21d82db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game\rendering\objects\offscreen">
+      <UniqueIdentifier>{847c621d-7484-466b-80b3-7e999952cbec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pvinstance.h">
-      <Filter>Header Files\rbx\game\rendering</Filter>
+    <ClInclude Include="content.h">
+      <Filter>Header Files\game\content</Filter>
     </ClInclude>
-    <ClInclude Include="lighting.h">
-      <Filter>Header Files\rbx\game\services\lighting</Filter>
+    <ClInclude Include="guid.h">
+      <Filter>Header Files\game\network\guid</Filter>
     </ClInclude>
-    <ClInclude Include="GuiRoot.h">
-      <Filter>Header Files\rbx\game\rendering\gui</Filter>
+    <ClInclude Include="rbx_identifiers.h">
+      <Filter>Header Files\game\network\def</Filter>
     </ClInclude>
-    <ClInclude Include="strings.h">
-      <Filter>Header Files\dep</Filter>
+    <ClInclude Include="idserializer.h">
+      <Filter>Header Files\game\network</Filter>
     </ClInclude>
-    <ClInclude Include="players.h">
-      <Filter>Header Files\rbx\game\services\players</Filter>
+    <ClInclude Include="replicator.h">
+      <Filter>Header Files\game\network\replication</Filter>
     </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files\rbx\game\rendering\gui\mouse</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\rbx\game\services\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="workspace.h">
-      <Filter>Header Files\rbx\game\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="sounds.h">
-      <Filter>Header Files\rbx\game\services\sounds</Filter>
-    </ClInclude>
-    <ClInclude Include="decal.h">
-      <Filter>Header Files\rbx\game\rendering\decals</Filter>
-    </ClInclude>
-    <ClInclude Include="runservice.h">
-      <Filter>Header Files\rbx\game\services\runservice</Filter>
-    </ClInclude>
-    <ClInclude Include="property.h">
-      <Filter>Header Files\rbx\game\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="instance.h">
-      <Filter>Header Files\rbx\game\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="brickcolor.h">
-      <Filter>Header Files\rbx\game\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="part.h">
-      <Filter>Header Files\rbx\game\rendering\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>Header Files\rbx\game\rendering\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="ray.h">
-      <Filter>Header Files\rbx\game\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="humanoid.h">
-      <Filter>Header Files\rbx\game\services\players\char</Filter>
-    </ClInclude>
-    <ClInclude Include="rbxmath.h">
-      <Filter>Header Files\rbx\game\services\math</Filter>
-    </ClInclude>
-    <ClInclude Include="backpack.h">
-      <Filter>Header Files\rbx\game\services\players</Filter>
-    </ClInclude>
-    <ClInclude Include="selection.h">
-      <Filter>Header Files\rbx\game\services\selection</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\rbx\game\rendering\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="hopperbin.h">
-      <Filter>Header Files\rbx\game\objects\hopperbins</Filter>
-    </ClInclude>
-    <ClInclude Include="clonebin.h">
-      <Filter>Header Files\rbx\game\objects\hopperbins</Filter>
+    <ClInclude Include="networkclient.h">
+      <Filter>Header Files\game\network</Filter>
     </ClInclude>
     <ClInclude Include="gametool.h">
-      <Filter>Header Files\rbx\game\objects\hopperbins</Filter>
+      <Filter>Header Files\game\objects\hopperbins</Filter>
     </ClInclude>
-    <ClInclude Include="rbxwindow.h">
-      <Filter>Header Files\dep</Filter>
+    <ClInclude Include="hopperbin.h">
+      <Filter>Header Files\game\objects\hopperbins</Filter>
     </ClInclude>
-    <ClInclude Include="stdout.h">
-      <Filter>Header Files\rbx\game\services\log</Filter>
+    <ClInclude Include="clonebin.h">
+      <Filter>Header Files\game\objects\hopperbins</Filter>
     </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files\rbx\game\services\log</Filter>
+    <ClInclude Include="extents.h">
+      <Filter>Header Files\game\objects</Filter>
     </ClInclude>
-    <ClInclude Include="datamodel.h">
-      <Filter>Header Files\rbx\game\services\datamodel</Filter>
+    <ClInclude Include="instance.h">
+      <Filter>Header Files\game\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>Header Files\game\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="workspace.h">
+      <Filter>Header Files\game\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="brickcolor.h">
+      <Filter>Header Files\game\reflection</Filter>
     </ClInclude>
     <ClInclude Include="enum.h">
-      <Filter>Header Files\rbx\game\reflection</Filter>
+      <Filter>Header Files\game\reflection</Filter>
     </ClInclude>
-    <ClInclude Include="jointservice.h">
-      <Filter>Header Files\rbx\game\services\jointservice</Filter>
+    <ClInclude Include="property.h">
+      <Filter>Header Files\game\reflection</Filter>
     </ClInclude>
-    <ClInclude Include="bthelp.h">
-      <Filter>Header Files\dep</Filter>
+    <ClInclude Include="oscontext.h">
+      <Filter>Header Files\game\rendering\objects\offscreen</Filter>
     </ClInclude>
-    <ClInclude Include="hinge.h">
-      <Filter>Header Files\rbx\game\objects\joints</Filter>
+    <ClInclude Include="pvinstance.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="snaps.h">
-      <Filter>Header Files\rbx\game\objects\joints</Filter>
+    <ClInclude Include="scene.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="motor.h">
-      <Filter>Header Files\rbx\game\objects\joints</Filter>
+    <ClInclude Include="view.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="rightkeyboard.h">
-      <Filter>Header Files\rbx\game\services\movement\controllers\devices</Filter>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files\game\rendering\objects</Filter>
     </ClInclude>
-    <ClInclude Include="keyboard.h">
-      <Filter>Header Files\rbx\game\services\movement\controllers\devices</Filter>
+    <ClInclude Include="model.h">
+      <Filter>Header Files\game\rendering\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="part.h">
+      <Filter>Header Files\game\rendering\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiRoot.h">
+      <Filter>Header Files\game\rendering\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\game\rendering\gui\mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="decal.h">
+      <Filter>Header Files\game\rendering\decals</Filter>
+    </ClInclude>
+    <ClInclude Include="backpack.h">
+      <Filter>Header Files\game\services</Filter>
     </ClInclude>
     <ClInclude Include="controller.h">
-      <Filter>Header Files\rbx\game\services\movement\controllers</Filter>
+      <Filter>Header Files\game\services</Filter>
     </ClInclude>
-    <ClInclude Include="joints.h">
-      <Filter>Header Files\rbx\game\objects\joints</Filter>
+    <ClInclude Include="crashreporter.h">
+      <Filter>Header Files\game\services</Filter>
     </ClInclude>
-    <ClInclude Include="content.h">
-      <Filter>Header Files\rbx\game\content</Filter>
+    <ClInclude Include="datamodel.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="humanoid.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="lighting.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="players.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="rightkeyboard.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="runservice.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="scriptcontext.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="selection.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="service.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="sounds.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="stdout.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="strings.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="thumbnailGenerator.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="yieldingthreads.h">
+      <Filter>Header Files\game\services\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="luabridge.h">
+      <Filter>Header Files\game\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\game\services</Filter>
+    </ClInclude>
+    <ClInclude Include="ISteppable.h">
+      <Filter>Header Files\game\services\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Header Files\game\services\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="ICameraOwner.h">
+      <Filter>Header Files\game\services\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="pvenums.h">
+      <Filter>Header Files\game\objects\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="bitstreamHelp.h">
+      <Filter>Header Files\dep</Filter>
+    </ClInclude>
+    <ClInclude Include="classes.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>Header Files\game\app</Filter>
+    </ClInclude>
+    <ClInclude Include="documentManager.h">
+      <Filter>Header Files\game\app</Filter>
+    </ClInclude>
+    <ClInclude Include="instancebridge.h">
+      <Filter>Header Files\game\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="rbx.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="rbxwindow.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="rbxmath.h">
+      <Filter>Header Files\game</Filter>
     </ClInclude>
     <ClInclude Include="md5.h">
       <Filter>Header Files\dep</Filter>
     </ClInclude>
-    <ClInclude Include="extents.h">
-      <Filter>Header Files\rbx\game\objects</Filter>
+    <ClInclude Include="soundservice.h">
+      <Filter>Header Files\game\services</Filter>
     </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>Header Files\rbx\game\rendering</Filter>
+    <ClInclude Include="ISelectable.h">
+      <Filter>Header Files\game\services\virtual</Filter>
     </ClInclude>
-    <ClInclude Include="classes.h">
-      <Filter>Header Files\rbx\game</Filter>
+    <ClInclude Include="surfaceFactory.h">
+      <Filter>Header Files\game\rendering\decals</Filter>
     </ClInclude>
-    <ClInclude Include="crashreporter.h">
-      <Filter>Header Files\rbx\game</Filter>
+    <ClInclude Include="basescript.h">
+      <Filter>Header Files\game\services</Filter>
     </ClInclude>
-    <ClInclude Include="rbx.h">
-      <Filter>Header Files\rbx\game</Filter>
+    <ClInclude Include="cframebridge.h">
+      <Filter>Header Files\game\lua</Filter>
     </ClInclude>
-    <ClInclude Include="documentManager.h">
-      <Filter>Header Files\rbx\game</Filter>
+    <ClInclude Include="vector3bridge.h">
+      <Filter>Header Files\game\lua</Filter>
     </ClInclude>
-    <ClInclude Include="appmanager.h">
-      <Filter>Header Files\rbx\studio\manager</Filter>
+    <ClInclude Include="effectsetting.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="application.h">
-      <Filter>Header Files\rbx\game</Filter>
+    <ClInclude Include="body.h">
+      <Filter>Header Files\game\physics</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="primitive.h">
+      <Filter>Header Files\game\physics</Filter>
     </ClInclude>
-    <ClInclude Include="thumbnailGenerator.h">
-      <Filter>Header Files\rbx\game\services</Filter>
+    <ClInclude Include="jointsservice.h">
+      <Filter>Header Files\game\physics\service</Filter>
     </ClInclude>
-    <ClInclude Include="view.h">
-      <Filter>Header Files\rbx\game\rendering</Filter>
+    <ClInclude Include="snap.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
-    <ClInclude Include="oscontext.h">
-      <Filter>Header Files\rbx\game\rendering\offscreen</Filter>
+    <ClInclude Include="kernel.h">
+      <Filter>Header Files\game\physics\world</Filter>
     </ClInclude>
-    <ClInclude Include="..\Gury3d\decode.h">
-      <Filter>Header Files\dep\base64</Filter>
+    <ClInclude Include="motor.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
-    <ClInclude Include="..\Gury3d\encode.h">
-      <Filter>Header Files\dep\base64</Filter>
+    <ClInclude Include="decode.h">
+      <Filter>Header Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="ICameraOwner.h">
-      <Filter>Header Files\rbx\game\virtuals</Filter>
+    <ClInclude Include="encode.h">
+      <Filter>Header Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderable.h">
-      <Filter>Header Files\rbx\game\virtuals</Filter>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="ISteppable.h">
-      <Filter>Header Files\rbx\game\virtuals</Filter>
+    <ClInclude Include="diagnosticsWorldDrawer.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="networkserver.h">
-      <Filter>Header Files\rbx\game\network</Filter>
+    <ClInclude Include="weld.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
-    <ClInclude Include="guid.h">
-      <Filter>Header Files\rbx\game\network\guid</Filter>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\game\rendering\decals</Filter>
     </ClInclude>
-    <ClInclude Include="idserializer.h">
-      <Filter>Header Files\rbx\game\network</Filter>
+    <ClInclude Include="shadows.h">
+      <Filter>Header Files\game\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="bitstreamHelp.h">
-      <Filter>Header Files\rbx\game\network\def</Filter>
+    <ClInclude Include="collisionTest.h">
+      <Filter>Header Files\game\physics\world</Filter>
     </ClInclude>
-    <ClInclude Include="rbx_identifiers.h">
-      <Filter>Header Files\rbx\game\network\def</Filter>
-    </ClInclude>
-    <ClInclude Include="replicator.h">
-      <Filter>Header Files\rbx\game\network\replication</Filter>
-    </ClInclude>
-    <ClInclude Include="physicsSender.h">
-      <Filter>Header Files\rbx\game\network\replication</Filter>
-    </ClInclude>
-    <ClInclude Include="service.h">
-      <Filter>Header Files\rbx\game\services</Filter>
+    <ClInclude Include="hinge.h">
+      <Filter>Header Files\game\physics\connectors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lighting.cpp">
-      <Filter>Source Files\rbx\game\services\lighting</Filter>
+    <ClCompile Include="networkclient.cpp">
+      <Filter>Source Files\rbx\game\services\network</Filter>
     </ClCompile>
-    <ClCompile Include="GuiRoot.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiLabel.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiBox.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiMessage.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiHint.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="players.cpp">
-      <Filter>Source Files\rbx\game\services\players</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiList.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui\mouse</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiButton.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuBar.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui\rbx</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiImageButton.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraControlMenu.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui\rbx</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\rbx\game\services\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="camera_utils.cpp">
-      <Filter>Source Files\rbx\game\services\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>Source Files\rbx\game\services\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="sound.cpp">
-      <Filter>Source Files\rbx\game\services\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="decal.cpp">
-      <Filter>Source Files\rbx\game\services\decals</Filter>
-    </ClCompile>
-    <ClCompile Include="surfaces.cpp">
-      <Filter>Source Files\rbx\game\services\decals</Filter>
-    </ClCompile>
-    <ClCompile Include="runservice.cpp">
-      <Filter>Source Files\rbx\game\services\runservice</Filter>
-    </ClCompile>
-    <ClCompile Include="iobfix.cpp">
-      <Filter>Source Files\dep</Filter>
+    <ClCompile Include="replicator.cpp">
+      <Filter>Source Files\rbx\game\services\network</Filter>
     </ClCompile>
     <ClCompile Include="serializer.h">
-      <Filter>Header Files\rbx\game\services\serializer</Filter>
+      <Filter>Header Files\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="serializer.cpp">
-      <Filter>Source Files\rbx\game\services\serializer</Filter>
-    </ClCompile>
-    <ClCompile Include="instance.cpp">
-      <Filter>Source Files\rbx\game\services\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="pvinstance.cpp">
-      <Filter>Source Files\rbx\game\rendering\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="part.cpp">
-      <Filter>Source Files\rbx\game\rendering\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="plr_controller.cpp">
-      <Filter>Source Files\rbx\game\services\movement\controllers\player</Filter>
-    </ClCompile>
-    <ClCompile Include="controller.cpp">
-      <Filter>Source Files\rbx\game\services\movement\controllers</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\rbx\game\rendering\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="humanoid.cpp">
-      <Filter>Source Files\rbx\game\services\players\char</Filter>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="backpack.cpp">
-      <Filter>Source Files\rbx\game\services\players</Filter>
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="backpackItem.cpp">
-      <Filter>Source Files\rbx\game\services\objects</Filter>
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="GuiImage.cpp">
-      <Filter>Source Files\rbx\game\rendering\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="sounds.cpp">
-      <Filter>Source Files\rbx\game\services\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="selection.cpp">
-      <Filter>Source Files\rbx\game\services\selection</Filter>
+    <ClCompile Include="camera_utils.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="clonebin.cpp">
-      <Filter>Source Files\rbx\game\services\objects\hopperbins</Filter>
+      <Filter>Source Files\rbx\game\services\hopperbins</Filter>
     </ClCompile>
     <ClCompile Include="gametool.cpp">
-      <Filter>Source Files\rbx\game\services\objects\hopperbins</Filter>
+      <Filter>Source Files\rbx\game\services\hopperbins</Filter>
     </ClCompile>
     <ClCompile Include="brickcolor.cpp">
-      <Filter>Source Files\rbx\game\reflection</Filter>
+      <Filter>Source Files\rbx\game\services\reflection</Filter>
     </ClCompile>
-    <ClCompile Include="stdout.cpp">
-      <Filter>Source Files\rbx\game\services\log</Filter>
+    <ClCompile Include="guid.cpp">
+      <Filter>Source Files\rbx\game\services\network</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GuiBox.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="datamodel.cpp">
-      <Filter>Source Files\rbx\game\services\datamodel</Filter>
+    <ClCompile Include="GuiButton.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="jointservice.cpp">
-      <Filter>Source Files\rbx\game\services\jointservice</Filter>
+    <ClCompile Include="GuiHint.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="primitives.cpp">
-      <Filter>Source Files\rbx\game\rendering\objects</Filter>
+    <ClCompile Include="GuiImage.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="ray.cpp">
-      <Filter>Source Files\rbx\game\services\objects</Filter>
+    <ClCompile Include="GuiImageButton.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="snaps.cpp">
-      <Filter>Source Files\rbx\game\services\objects\joints</Filter>
+    <ClCompile Include="GuiLabel.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="motor.cpp">
-      <Filter>Source Files\rbx\game\services\objects\joints</Filter>
+    <ClCompile Include="GuiList.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="keyboard.cpp">
-      <Filter>Source Files\rbx\game\services\movement\controllers\keyboard</Filter>
+    <ClCompile Include="GuiMessage.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="rightkeyboard.cpp">
-      <Filter>Source Files\rbx\game\services\movement\controllers\keyboard</Filter>
+    <ClCompile Include="GuiRoot.cpp">
+      <Filter>Source Files\rbx\game\gui</Filter>
     </ClCompile>
-    <ClCompile Include="content.cpp">
-      <Filter>Source Files\rbx\game\content</Filter>
+    <ClCompile Include="CameraControlMenu.cpp">
+      <Filter>Source Files\rbx\game\menus</Filter>
     </ClCompile>
-    <ClCompile Include="md5.cpp">
-      <Filter>Source Files\dep</Filter>
+    <ClCompile Include="application.cpp">
+      <Filter>Source Files\rbx\game\app</Filter>
     </ClCompile>
-    <ClCompile Include="debugDrawer.cpp">
-      <Filter>Source Files\rbx\game\rendering\debug</Filter>
+    <ClCompile Include="appmanager.cpp">
+      <Filter>Source Files\rbx\game\app</Filter>
     </ClCompile>
-    <ClCompile Include="view.cpp">
-      <Filter>Source Files\rbx\game\rendering</Filter>
+    <ClCompile Include="guryApplication.cpp">
+      <Filter>Source Files\rbx\game\app</Filter>
     </ClCompile>
     <ClCompile Include="classes.cpp">
       <Filter>Source Files\rbx\game</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Source Files\rbx\game\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="crashreporter.cpp">
-      <Filter>Source Files\rbx\game\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
+    <ClCompile Include="content.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="appmanager.cpp">
-      <Filter>Source Files\rbx\studio\manager</Filter>
+    <ClCompile Include="datamodel.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="application.cpp">
-      <Filter>Source Files\rbx\game\application</Filter>
+    <ClCompile Include="crashreporter.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="appSteps.cpp">
-      <Filter>Source Files\rbx\game\application</Filter>
+    <ClCompile Include="instance.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="instancemt.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="idserializer.cpp">
+      <Filter>Source Files\rbx\game\services\network</Filter>
+    </ClCompile>
+    <ClCompile Include="iobfix.cpp">
+      <Filter>Source Files\dep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lapi.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lauxlib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lbaselib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lcode.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ldblib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ldebug.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ldo.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ldump.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lfunc.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lgc.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\linit.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\liolib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\llex.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lmathlib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lmem.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\loadlib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lobject.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lopcodes.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\loslib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lparser.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lstate.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lstring.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lstrlib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ltablib.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ltable.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\ltm.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lundump.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lvm.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\lzio.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\lua\print.c">
+      <Filter>Source Files\dep\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuBar.cpp">
+      <Filter>Source Files\rbx\game\menus</Filter>
+    </ClCompile>
+    <ClCompile Include="decal.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="lighting.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="humanoid.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>Source Files\dep</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="oscontext.cpp">
+      <Filter>Source Files\rbx\game\services\rendering\offscreen</Filter>
+    </ClCompile>
+    <ClCompile Include="luargs.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="part.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="players.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="primitives.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="poll.cpp">
+      <Filter>Source Files\rbx\game\app\window</Filter>
+    </ClCompile>
+    <ClCompile Include="controller.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="plr_controller.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="runservice.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="scriptcontext.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="pvinstance.cpp">
+      <Filter>Source Files\rbx\game\services\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="stdout.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
     <ClCompile Include="thumbnailGenerator.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="oscontext.cpp">
-      <Filter>Source Files\rbx\game\rendering\offscreen</Filter>
+    <ClCompile Include="valuebridge.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="selection.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="rightkeyboard.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="serializer.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="sounds.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="surfaces.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="view.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
     <ClCompile Include="workspace.cpp">
       <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="networkserver.cpp">
-      <Filter>Source Files\rbx\game\network</Filter>
+    <ClCompile Include="contentprovider.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="guid.cpp">
-      <Filter>Source Files\rbx\game\network\guid</Filter>
+    <ClCompile Include="surfaceFactory.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
     </ClCompile>
-    <ClCompile Include="idserializer.cpp">
-      <Filter>Source Files\rbx\game\network</Filter>
+    <ClCompile Include="basescript.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
     </ClCompile>
-    <ClCompile Include="clientproxy.cpp">
-      <Filter>Source Files\rbx\game\network\replication</Filter>
+    <ClCompile Include="hopperbin.cpp">
+      <Filter>Source Files\rbx\game\services\hopperbins</Filter>
     </ClCompile>
-    <ClCompile Include="replicator.cpp">
-      <Filter>Source Files\rbx\game\network\replication</Filter>
+    <ClCompile Include="brickmap.cpp">
+      <Filter>Source Files\rbx\game\services\reflection</Filter>
     </ClCompile>
-    <ClCompile Include="ExplNgine.cpp">
+    <ClCompile Include="vector3mt.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="cframemt.cpp">
+      <Filter>Source Files\rbx\game\lua</Filter>
+    </ClCompile>
+    <ClCompile Include="ToneMap.cpp">
+      <Filter>Source Files\dep</Filter>
+    </ClCompile>
+    <ClCompile Include="kernel.cpp">
+      <Filter>Source Files\rbx\game\physics\world</Filter>
+    </ClCompile>
+    <ClCompile Include="effectsetting.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="jointsservice.cpp">
       <Filter>Source Files\rbx\game\physics</Filter>
     </ClCompile>
-    <ClCompile Include="physicsSender.cpp">
+    <ClCompile Include="body.cpp">
+      <Filter>Source Files\rbx\game\physics\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="primitive.cpp">
+      <Filter>Source Files\rbx\game\physics\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="connector.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="snap.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="motor.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="diagnosticsWorldDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="exp_jointsService.cpp">
+      <Filter>Source Files\rbx\game\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="wedgemesh.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\rbx\game\services\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="humanoidPhysicsStuff.cpp">
+      <Filter>Source Files\rbx\game\services\thinkers</Filter>
+    </ClCompile>
+    <ClCompile Include="shadows.cpp">
+      <Filter>Source Files\rbx\game\services</Filter>
+    </ClCompile>
+    <ClCompile Include="hinge.cpp">
+      <Filter>Source Files\rbx\game\physics\connectors</Filter>
+    </ClCompile>
+    <ClCompile Include="normalId.cpp">
+      <Filter>Source Files\rbx\game\services\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="consoleMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="My3DStudio.rc">
+    <ResourceCompile Include="supergurymfc.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Gury.ico">
+    <Image Include="res\file_view.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\file_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\userimages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\supergurymfcDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\supergurymfc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Runservice.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\toolbar2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\toolbar3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\services.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\camera.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\supergurymfc.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\gursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cursor1.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

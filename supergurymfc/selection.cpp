@@ -11,12 +11,12 @@
 
 /* mfc stuff */
 
-#include "pch.h"
+#include "studio/pch.h"
 
-#include "framework.h"
-#include "MainFrm.h"
+#include "studio/framework.h"
+#include "studio/MainFrm.h"
 
-#include "StudioTool.h"
+#include "studio/StudioTool.h"
 
 #include "datamodel.h"
 
@@ -28,13 +28,27 @@ bool RBX::Selection::isSelected(ISelectable* i)
 	return (std::find(b, e, i) != e);
 }
 
+RBX::Instances RBX::Selection::selectionAsInstances()
+{
+	RBX::Instances instances;
+	for (unsigned int i = 0; i < selection.size(); i++)
+	{
+		Instance* selectable = dynamic_cast<Instance*>(selection.at(i));
+		if (selectable)
+		{
+			instances.push_back(selectable);
+		}
+	}
+	return instances;
+}
+
 void RBX::Selection::dragSelect()
 {
 	Vector2 a1(min(worldSelectStart.x, worldSelectEnd.x), min(worldSelectStart.y, worldSelectEnd.y));
 	Vector2 a2(max(worldSelectStart.x, worldSelectEnd.x), max(worldSelectStart.y, worldSelectEnd.y));
 
 	Instances instances;
-	instances = RBX::Scene::singleton()->getArrayOfObjects();
+	instances = RBX::Scene::get()->getArrayOfObjects();
 
 	for (unsigned int i = 0; i < instances.size(); i++)
 	{
@@ -43,7 +57,7 @@ void RBX::Selection::dragSelect()
 
 		if (child)
 		{
-			CoordinateFrame cframe = Camera::singleton()->getCoordinateFrame();
+			CoordinateFrame cframe = Camera::get()->getCoordinateFrame();
 			Vector3 objectSpace = cframe.pointToObjectSpace(child->getPosition());
 			
 			float x = objectSpace.x / -objectSpace.z;
@@ -80,7 +94,7 @@ void RBX::Selection::renderDragBox(RenderDevice* rd)
 
 void RBX::Selection::renderSelected(RenderDevice* rd, ISelectable* selection)
 {
-	ISelectable::SelectableBox box;
+	Render::Geometry box;
 	box = selection->getBoundingBox();
 	rd->setObjectToWorldMatrix(box.cframe);
 	Primitives::drawOutline(rd, -box.size, box.size);
@@ -105,7 +119,7 @@ void RBX::Selection::update(UserInput* ui)
 
 	currentTool = Studio::current_Tool;
 	target = Mouse::getMouse()->getTarget();
-	cframe = Camera::singleton()->getCoordinateFrame();
+	cframe = Camera::get()->getCoordinateFrame();
 
 	bool ctrlShift = ui->keyDown(SDLK_RSHIFT) || ui->keyDown(SDLK_LSHIFT)
 		|| ui->keyDown(SDLK_RCTRL) || ui->keyDown(SDLK_LCTRL);
@@ -148,7 +162,7 @@ bool RBX::Selection::select(PVInstance* target, bool multiSelect)
 {
 	if (target)
 	{
-		if (!target->getLocked())
+		if (!target->getLocked() && target->isSelectable)
 		{
 			if (!isSelected(target))
 			{

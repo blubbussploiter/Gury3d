@@ -32,7 +32,6 @@ namespace RBX
 		GuidItem* id;
 
 		bool isParentLocked;
-
 		bool isAncestorOf(RBX::Instance* i);
 
 		template <typename T>
@@ -90,6 +89,8 @@ namespace RBX
 		Instance* getParent();
 
 		Instance* findFirstChild(std::string name);
+
+		static fakeBoost::signal<void(Instance*, rttr::property)> propertyChanged_signal;
 
 		Instance() : name("Instance"), className("Instance"), parent(NULL), isParentLocked(false)
 		{

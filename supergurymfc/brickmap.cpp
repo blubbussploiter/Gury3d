@@ -118,7 +118,7 @@ RBX::BrickColor::BrickMap::BrickMap()
 	insert("Medium lilac", 268, Color3(0.203922, 0.168627, 0.458824));
 }
 
-RBX::BrickColor::BrickMap* RBX::BrickColor::BrickMap::singleton()
+RBX::BrickColor::BrickMap* RBX::BrickColor::BrickMap::get()
 {
 	if (!brickMap) brickMap = new BrickMap();
 	return brickMap;

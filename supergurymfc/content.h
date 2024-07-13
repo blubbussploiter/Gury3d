@@ -64,7 +64,7 @@ namespace RBX
 	class ContentProvider
 	{
 	public:
-		static ContentProvider* singleton();
+		static ContentProvider* get();
 	};
 }
 

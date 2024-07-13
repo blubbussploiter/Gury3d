@@ -23,13 +23,17 @@ namespace RBX
 			public RBX::Service<Players>
 		{
 		private:
+
+			int maxPlayers;
+
 			std::vector<Player*> players;
 			RBX::Gui::GuiList* playerList;
 		public:
 
 			Player* localPlayer;
+			Player* getLocalPlayer() { return localPlayer; }
 
-			void createLocalPlayer(int userId);
+			Player* createLocalPlayer(int userId);
 
 			void setPlayerList(RBX::Gui::GuiList* playerList);
 			void destroyPlayer(Player* plr);
@@ -37,9 +41,25 @@ namespace RBX
 			void addPlayer(Player* plr);
 			void updatePlayerList();
 
+			void onStep();
+
+			int getNumPlayers()
+			{
+				return players.size();
+			}
+
+			void setMaxPlayers(int newMaxPlayers) 
+			{ 
+				maxPlayers = newMaxPlayers;
+			}
+			int getMaxPlayers()
+			{
+				return maxPlayers; 
+			}
+
 			/* unlike actual function, no arguments, instead dependant on there being a global Players class */
 
-			static RBX::ModelInstance* findLocalCharacter();
+			static RBX::ModelInstance* findLocalCharacter(); 
 			Players()
 			{
 				setClassName("Players");
@@ -48,6 +68,7 @@ namespace RBX
 				isParentLocked = 1;
 				localPlayer = 0;
 			}
+
 			RTTR_ENABLE(RBX::Instance)
 		};
 
@@ -67,7 +88,8 @@ namespace RBX
 			void init(Player* _plr) { if (!plr) plr = _plr; jmpPower = 30; }
 		};
 
-		class Player : public RBX::Instance
+		class Player : 
+			public RBX::Instance
 		{
 		private:
 			RBX::Gui::GuiLabel* guiName; /* player name in list */
@@ -75,6 +97,7 @@ namespace RBX
 		public:
 
 			int userId;
+			bool adminMode;
 
 			RBX::Backpack* backpack;
 			RBX::HopperBin* activeBin;
@@ -84,17 +107,28 @@ namespace RBX
 			RBX::Gui::GuiLabel* getGuiName() { return guiName; }
 			void setGuiName(RBX::Gui::GuiLabel* lbl) { guiName = lbl; }
 
+			RBX::Backpack* getBackpack() { return backpack; }
+			RBX::ModelInstance* getCharacter() { return character; }
+
+			int getUserId() { return userId; }
+			void setUserId(int newUserId) { userId = newUserId; }
+
+			bool getAdminMode() { return adminMode; }
+			void setAdminMode(bool newAdminMode) { adminMode = newAdminMode; }
+
 			void loadCharacter();
 			void disposeActiveBin();
 
 			void setAsController();
+			void render(RenderDevice* rd);
 
 			Player()
 			{
 				setClassName("Player");
 				setName("Player");
 				setParent(getPlayers());
-				backpack = new RBX::Backpack(this);
+				backpack = new RBX::Backpack();
+				backpack->setParent(this);
 				activeBin = 0;
 				controller = 0;
 				character = 0;
@@ -105,6 +139,7 @@ namespace RBX
 			{
 				getPlayers()->destroyPlayer(this);
 			}
+			RTTR_ENABLE(RBX::Instance)
 		};
 
 	}

@@ -39,7 +39,7 @@ void RBX::Gui::GuiList::render(RenderDevice* d)
 
 	if (!listTitle.empty())
 	{
-		singleton()->font->draw2D(d, listTitle, pos, 10, Color3::white(), Color4::CLEAR);
+		get()->font->draw2D(d, listTitle, pos, 10, Color3::white(), Color4::CLEAR);
 		if (!appliedTitle)
 		{
 			startY = 20;

@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "instance.h"
-
-#include "sounds.h"
 #include "strings.h"
 
 namespace RBX
@@ -33,7 +31,13 @@ namespace RBX
 			bool visible;
 			bool isButton;
 
-			virtual void render(RenderDevice* d) = 0;
+			bool mouseIn(Vector2 mouse);
+
+			void updateMouse(UserInput* ui);
+			virtual void handleMouse(UserInput* ui);
+
+			virtual void render(RenderDevice* d) {}
+
 			GuiObject() : visible(true) {
 				alignBottom = 0;
 				alignRight = 0;
@@ -48,7 +52,9 @@ namespace RBX
 		public:
 			Color4 background;
 			Color4 outline;
-			virtual void render(RenderDevice* d);
+
+			void render(RenderDevice* d);
+
 			GuiBox() {background = Color4(0.5f, 0.5f, 0.5f, 0.3f); outline = Color4::CLEAR;}
 		};
 
@@ -63,9 +69,10 @@ namespace RBX
 
 			bool appliedTitle;
 
-			virtual void render(RenderDevice* d);
 			void addChild(GuiObject* o);
 			void removeChild(GuiObject* o);
+
+			void render(RenderDevice* d);
 		};
 
 		class GuiButton : public GuiBox
@@ -73,9 +80,10 @@ namespace RBX
 		public:
 
 			std::string title;
-			Color4 titleColor, hoverColor, disabledColor, clickedColor;
 
+			Color4 titleColor, hoverColor, disabledColor, clickedColor, renderColor;
 			Vector2 titleOff;
+
 			float sz;
 
 			bool disabled;
@@ -85,16 +93,15 @@ namespace RBX
 
 			void(*onClick)(GuiButton* b);
 
-			virtual void render(RenderDevice* d);
-			virtual bool mouseIn(Vector2 mosPos);
-
-			virtual void handleMouse(G3D::UserInput* ui);
+			void render(RenderDevice* d);
+			void handleMouse(UserInput* ui);
 
 			GuiButton() {
 				isButton = true; sz = 12.f; 
 				titleColor = Color4(0.25f, 0.25f, 0.25f, 0.95f);
 				hoverColor = Color4(0.6f, 0.6f, 0.6f, 0.3f);
 				disabledColor = Color4(0.6f, 0.6f, 0.6f, 0.6f);
+				renderColor = Color4(0.5f, 0.5f, 0.5f, 0.3f);;
 				clickedColor = hoverColor;
 			}
 		};
@@ -106,12 +113,13 @@ namespace RBX
 			int width;
 			int height;
 
-			virtual void render(RenderDevice* d);
+			void render(RenderDevice* d);
 		};
 
 		class GuiImageButton : public GuiButton
 		{
 		public:
+
 			TextureRef texture;
 			TextureRef hoverTexture;
 			TextureRef clickTexture;
@@ -119,9 +127,9 @@ namespace RBX
 			int width;
 			int height;
 
-			virtual void render(RenderDevice* d);
-			virtual bool mouseIn(Vector2 mosPos);
-			virtual void handleMouse(G3D::UserInput* ui);
+			void render(RenderDevice* d);
+			void handleMouse(G3D::UserInput* ui);
+
 		};
 
 		class GuiLabel : public GuiObject
@@ -133,7 +141,7 @@ namespace RBX
 			Color4 textColor;
 			Color4 outlineColor;
 
-			virtual void render(RenderDevice* d);
+			void render(RenderDevice* d);
 			GuiLabel() : title("GuiLabel"), sz(12.f), textColor(Color3::black()), outlineColor(Color4::CLEAR) {}
 		};
 
@@ -141,14 +149,14 @@ namespace RBX
 		{
 		public:
 			std::string text;
-			virtual void render(RenderDevice* d);
+			void render(RenderDevice* d);
 		};
 
 		class GuiHint : public GuiObject
 		{
 		public:
 			std::string text;
-			virtual void render(RenderDevice* d);
+			void render(RenderDevice* d);
 		};
 
 		class GuiRoot
@@ -159,17 +167,17 @@ namespace RBX
 
 			GFontRef font;
 
+			void add(GuiObject* obj) { objects.push_back(obj); }
+
 			void render(RenderDevice* d);
 
 			void doButtonLogic(G3D::UserInput* ui, RenderDevice* d);
-
-			void add(GuiObject* obj) { objects.push_back(obj); }
 
 			void initFont()
 			{
 				if (font.isNull())
 				{
-					font = GFont::fromFile(GetFileInPath("/content/font/comics.fnt"));
+					font = GFont::fromFile(GetFileInPath("/content/font/lighttrek-small.fnt"));
 				}
 			}
 

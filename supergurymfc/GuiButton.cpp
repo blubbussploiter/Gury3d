@@ -18,7 +18,7 @@ void RBX::Gui::GuiButton::render(RenderDevice* d)
 	position = getPosition(d->getWidth(), d->getHeight(), origin, alignRight, alignBottomRight, alignBottom);
 
 	end = (position + size);
-	bounds = singleton()->font->get2DStringBounds(title);
+	bounds = get()->font->get2DStringBounds(title);
 
 	right = Vector2(((end.x - (size.x))+5)+titleOff.x, (position.y)+titleOff.y);
 	boxColor = renderColor;
@@ -34,7 +34,7 @@ void RBX::Gui::GuiButton::render(RenderDevice* d)
 
 	Draw::box(Box(Vector3(position.x, position.y, 0), Vector3(end.x, end.y, 0)), d, boxColor, outline);
 
-	singleton()->font->draw2D(d, title, right, sz, textColor);
+	get()->font->draw2D(d, title, right, sz, textColor);
 }
 
 void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)

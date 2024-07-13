@@ -9,6 +9,7 @@
 
 #include "pvinstance.h"
 #include "controller.h"
+#include "sounds.h"
 #include "part.h"
 
 #define CAM_ZOOM_MIN 0.5f
@@ -23,17 +24,21 @@ namespace RBX
 	};
 
 	class Camera : 
-		public RBX::Derivable<RBX::Controller>
+		public RBX::Controller
 	{
+		RTTR_ENABLE(RBX::Controller)
+	private:
+		CoordinateFrame startFrame;
+		Vector3 startFocus;
 	public:
+
+		bool panning;
 
 		GCamera* camera;
 		CameraType cameraType;
 
+		float oldZoom;
 		float yaw, pitch, zoom;
-		bool isUsingRightMouse;
-		bool isZooming;
-		bool isInFirstPerson;
 
 		RBX::PartInstance* focusPart;
 
@@ -44,37 +49,63 @@ namespace RBX
 
 		/* blocks3d stuff */
 
+		void doCameraCollisionLogic(); /* player cool camera, cant go out of bounds or nothin */
+		bool canZoom(bool inout); /* check if its colliding or will collide */
+
 		void lookAt(const Vector3& position);
 		void setFrame(const CoordinateFrame& cf);
+
+		void occlude();
 
 		CoordinateFrame getCoordinateFrame();
 		CoordinateFrame getFocus() { return focusPosition; }
 
+		void characterFade();
+
 		void setCoordinateFrame(CoordinateFrame cf)
 		{
+			if (startFrame.isIdentity())
+			{
+				startFrame = cf;
+			}
 			cframe = cf;
+			camera->setCoordinateFrame(cframe);
 		}
 
 		void setFocus(CoordinateFrame cf)
 		{
+			if (!startFocus)
+			{
+				startFocus = cf.translation;
+			}
 			focusPosition = cf.translation;
+			cframe.lookAt(focusPosition);
+			camera->setCoordinateFrame(cframe);
 		}
 
 		void refreshZoom(const CoordinateFrame& frame);
 
-		void pan(CoordinateFrame* frame, float spdX, float spdY, bool lerp = 0, float lerpTime = 0.69999998f);
+		void pan(CoordinateFrame* frame, float spdX, float spdY, bool lookAt = true);
 		void panLock(CoordinateFrame* frame, float spdX, float spdY);
 
 		void Zoom(short delta);
 
-		/* My stuff */
+		/* gury stuff */
 
-		void tiltUp(double deg = 25, bool enactedByZoom = 0);
-		void tiltDown(double deg = 25, bool enactedByZoom = 0);
+		void lookAtSelected();
+
+		void tiltRight(double deg = 5);
+		void tiltLeft(double deg = 5);
+
+		void tiltUp(double deg = 5);
+		void tiltDown(double deg = 5);
 
 		void cam_zoom(bool inout);
 
-		void update(UserInput* input);
+		void reset();
+
+		void update(bool rightMouseDown);
+		void follow();
 
 		void setCamera(GCamera* c) { camera = c; }
 		GCamera* getCamera() { return camera; }
@@ -90,15 +121,14 @@ namespace RBX
 		RBX::ICameraOwner* getCameraOwner();
 
 		static RBX::Camera* singleton();
+		static RBX::Sound* switch3;
 
 		Camera() : focusPosition(Vector3(0, 0, 0)), yaw(0.f), pitch(0.f), zoom(14.f)
 		{
-			setSpeed(2.4f);
 			cameraType = CameraType::Fixed;
 			focusPart = 0;
-			isInFirstPerson = 0;
-			isUsingRightMouse = 0;
-			isZooming = 0;
+			isParentLocked = 1;
+			setSpeed(2.4f);
 			setClassName("Camera");
 			setName("Camera");
 		}

@@ -1,7 +1,7 @@
-#ifndef CAMERA_H
-#define CAMERA_H
 
-/* I am shit at math and whatever this is, so I took most of the code from https://github.com/Vulpovile/Blocks3D/blob/0b8847cd8e7d5726870e9f65c558872e0eaf477e/src/source/CameraController.cpp */
+#pragma once
+
+/* most of the code from https://github.com/Vulpovile/Blocks3D/blob/0b8847cd8e7d5726870e9f65c558872e0eaf477e/src/source/CameraController.cpp */
 
 #include <G3DAll.h>
 
@@ -32,6 +32,26 @@ namespace RBX
 		Vector3 startFocus;
 	public:
 
+		class FrustumCulling
+		{
+		public:
+
+			enum State
+			{
+				INSIDE,
+				OUTSIDE
+			};
+
+			static GCamera::Frustum getFrustum();
+			static float getNearZ();
+
+			static State isBoxVisibleInCameraPlane(Box box);
+			static State isSphereVisibleInCameraPlane(Sphere shpere);
+			static bool isGeometryVisibleInCameraPlane(Render::Geometry* geometry);
+			static bool isPointVisibleInCameraPlane(Vector3 point);
+
+		};
+
 		bool panning;
 
 		GCamera* camera;
@@ -40,9 +60,9 @@ namespace RBX
 		float oldZoom;
 		float yaw, pitch, zoom;
 
-		RBX::PartInstance* focusPart;
+		RBX::PartInstance* cameraSubject;
 
-		Vector3 focusPosition;
+		Vector3 goal;
 		Vector3 translation;
 
 		CoordinateFrame cframe;
@@ -58,7 +78,7 @@ namespace RBX
 		void occlude();
 
 		CoordinateFrame getCoordinateFrame();
-		CoordinateFrame getFocus() { return focusPosition; }
+		CoordinateFrame getFocus() { return goal; }
 
 		void characterFade();
 
@@ -78,8 +98,8 @@ namespace RBX
 			{
 				startFocus = cf.translation;
 			}
-			focusPosition = cf.translation;
-			cframe.lookAt(focusPosition);
+			goal = cf.translation;
+			cframe.lookAt(goal);
 			camera->setCoordinateFrame(cframe);
 		}
 
@@ -107,7 +127,10 @@ namespace RBX
 		void update(bool rightMouseDown);
 		void follow();
 
-		void setCamera(GCamera* c) { camera = c; }
+		void setCamera(GCamera* c)
+		{ 
+			camera = c;
+		}
 		GCamera* getCamera() { return camera; }
 
 		float getLerp() { return 0.49999998f; }
@@ -120,15 +143,15 @@ namespace RBX
 		void setImageServerViewNoLerp(CoordinateFrame modelCoord);
 		RBX::ICameraOwner* getCameraOwner();
 
-		static RBX::Camera* singleton();
+		static RBX::Camera* get();
 		static RBX::Sound* switch3;
 
-		Camera() : focusPosition(Vector3(0, 0, 0)), yaw(0.f), pitch(0.f), zoom(14.f)
+		Camera() : goal(Vector3(0, 0, 0)), yaw(0.f), pitch(0.f), zoom(14.f)
 		{
 			cameraType = CameraType::Fixed;
-			focusPart = 0;
+			cameraSubject = 0;
 			isParentLocked = 1;
-			setSpeed(2.4f);
+			setSpeed(2.5f);
 			setClassName("Camera");
 			setName("Camera");
 		}
@@ -136,5 +159,3 @@ namespace RBX
 		virtual ~Camera() {}
 	};
 }
-
-#endif

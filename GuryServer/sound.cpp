@@ -1,4 +1,4 @@
-#include "sounds.h"
+#include "soundservice.h"
 
 void RBX::Sound::stop()
 {
@@ -16,10 +16,20 @@ void RBX::Sound::setStartPosition(double value)
 	}
 }
 
+void RBX::Sound::playOnce()
+{
+	if (!isPlaying())
+	{
+		play();
+	}
+}
+
 void RBX::Sound::play()
 {
-	if(!sound)
+	if (!sound)
+	{
 		SoundService::singleton()->mpSystem->createSound(soundPath.c_str(), 0, 0, &sound);
+	}
 
 	sound->setMode(FMOD_LOOP_OFF);
 	SoundService::singleton()->mpSystem->playSound(sound, 0, 0, &channel);

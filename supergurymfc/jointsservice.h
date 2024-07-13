@@ -54,11 +54,13 @@ namespace RBX
 		public Instance,
 		public Service<JointsService>
 	{
-	private:
+	public:
 		Array<Connector*> connectors;
+		Array<Body*> old_Bodies; /* bodies from old primitives before connector built */
 	public:
 
 		dJointGroupID joints;
+		std::vector<PVInstance*> intersectingGuys;
 
 		class Experiment
 		{
@@ -92,7 +94,7 @@ namespace RBX
 
 		static Connector* fromLinkageAndPrimitives(Linkage linkage, Primitive* prim0, Primitive* prim1, NormalId surface);
 
-		static JointsService* singleton();
+		static JointsService* get();
 
 		JointsService()
 		{

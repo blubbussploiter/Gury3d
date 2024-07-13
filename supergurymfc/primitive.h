@@ -6,6 +6,8 @@
 #include "body.h"
 #include "pvenums.h"
 
+#include "geometry.h"
+
 namespace RBX
 {
 	class Primitive
@@ -27,6 +29,8 @@ namespace RBX
 
 		bool collisionsEnabled();
 
+		Render::Geometry* asGeometry();
+
 		void modifySize(Vector3 size);
 
 		void modifyShape(Shape shape);
@@ -41,6 +45,8 @@ namespace RBX
 		void modifyOffsetWorldCoordinateFrame(CoordinateFrame offset);
 
 		void* getUserdata();
+
+		CoordinateFrame getPosition();
 
 		void setDisabled(bool disabled);
 

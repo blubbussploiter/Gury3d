@@ -17,7 +17,6 @@ void RBX::Gui::GuiImageButton::render(RenderDevice* d)
 	width = d->width();
 	height = d->height();
 
-
 	if (origin.isZero())
 		origin = position;
 
@@ -57,11 +56,6 @@ void RBX::Gui::GuiImageButton::render(RenderDevice* d)
 	glDisable(GL_TEXTURE_2D);
 
 	d->pop2D();
-}
-
-bool RBX::Gui::GuiImageButton::mouseIn(Vector2 mosPos)
-{
-	return(mosPos.x >= position.x && mosPos.y >= position.y && (mosPos.x < position.x + size.x && mosPos.y < position.y + size.y));
 }
 
 void RBX::Gui::GuiImageButton::handleMouse(G3D::UserInput* ui)

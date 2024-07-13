@@ -15,10 +15,6 @@ namespace RBX
 		Backwards,
 		Left,
 		Right,
-		ForwardRight,
-		ForwardLeft,
-		BackwardsRight,
-		BackwardsLeft,
 		Jump
 	};
 
@@ -29,27 +25,37 @@ namespace RBX
 		KeyboardRight
 	};
 
-	class Controller :
+	class Controller : 
 		public RBX::Instance
 	{
 	private:
 		bool isMoving;
 		bool isDisabled;
+		bool justReleased;
 		float speed;
-		MovementDirections direction;
 	public:
+
+		std::vector<MovementDirections> directions;
+
+		void addDirection(MovementDirections direction);
+		void removeDirection(MovementDirections direction);
 
 		float getSpeed() { return speed; }
 		void setSpeed(float s) { speed = s; }
+
 		bool moving() { return isMoving; }
+
 		void setmoving(bool m) { isMoving = m; }
-		void setdir(MovementDirections d) { direction = d; }
+		void setdir(MovementDirections d) { directions.push_back(d); }
+
 		void disable(bool d) { isDisabled = d; }
 		bool disabled() { return isDisabled; }
+
 		virtual void handleInput(G3D::UserInput* ui);
 		virtual void move() {};
+
 		virtual void mv_update() {}
-		MovementDirections dir() { return direction; }
+
 		Controller() : speed(0.2f)
 		{
 			isMoving = 0;

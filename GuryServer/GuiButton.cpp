@@ -21,7 +21,7 @@ void RBX::Gui::GuiButton::render(RenderDevice* d)
 	bounds = singleton()->font->get2DStringBounds(title);
 
 	right = Vector2(((end.x - (size.x))+5)+titleOff.x, (position.y)+titleOff.y);
-	boxColor = Color4(0.5f, 0.5f, 0.5f, 0.3f);
+	boxColor = renderColor;
 
 	if (hovered && !disabled)
 		boxColor = hoverColor;
@@ -41,10 +41,11 @@ void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)
 {
 	Vector2 mousePos;
 
+	GuiObject::handleMouse(ui);
+	mousePos = ui->mouseXY();
+
 	if (disabled)
 		return;
-
-	mousePos = ui->mouseXY();
 
 	if (!mouseIn(mousePos))
 	{
@@ -69,9 +70,4 @@ void RBX::Gui::GuiButton::handleMouse(G3D::UserInput* ui)
 	}
 	else
 		clicked = false;
-}
-
-bool RBX::Gui::GuiButton::mouseIn(Vector2 mosPos)
-{
-	return(mosPos.x >= position.x && mosPos.y >= position.y && (mosPos.x < position.x + size.x && mosPos.y < position.y + size.y));
 }

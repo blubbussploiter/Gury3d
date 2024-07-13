@@ -1,82 +1,172 @@
-#include "selection.h"
+
+/* gury gury */
+
 #include "Mouse.h"
 
-RBX::PVInstance * RBX::Selection::selection = 0;
-bool RBX::Selection::down = 0;
-bool RBX::Selection::clicked = 0;
-bool RBX::Selection::canSelect = 0;
+#include "selection.h"
+#include "scene.h"
+
+#include "stdout.h"
+#include "camera.h"
+
+/* mfc stuff */
+
+#include "datamodel.h"
 
 /* straight up not mine lmao, https://github.com/Vulpovile/Blocks3D/blob/develop/src/source/DataModelV2/SelectionService.cpp */
 
-void drawOutline(Vector3 from, Vector3 to, RenderDevice* rd, CoordinateFrame c)
+bool RBX::Selection::isSelected(ISelectable* i)
 {
-	Color3 outline = Color3::cyan();
-	float offsetSize = 0.1F;
+	auto b = selection.begin(), e = selection.end();
+	return (std::find(b, e, i) != e);
+}
 
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x - offsetSize, from.y + offsetSize, from.z + offsetSize), Vector3(to.x + offsetSize, from.y - offsetSize, from.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x - offsetSize, to.y + offsetSize, from.z + offsetSize), Vector3(to.x + offsetSize, to.y - offsetSize, from.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x - offsetSize, to.y + offsetSize, to.z + offsetSize), Vector3(to.x + offsetSize, to.y - offsetSize, to.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x - offsetSize, from.y + offsetSize, to.z + offsetSize), Vector3(to.x + offsetSize, from.y - offsetSize, to.z - offsetSize))), rd, outline, Color4::clear());
+RBX::Instances RBX::Selection::selectionAsInstances()
+{
+	RBX::Instances instances;
+	for (unsigned int i = 0; i < selection.size(); i++)
+	{
+		Instance* selectable = dynamic_cast<Instance*>(selection.at(i));
+		if (selectable)
+		{
+			instances.push_back(selectable);
+		}
+	}
+	return instances;
+}
 
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x + offsetSize, from.y - offsetSize + 0.1, from.z + offsetSize), Vector3(from.x - offsetSize, to.y + offsetSize - 0.1, from.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(to.x + offsetSize, from.y - offsetSize + 0.1, from.z + offsetSize), Vector3(to.x - offsetSize, to.y + offsetSize - 0.1, from.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(to.x + offsetSize, from.y - offsetSize + 0.1, to.z + offsetSize), Vector3(to.x - offsetSize, to.y + offsetSize - 0.1, to.z - offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x + offsetSize, from.y - offsetSize + 0.1, to.z + offsetSize), Vector3(from.x - offsetSize, to.y + offsetSize - 0.1, to.z - offsetSize))), rd, outline, Color4::clear());
+void RBX::Selection::dragSelect()
+{
+	Vector2 a1(min(worldSelectStart.x, worldSelectEnd.x), min(worldSelectStart.y, worldSelectEnd.y));
+	Vector2 a2(max(worldSelectStart.x, worldSelectEnd.x), max(worldSelectStart.y, worldSelectEnd.y));
 
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x + offsetSize, from.y + offsetSize, from.z - offsetSize), Vector3(from.x - offsetSize, from.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(from.x + offsetSize, to.y + offsetSize, from.z - offsetSize), Vector3(from.x - offsetSize, to.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(to.x + offsetSize, from.y + offsetSize, from.z - offsetSize), Vector3(to.x - offsetSize, from.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
-	Draw::box(c.toWorldSpace(Box(Vector3(to.x + offsetSize, to.y + offsetSize, from.z - offsetSize), Vector3(to.x - offsetSize, to.y - offsetSize, to.z + offsetSize))), rd, outline, Color4::clear());
+	Instances instances;
+	instances = RBX::Scene::singleton()->getArrayOfObjects();
 
+	for (unsigned int i = 0; i < instances.size(); i++)
+	{
+		RBX::Instance* instance = dynamic_cast<RBX::Instance*>(instances.at(i));
+		RBX::PVInstance* child = toInstance<PVInstance>(instance);
+
+		if (child)
+		{
+			CoordinateFrame cframe = Camera::singleton()->getCoordinateFrame();
+			Vector3 objectSpace = cframe.pointToObjectSpace(child->getPosition());
+			
+			float x = objectSpace.x / -objectSpace.z;
+			float y = objectSpace.y / -objectSpace.z;
+
+			if ((a1.x < x && x < a2.x) && (a1.y < y && y < a2.y) && objectSpace.z < 0)
+			{
+				select(child, 1);
+			}
+		}
+	}
+}
+
+void RBX::Selection::renderDragBox(RenderDevice* rd)
+{
+	if (down)
+	{
+		Vector3 start = selectionDragBoxStart;
+		Vector3 end = selectionDragBoxEnd;
+
+		if (selectionDragBoxEnd != Vector3::zero() && selectionDragBoxStart != Vector3::zero())
+		{
+
+		}
+	}
+}
+
+void RBX::Selection::renderSelected(RenderDevice* rd, ISelectable* selection)
+{
+	ISelectable::SelectableBox box;
+	box = selection->getBoundingBox();
+	rd->setObjectToWorldMatrix(box.cframe);
+	Primitives::drawOutline(rd, -box.size, box.size);
 }
 
 void RBX::Selection::renderSelection(RenderDevice* rd)
 {
-	if (selection)
+	for (RBX::ISelectable* pv : selection)
 	{
-		Vector3 size = selection->getSize();
-		Vector3 pos = selection->getPosition();
-		float div = 2.f, divY = 2.2f;
-		switch (selection->shape)
-		{
-			case part:
-			{
-				break;
-			}
-			case ball:
-			{
-				div = 1;
-				divY = 1;
-				break;
-			}
-		}
-		drawOutline(Vector3(0 + size.x / div, 0 + size.y / divY, 0 + size.z / div), Vector3(0 - size.x / div, 0 - size.y / divY, 0 - size.z / div), rd, selection->getCFrame());
+		renderSelected(rd, pv);
 	}
 }
 
-/* ok now straight up mine */
-
 void RBX::Selection::update(UserInput* ui)
 {
-	RBX::PVInstance* target;
-	target = RBX::Mouse::getTarget();
+	if (!canSelect) return;
 
-	if (ui->keyPressed(SDL_LEFT_MOUSE_KEY)) clicked = 1;
-	if (ui->keyReleased(SDL_LEFT_MOUSE_KEY))
+	RBX::PVInstance* target;
+	CoordinateFrame cframe;
+
+	target = Mouse::getMouse()->getTarget();
+	cframe = Camera::singleton()->getCoordinateFrame();
+
+	bool ctrlShift = ui->keyDown(SDLK_RSHIFT) || ui->keyDown(SDLK_LSHIFT)
+		|| ui->keyDown(SDLK_RCTRL) || ui->keyDown(SDLK_LCTRL);
+
+	clicked = ui->keyPressed(SDL_LEFT_MOUSE_KEY);
+	down = ui->keyDown(SDL_LEFT_MOUSE_KEY);
+
+	multiSelect = (down && !clicked || ctrlShift);
+
+	if (down)
 	{
-		down = 0;
-		selection = 0;
+		Vector3 rel = cframe.pointToObjectSpace(Mouse::getMouse()->getHit());
+		worldSelectEnd = Vector2(rel.x / -rel.z, rel.y / -rel.z);
+		selectionDragBoxEnd = ui->getMouseXY();
+	}
+	if (clicked)
+	{
+		Vector3 rel = cframe.pointToObjectSpace(Mouse::getMouse()->getHit());
+		worldSelectStart = Vector2(rel.x / -rel.z, rel.y / -rel.z);
+		selectionDragBoxStart = ui->getMouseXY();
 	}
 
-	if (ui->keyDown(SDL_LEFT_MOUSE_KEY))
+	if (clicked)
 	{
-		down = 1;
-		if (!canSelect || selection) return;
-		if (target && !target->getLocked())
+		if (select(target, multiSelect))
 		{
-			selection = target;
+			return;
+		}
+		selection.clear();
+	}
+}
+
+bool RBX::Selection::select(PVInstance* target, bool multiSelect)
+{
+	if (target)
+	{
+		if (!target->getLocked())
+		{
+			if (!isSelected(target))
+			{
+				if (!multiSelect)
+				{
+					selection.clear();
+				}
+				selection.push_back(target);
+				select(target);
+			}
+			return 1;
 		}
 	}
+	return 0;
+}
 
+void RBX::Selection::select(RBX::ISelectable* selected, bool selectInExplorer)
+{
+	Instance* instance = dynamic_cast<Instance*>(selected);
+	if (instance && selectInExplorer)
+	{
 
+	}
+	selection.push_back(selected);
+}
+
+RBX::Selection* RBX::Selection::get()
+{
+	return Datamodel::getDatamodel()->selectionService;
 }

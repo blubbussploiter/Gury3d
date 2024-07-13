@@ -2,21 +2,21 @@
 
 #include <G3DAll.h>
 
+#include "geometry.h"
+
 namespace RBX
 {
 	class ISelectable
 	{
 	public:
-		class SelectableBox
+		bool isSelectable;
+
+		ISelectable()
 		{
-		public:
-			CoordinateFrame cframe;
-			Vector3 size;
-			SelectableBox() {}
-			SelectableBox(CoordinateFrame cframe, Vector3 size) : cframe(cframe), size(size) {}
-		};
+			isSelectable = true;
+		}
 	public:
-		virtual SelectableBox getBoundingBox() { return SelectableBox(); };
+		virtual Render::Geometry getBoundingBox() { return Render::Geometry(); };
 		virtual CoordinateFrame getCenter() { return getBoundingBox().cframe; }
 		virtual void setCenter(CoordinateFrame) { }
 

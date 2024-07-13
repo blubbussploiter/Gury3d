@@ -26,6 +26,8 @@ namespace RBX
 
 		bool isSelected(ISelectable* i);
 
+		Instances selectionAsInstances();
+
 		void renderDragBox(RenderDevice* rd);
 
 		void renderSelected(RenderDevice* rd, ISelectable* i);

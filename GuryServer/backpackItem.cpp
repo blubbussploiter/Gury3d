@@ -1,6 +1,8 @@
 #include "backpack.h"
 #include "players.h"
 
+#include "sounds.h"
+
 static RBX::Sound* ping = RBX::Sound::fromFile(GetFileInPath("/content/sounds/electronicpingshort.wav"));
 
 void drawOutline(RenderDevice* rd, Vector2 from, Vector2 to, float thickness, Color3 color)

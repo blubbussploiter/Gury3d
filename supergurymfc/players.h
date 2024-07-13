@@ -75,17 +75,18 @@ namespace RBX
 		class PlayerController : public RBX::Controller
 		{
 		private:
-			Player* plr;
-
-			float jmpPower;
-			float camYaw;
-
+			Player* player;
 		public:
 
-			void mv_update();
 			void move();
 
-			void init(Player* _plr) { if (!plr) plr = _plr; jmpPower = 30; }
+			void init(Player* _plr) 
+			{
+				if (!player)
+				{
+					player = _plr;
+				}
+			}
 		};
 
 		class Player : 

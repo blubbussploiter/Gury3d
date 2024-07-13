@@ -135,6 +135,7 @@ void setProperty(rapidxml::xml_node<>* node, RBX::Instance* instance, std::strin
 
 	if (property)
 	{
+
 		if (type == rttr::type::get<Vector3>())
 		{
 			property.set_value(instance, readVector3(node));

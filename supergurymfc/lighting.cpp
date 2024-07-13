@@ -3,6 +3,7 @@
 #include "rbx.h"
 #include "lighting.h"
 #include "datamodel.h"
+#include "view.h"
 
 RTTR_REGISTRATION
 {
@@ -16,7 +17,7 @@ RTTR_REGISTRATION
          .property("GeographicLatitude",&RBX::Lighting::getGeoLatitude, &RBX::Lighting::setGeoLatitude)(rttr::metadata("Type", RBX::Appearance));
 }
 
-RBX::Lighting* RBX::Lighting::singleton()
+RBX::Lighting* RBX::Lighting::get()
 {
     return RBX::Datamodel::getDatamodel()->lighting;
 }
@@ -44,4 +45,24 @@ std::string RBX::Time::toString(int seconds)
     second = (seconds % (hour * 3600)) - ((seconds % (hour * 60)) * 60);
 
     return RBX::Format("%d:%d:%d", hour, minute, second);
+}
+
+RBX::Lighting::Lighting()
+{
+    RBX::View* view;
+    view = RBX::View::get();
+
+    lighting = view->lighting;
+    params = &view->params;
+
+    setGeoLatitude(41.7f);
+    setTimeOfDay("14:0:0");
+    setSpotLight(Color3(0.59607846f, 0.53725493f, 0.40000001f));
+
+    clear_color = Color4(0.0f, 0.0f, 0.0f);
+    setTopAmbient(Color3(0.81960785f, 0.81568629f, 0.8509804f));
+    setBottomAmbient(Color3(0.47843137f, 0.52549022f, 0.47058824f));
+
+    setName("Lighting");
+    setClassName("Lighting");
 }

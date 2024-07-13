@@ -11,13 +11,37 @@ RBX::Sound* bsls_steps = RBX::Sound::fromFile(GetFileInPath("/content/sounds/bfs
 
 void RBX::Humanoid::setLegCollisions(bool collidable)
 {
-    Primitive* leftLeg = getLeftLeg()->getPrimitive();
-    Primitive* rightLeg = getRightLeg()->getPrimitive();
-    
+
+    PVInstance* leftLeg = getLeftLeg(), *rightLeg = getRightLeg();
+
     if (leftLeg && rightLeg)
     {
-        leftLeg->modifyCollisions(collidable);
-        rightLeg->modifyCollisions(collidable);
+        Primitive* leftLegPrimitive = leftLeg->getPrimitive();
+        Primitive* rightLegPrimitive = rightLeg->getPrimitive();
+
+        if (leftLegPrimitive && rightLegPrimitive)
+        {
+            leftLegPrimitive->modifyCollisions(collidable);
+            rightLegPrimitive->modifyCollisions(collidable);
+        }
+    }
+
+}
+
+void RBX::Humanoid::setArmCollisions(bool collidable)
+{
+    PVInstance* leftArm = getLeftArm(), * rightArm = getRightArm();
+
+    if (leftArm && rightArm)
+    {
+        Primitive* leftArmPrimitive = leftArm->getPrimitive();
+        Primitive* rightArmPrimitive = rightArm->getPrimitive();
+
+        if (leftArmPrimitive && rightArmPrimitive)
+        {
+            leftArmPrimitive->modifyCollisions(collidable);
+            rightArmPrimitive->modifyCollisions(collidable);
+        }
     }
 }
 
@@ -37,20 +61,22 @@ groundData* RBX::Humanoid::getHumanoidGroundData()
 
 bool RBX::Humanoid::isGrounded()
 {
-    return (getHumanoidGroundData()->distanceFrom < genieHeight);
+    return (getHumanoidGroundData()->distanceFrom < hipHeight);
 }
 
 void RBX::Humanoid::adjustLimbPhysics()
 {
-    humanoidRootPart->getPrimitive()->friction = 1.5f;
-    humanoidRootPart->getPrimitive()->elasticity = 0.f;
+    setLegCollisions(false);
+    setArmCollisions(false);
 }
 
 void RBX::Humanoid::tryEnable()
 {
     Body* body = humanoidHead->getBody();
     if ((body && body->body) && !dBodyIsEnabled(body->body))
+    {
         dBodyEnable(body->body);
+    }
 }
 
 void RBX::Humanoid::getFeetOffGround(float damper, float multiplier)
@@ -62,30 +88,28 @@ void RBX::Humanoid::getFeetOffGround(float damper, float multiplier)
     if (!body || !body->body) return;
 
     Vector3 rotVelocity = humanoidHead->getRotVelocity();
-    Vector3 torque = ((Vector3(rotation.x, 0, rotation.z) - rotVelocity / 2 * damper) * multiplier) * body->getFMass() * 1 / RunService::singleton()->deltaTime;
+    Vector3 torque = ((Vector3(rotation.x, 0, rotation.z) - rotVelocity / 4 * damper) * multiplier) * body->getFMass() * (1 / RunService::get()->deltaTime);
 
-    attemptingToBalance = (cframe.rotation == rotation);
-
-    dBodyAddTorque(body->body, torque.x, torque.y + r_turnVelocity, torque.z);
-
+    body->applyTorque(torque);
 }
 
-void RBX::Humanoid::genieFloat()
+void RBX::Humanoid::applyHipHeight()
 {
     Body* body = humanoidHead->getBody();
 
     if (currentlyJumping) return;
     if (!body || !body->body) return;
-    
+
     groundData* ground = getHumanoidGroundData();
 
     Vector3 position = humanoidRootPart->getPosition();
     Vector3 velocity = body->pv->velocity.linear;
+    Vector3 rotationalVelocity = body->pv->velocity.rotational;
 
-    if (ground->distanceFrom <= genieHeight)
+    if (ground->distanceFrom <= hipHeight)
     {
-        Vector3 desired = Vector3(position.x, ground->hit.y + genieHeight, position.z);
-        dBodyAddForceAtRelPos(body->body, 0, -velocity.y, 0, 0, genieHeight/2, 0);
+        Vector3 desired = Vector3(position.x, ground->hit.y + hipHeight, position.z);
+        body->applyForce(Vector3(0, -velocity.y * 0.25f, 0));
         dBodySetPosition(body->body, desired.x, desired.y, desired.z);
     }
 }
@@ -96,16 +120,13 @@ void RBX::Humanoid::onTurn()
 
     if (!body || !body->body) return;
 
-    tryEnable();
-
     CoordinateFrame origin = humanoidRootPart->getCFrame(), changed = origin;
     changed.lookAt(origin.translation + walkDirection);
 
     Vector3 rotVelocity = humanoidRootPart->getRotVelocity();
     Matrix3 difference = changed.rotation * origin.rotation.inverse();
 
-    r_turnVelocity = Math::getEulerAngles(difference).y * 0.85f;
-
+    r_turnVelocity = Math::getEulerAngles(difference).y;
 }
 
 void RBX::Humanoid::onMovement()
@@ -131,15 +152,19 @@ void RBX::Humanoid::onJump()
 
     if (jumping)
     {
-        dBodyAddForceAtRelPos(body->body, 0, 7.5f, 0, 0, -genieHeight/2, 0);
-
-        whoosh->setStartPosition(jumpClock);
-        whoosh->play();
-
+        body->applyForceAtRelativePosition(Vector3(0, 7.5f, 0), Vector3(0, -hipHeight / 2, 0));
         setLegCollisions(true);
+
+        whoosh->play();
 
         jumping = false;
         currentlyJumping = true;
+    }
+
+    if (whoosh->isPlaying()
+        && jumpClock > 0.05f)
+    {
+        whoosh->stop();
     }
 
     switch (humanoidState)
@@ -160,6 +185,23 @@ void RBX::Humanoid::onJump()
 
 }
 
+void RBX::Humanoid::doSounds()
+{
+    switch (humanoidState)
+    {
+    case Strafing:
+    {
+        bsls_steps->playOnce();
+        break;
+    }
+    case Running:
+    {
+        bsls_steps->stop();
+        break;
+    }
+    }
+}
+
 void RBX::Humanoid::onStrafe()
 {
     Body* body = humanoidHead->getBody();
@@ -168,92 +210,58 @@ void RBX::Humanoid::onStrafe()
     if (body && body->body)
     {
 
-        switch (humanoidState)
+        if (!isTripped())
         {
-        case Tripped:
-        {
-            if (currentlyJumping)
-                break;
-            getFeetOffGround(0.2f, 3.0f);
-            setLegCollisions(false);
-            wasTripped = 1;
-            break;
-        }
-        default:
-        {
+            //doSounds();
+
             adjustLimbPhysics();
             tryEnable();
 
-            genieFloat();
+            applyHipHeight();
             onJump();
-
-            if(wasTripped) /* just got out of being tripped, reset rotational velocity */
-            {
-                const dReal* torque = dBodyGetTorque(body->body);
-                dBodySetTorque(body->body, -torque[0], -torque[1], -torque[2]);
-                wasTripped = false;
-            }
 
             switch (walkMode)
             {
-                case DIRECTION_MOVE:
+            case DIRECTION_MOVE:
+            {
+                if (isGrounded() && !isFalling())
                 {
-
-                    if (isGrounded() && !isFalling())
-                    {
-
-                        humanoidState = Strafing;
-
-                        if (!bsls_steps->isPlaying())
-                        {
-                            bsls_steps->play();
-                        }
-
-                        onMovement();
-                    }
-                    
-                    if (!currentlyJumping)
-                    {
-                        onTurn();
-                    }
-
-                    break;
+                    humanoidState = Strafing;
+                    onMovement();
                 }
-                default:
+
+                if (!currentlyJumping)
                 {
-                    if (walkDirection == Vector3::zero())
-                    {
-                        if (bsls_steps->isPlaying())
-                        {
-                            bsls_steps->stop();
-                        }
-                        if (isGrounded())
-                        {
-                            dBodyAddForce(body->body, -velocity.x, 0, -velocity.z);
-                        }
-                        r_turnVelocity = 0.0f;
-                    }
-
-                    break;
+                    onTurn();
                 }
+
+                break;
             }
-            
-            getFeetOffGround();
-            break;
+            default:
+            {
+                if (walkDirection == Vector3::zero())
+                {
+                    if (isGrounded())
+                    {
+                        if (velocity.length() > 0)
+                        {
+                            Vector3 brakeVelocity = -velocity * 0.5f;
+                            body->applyForce(Vector3(brakeVelocity.x, 0, brakeVelocity.z));
+                            body->modifyVelocity(Velocity(body->pv->velocity.linear, Vector3::zero()));
+                        }
+                    }
+                    r_turnVelocity = 0.0f;
+                }
+                break;
+            }
+            }
+
+            if (fabs(r_turnVelocity) > 0.0f)
+            {
+                body->applyTorque(Vector3::unitY() * (r_turnVelocity * 0.3f));
+            }
         }
-        }
-
-
-
+        getFeetOffGround(0.4f, 1.0f);
     }
 
-}
-
-void RBX::Humanoid::onKernelStep()
-{
-
-    if (!checkHumanoidAttributes())
-        return;
-
-    onStrafe();
 }

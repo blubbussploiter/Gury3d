@@ -18,11 +18,11 @@ HCURSOR oldCursor;
 
 RBX::PVInstance* RBX::Mouse::getTarget() /* ignore part for dragger tool */
 {
-	RBX::Camera* camera = RBX::Camera::singleton();
+	RBX::Camera* camera = RBX::Camera::get();
 	RBX::ISelectable* selected;
 	Ray ray;
 
-	ray = camera->camera->worldRay(x, y, RBX::AppManager::singleton()->getApplication()->getViewport());
+	ray = camera->camera->worldRay(x, y, RBX::AppManager::get()->getApplication()->getViewport());
 
 	selected = RBX::World::getPartFromG3DRay<Instance>(ray, hitWorld);
 	target = (RBX::PVInstance*)(selected);
@@ -36,7 +36,7 @@ bool RBX::Mouse::inGuryWindow()
 	HWND currentHWND;
 	RBX::Experimental::Application* app;
 
-	app = AppManager::singleton()->getApplication();
+	app = AppManager::get()->getApplication();
 	currentHWND = app->parent;
 
 	GetClientRect(currentHWND, &rect);
@@ -46,16 +46,15 @@ bool RBX::Mouse::inGuryWindow()
 
 void RBX::Mouse::update(UserInput* ui)
 {
-	RBX::Camera* camera = RBX::Camera::singleton();
+	if (!ui->keyDown(SDL_RIGHT_MOUSE_KEY))
+	{
+		x = ui->getMouseX();
+		y = ui->getMouseY();
+		cx = x - szx / 2;
+		cy = y - szy / 2;
+	}
 
 	updateCursorInfo();
-
-	if (ui->keyDown(SDL_RIGHT_MOUSE_KEY)) return;
-
-	x = ui->getMouseX();
-	y = ui->getMouseY();
-	cx = x - szx / 2;
-	cy = y - szy / 2;
 }
 
 void RBX::Mouse::updateCursorInfo()

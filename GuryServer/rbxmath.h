@@ -7,11 +7,34 @@ namespace RBX
 {
     namespace Math
     {
+
+        static Vector3 getEulerAngles(Matrix3 rotation)
+        {
+            Vector3 euler;
+            rotation.toEulerAnglesXYZ(euler.x, euler.y, euler.z);
+            return euler;
+        }
+
+        static float angleFromTwoPoints(Vector3 from, Vector3 to)
+        {
+            float x1 = from.x, x2 = to.x, y1 = from.y, y2 = to.y, z1 = from.z, z2 = to.z;
+            float dist = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2) + pow(z1 - z2, 2));
+            float dist2 = sqrt(pow(x1 - x2, 2) + pow(z1 - z2, 2));
+            return acos(dist2 / dist) * 180 / 3.1415926;
+        }
+
+        static Vector3 rotationFromTwoPoints(Vector3 from, Vector3 to)
+        {
+            return Vector3(acos(dot(from.yz(), to.yz())),
+                acos(dot(from.xz(), to.xz())),
+                acos(dot(from.xy(), to.xy())));
+        }
+
         /* i ripped all of these from IDA */
-        static double angleToE0(const G3D::Vector2 v)
+        static double angleToE0(const G3D::Vector3 v)
         {
             double result; // st7
-            G3D::Vector2 u; // [esp+0h] [ebp-Ch] BYREF
+            G3D::Vector3 u; // [esp+0h] [ebp-Ch] BYREF
             float y; // [esp+8h] [ebp-4h]
 
             u.y = v.x;
@@ -78,6 +101,10 @@ namespace RBX
             if (v3 <= 0.0)
                 return RBX::BOTTOM;
             return result;
+        }
+        static Vector3 toDiagonal(Matrix3 m)
+        {
+            return Vector3(m.elt[0][1], m.elt[1][1], m.elt[2][2]);
         }
     }
 }

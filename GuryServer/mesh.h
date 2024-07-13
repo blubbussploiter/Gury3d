@@ -6,6 +6,7 @@
 #include "pvinstance.h"
 
 #include "content.h"
+#include "stdout.h"
 
 namespace RBX
 {
@@ -24,8 +25,16 @@ namespace RBX
 			Brick
 		};
 
-		class SpecialMesh :
-			public RBX::Derivable<RBX::PVInstance>
+		class WedgeMesh : public Renderable
+		{
+		public:
+
+			void renderWedgeFace(NormalId face);
+
+		};
+
+		class SpecialMesh : 
+			public WedgeMesh
 		{
 		private:
 			Content meshId;
@@ -40,23 +49,35 @@ namespace RBX
 
 			MeshType getMeshType() { return meshType; }
 
-			void setMeshType(MeshType meshType)
+			void setMeshType(MeshType _meshType)
 			{
+				meshType = _meshType;
 				switch (meshType)
 				{
-				case Head:
-				{
-					fromFile(GetFileInPath("/content/font/head.mesh"));
-					break;
-				}
-				default: break;
+					case Head:
+					{
+						fromFile(GetFileInPath("/content/font/head.mesh"));
+						break;
+					}
+					default: break;
 				}
 			}
 
 			void setMeshScale(Vector3 scale)
 			{
-				mesh_scale = scale;
+				RBX::PVInstance* parent = dynamic_cast<RBX::PVInstance*>(getParent());
+				if (!parent) return;
+
+				Vector3 sz = parent->getSize();
+
+				mesh_scale = scale * 1.75f;
+
+				if (sz.y > mesh_scale.y && sz.x > mesh_scale.x)
+				{
+					mesh_scale *= sz;
+				}
 			}
+
 			Vector3 getMeshScale() { return mesh_scale; }
 
 			void fromFile(std::string path);
@@ -64,21 +85,26 @@ namespace RBX
 
 			void setMeshId(Content meshId);
 			Content getMeshId() { return meshId; }
-
-			void renderDecals(RenderDevice* d);
+			
+			void renderFaceFitForDecal(RenderDevice* rd, NormalId face);
+			void renderFace(RenderDevice* d, NormalId face);
+			void renderDecal(RenderDevice* rd, Decal* decal);
 			void render(RenderDevice* d);
 
-			void renderFace(RBX::NormalId face, bool isDrawingDecal = 0);
+			void renderSpecialMesh(RenderDevice* d);
+
 			SpecialMesh()
 			{
 				setClassName("SpecialMesh");
 				setName("SpecialMesh");
+				setMeshType(Head);
 				mesh_scale = Vector3::one();
-				isSpecialShape = true;
 			}
 			virtual ~SpecialMesh() {}
 
+			RTTR_ENABLE(RBX::Render::Renderable)
 		};
+
 	}
 }
 

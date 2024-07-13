@@ -199,10 +199,11 @@ namespace RBX
 		{
 			extern void onExitBtnClick(GuiButton* btn);
 			extern void onFullscreenBtnClick(GuiButton* btn);
+			extern void onEditModeBtnClick(GuiButton* btn);
 		}
 
 		/* deprecated, use Datamodel->guiRoot */
-		GuiRoot* singleton(); 
+		GuiRoot* get(); 
 	}
 }
 

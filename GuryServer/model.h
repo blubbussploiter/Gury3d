@@ -2,13 +2,18 @@
 #define MODEL_H
 
 #include "ICameraOwner.h"
+#include "ISelectable.h"
+
 #include "controller.h"
 #include "part.h"
+
+#include "stdout.h"
 
 namespace RBX
 {
 	class ModelInstance :
-		public RBX::Instance,
+		public RBX::Render::Renderable,
+		public RBX::ISelectable,
 		public ICameraOwner
 	{
 	private:
@@ -24,9 +29,13 @@ namespace RBX
 		void createController(); /* recursive */
 		void makeController(); /* non recursive */
 
-		void setController(ControllerTypes c) {
+		void setController(ControllerTypes c) 
+		{
 			controllerType = c;
 		}
+
+		void drawControllerFlag(RenderDevice* rd, Color3 color);
+		void render(RenderDevice* rd);
 
 		void setPrimaryPartCFrame(CoordinateFrame cframe);
 		CoordinateFrame getPrimaryPartCFrame();
@@ -35,16 +44,30 @@ namespace RBX
 		RBX::PartInstance* getPrimaryPartInternal();
 
 		RBX::PartInstance* getPrimaryPart();
+		void setPrimaryPart(RBX::PartInstance* part) { primaryPart = part; }
 
 		virtual RBX::ModelInstance* getModel() { return this; }
 		virtual RBX::Extents computeCameraOwnerExtents();
+
 		RBX::Extents computeVisibleExtents();
+
+		void translate(CoordinateFrame cframe);
+		
+		static void translateInstances(Instances i, PVInstance* rootPart, CoordinateFrame cframe);
+		static Extents getInstancesExtents(Instances i);
+		static PVInstance* getRootPart(Instances i);
+
+		SelectableBox getBoundingBox()
+		{
+			return SelectableBox();
+		}
 
 		ModelInstance()
 		{
 			controllerType = ControllerTypes::None;
 			controller = nullptr;
 			primaryPart = nullptr;
+			unaffectedByLight = true;
 			setClassName("Model");
 			setName("Model");
 		}
@@ -53,19 +76,6 @@ namespace RBX
 		RTTR_ENABLE(Instance)
 	};
 
-	static void setModelTransparency(RBX::ModelInstance* m, float transparency)
-	{
-		RBX::Instances* children;
-		children = m->getChildren();
-		for (unsigned int i = 0; i < children->size(); i++)
-		{
-			RBX::PVInstance* child = dynamic_cast<RBX::PVInstance*>(children->at(i));
-			if (child)
-			{
-				child->setTransparency(transparency);
-			}
-		}
-	}
 }
 
 #endif

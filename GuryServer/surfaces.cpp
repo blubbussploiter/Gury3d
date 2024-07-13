@@ -8,7 +8,7 @@ TextureRef RBX::getSurface(RBX::SurfaceType s)
 
 	float y = 0;
 
-	std::string fn = GetFileInPath("/content/textures/Surfaces.png");
+	std::string fn = GetFileInPath("/content/textures/GurySurfaces.png");
 
 	surfaces = GImage();
 	surfaces.load(fn);
@@ -37,17 +37,21 @@ TextureRef RBX::getSurface(RBX::SurfaceType s)
 		}
 	}
 
-	bool b = surfaces.copySubImage(surface, surfaces, 0, y, 64, 64);
+	bool b = surfaces.copySubImage(surface, surfaces, 0, y, 64, 128);
+	Texture::Parameters params;
 
-	TextureRef r = Texture::fromGImage(fn, surface, TextureFormat::AUTO, Texture::TILE);
+	params.interpolateMode = Texture::BILINEAR_MIPMAP;
+	params.wrapMode = Texture::TILE;
+
+	TextureRef r = Texture::fromGImage(fn, surface, TextureFormat::AUTO, Texture::DIM_2D, params);
 
 	return r;
 }
 
 CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents extents)
 {
-	CoordinateFrame center = CoordinateFrame();
-	Vector3 extentsCenter, positionCenter;
+	CoordinateFrame center;
+	Vector3 extentsCenter;
 
 	extentsCenter = extents.getCenter();
 
@@ -55,40 +59,39 @@ CoordinateFrame RBX::getSurfaceCenter(NormalId face, Vector3 size, Extents exten
 	{
 		case NormalId::FRONT:
 		{
-			positionCenter = extentsCenter + Vector3(0,0, size.z);
+			center = extentsCenter + Vector3(0,0, -size.z);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), toRadians(90));
 			break;
 		}
 		case NormalId::BACK:
 		{
-			positionCenter = extentsCenter - Vector3(0, 0, size.z);
+			center = extentsCenter + Vector3(0, 0, size.z);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), toRadians(90));
 			break;
 		}
 		case NormalId::LEFT:
 		{
-			positionCenter = extentsCenter + Vector3(-size.x, 0, 0);
+			center = extentsCenter + Vector3(-size.x, 0, 0);
 			break;
 		}
 		case NormalId::RIGHT:
 		{
-			positionCenter = extentsCenter + Vector3(size.x, 0, 0);
+			center = extentsCenter + Vector3(size.x, 0, 0);
 			break;
 		}
 		case NormalId::TOP:
 		{
-			positionCenter = extentsCenter + Vector3(0, size.y, 0);
+			center = extentsCenter + Vector3(0, size.y, 0);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitZ(), toRadians(90));
 			break;
 		}
 		case NormalId::BOTTOM:
 		{
-			positionCenter = extentsCenter + Vector3(0, -size.y, 0);
+			center = extentsCenter + Vector3(0, -size.y, 0);
+			center.rotation = Matrix3::fromAxisAngle(Vector3::unitZ(), toRadians(90));
 			break;
 		}
 	}
 
-	CoordinateFrame lookAt;
-
-	lookAt = extentsCenter;
-	lookAt.lookAt(positionCenter);
-
-	return CoordinateFrame(lookAt.rotation, positionCenter);
+	return center;
 }

@@ -49,7 +49,7 @@ void RBX::ScriptContext::openState()
 		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(globalState, Datamodel::getDatamodel());
 		lua_setglobal(globalState, "game");
 
-		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(globalState, Workspace::singleton());
+		RBX::Lua::SharedPtrBridge<RBX::Instance>::push(globalState, Workspace::get());
 		lua_setglobal(globalState, "workspace");
 
 		lua_register(globalState, "wait", &ScriptContext::wait);
@@ -113,6 +113,19 @@ int RBX::ScriptContext::resume(lua_State* L, int narg)
 	return 0;
 }
 
+int RBX::ScriptContext::resumeProtected(lua_State* L, int narg)
+{
+	try 
+	{
+		return resume(L, narg);
+	}
+	catch (std::exception err)
+	{
+		RBX::StandardOut::print(RBX::MESSAGE_ERROR, err.what());
+		return 1;
+	}
+}
+
 void RBX::ScriptContext::onWorkspaceDescendentAdded(RBX::Instance* descendent)
 {
 	RBX::BaseScript* script = dynamic_cast<RBX::BaseScript*>(descendent);
@@ -172,10 +185,10 @@ void RBX::ScriptContext::runScripts()
 		{
 			RBX::BaseScript* script = scripts.at(i);
 			if (!script) continue;
-				runScript(script);
+			runScript(script);
 		}
 	}
-	catch (std::runtime_error err)
+	catch (std::exception err)
 	{
 		RBX::StandardOut::print(RBX::MESSAGE_ERROR, err.what());
 	}
@@ -214,9 +227,9 @@ int RBX::ScriptContext::wait(lua_State* L)
 	return lua_yield(L, 0);
 }
 
-RBX::ScriptContext* RBX::ScriptContext::singleton()
+RBX::ScriptContext* RBX::ScriptContext::get()
 {
-	RBX::RunService* runService = RBX::RunService::singleton();
+	RBX::RunService* runService = RBX::RunService::get();
 	if (runService->scriptContext) return runService->scriptContext;
 	return 0;
 }

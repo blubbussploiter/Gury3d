@@ -14,7 +14,7 @@ namespace RBX
 		void init();
 		void update();
 
-		static SoundService* singleton();
+		static SoundService* get();
 
 		SoundService()
 		{

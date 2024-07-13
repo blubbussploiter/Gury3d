@@ -14,7 +14,7 @@ static const char reverse_table[128] = {
    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64
 };
 
-std::string base64_decode(const std::string& ascdata)
+static std::string base64_decode(const std::string& ascdata)
 {
     using ::std::string;
     string retval;

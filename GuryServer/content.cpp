@@ -7,54 +7,56 @@
 #include "decode.h"
 #include "md5.h"
 
-RBX::ContentProvider* provider;
+#include "stdout.h"
 
-void RBX::ContentProvider::downloadContent(RBX::Content content, std::string& contentPath)
+RBX::Content RBX::Content::fromImageFile(std::string file)
 {
-	std::string baseContentPath = ConFileInPath("/content/provider/");
-	std::ofstream write;
+	/* jsut read it as binary then encode to base64 */
+	/*
+	
+	G3D::GImage data;
+	G3D::GImage::Format format;
 
-	if (content.isEmpty) return;
+	G3D::BinaryOutput output;
+	Content content(1, "");
 
-	if (content.isBinary)
+	format = data.resolveFormat(file);
+
+	data.load(file, format);
+	data.encode(format, output);
+
+	content.content = output.getCArray();
+	content.contentLength = output.length();
+
+	return content;
+	*/
+	return Content::fromContent(file);
+}
+
+bool RBX::Content::resolve()
+{
+	if (isBinary)
 	{
-		if (CreateDirectory(baseContentPath.c_str(), NULL) ||
-			ERROR_ALREADY_EXISTS == GetLastError())
-		{
+		std::string data = base64_decode(binary);
+		contentLength = data.length();
 
-			std::string hash, decoded, url, str;
-			std::istringstream stream;
+		content = new G3D::uint8[contentLength];
+		std::copy(data.begin(), data.end(), content);
 
-			if (content.binary.empty()) return;
-
-			hash = md5(content.binary);
-			decoded = base64_decode(content.binary);
-
-			url = baseContentPath + hash;
-
-			write = std::ofstream(url);
-			stream = std::istringstream(decoded);
-
-			while (std::getline(stream, str))
-			{
-				write << str;
-			}
-			
-			write.close();
-
-			contentPath = url;
-
-		}
+		return true;
 	}
+
+	if (isStored)
+	{
+		/* resolve data stuff .. idk */
+		return true;
+	}
+
+	return false;
 }
 
-void RBX::ContentProvider::cleanupContent(Content content)
+std::string RBX::Content::resolveContentHash()
 {
-
-}
-
-RBX::ContentProvider* RBX::ContentProvider::singleton()
-{
-	if (!provider) provider = new ContentProvider();
-	return provider;
+	std::string base64 = base64_encode(content, contentLength);
+	return md5(base64);
 }

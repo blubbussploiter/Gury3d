@@ -6,7 +6,7 @@ std::string localScope;
 int nextIndex = 0;
 bool flag;
 
-std::map<RBX::Guid*,RBX::Instance*>* RBX::Guid::registry = new std::map<RBX::Guid*, RBX::Instance*>();
+std::map<RBX::Guid*, RBX::Instance*>* RBX::Guid::registry = new std::map<RBX::Guid*, RBX::Instance*>();
 
 std::string RBX::Guid::generateGUID()
 {
@@ -14,7 +14,7 @@ std::string RBX::Guid::generateGUID()
 	char ansiClsid[64]; // [esp+10h] [ebp-C4h] BYREF
 	wchar_t wszGUID_4[64]; // [esp+54h] [ebp-80h] OVERLAPPED BYREF
 	std::string result;
-		
+
 	result = "GRY";
 	CoCreateGuid(&guid);
 	memset(wszGUID_4, 0, sizeof(wszGUID_4));

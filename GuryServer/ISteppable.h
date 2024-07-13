@@ -8,6 +8,7 @@ namespace RBX
 	{
 	public:
 		virtual void onStep() = 0;
+		virtual void onKernelStep() = 0;
 	};
 }
 

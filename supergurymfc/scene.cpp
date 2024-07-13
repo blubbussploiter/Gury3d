@@ -8,7 +8,7 @@
 
 #include "appmanager.h"
 
-RBX::Scene* RBX::Scene::singleton()
+RBX::Scene* RBX::Scene::get()
 {
 	return RBX::Datamodel::getDatamodel()->scene;
 }
@@ -27,17 +27,17 @@ RBX::Instances RBX::Scene::getArrayOfObjects()
 	return sceneObjects;
 }
 
-bool opaqueRule(RBX::Render::Renderable* r)
+bool opaqueRule(RBX::Render::IRenderable* r)
 {
 	return (!r->transparency && !r->renderedLast);
 }
 
-bool transparentRule(RBX::Render::Renderable* r)
+bool transparentRule(RBX::Render::IRenderable* r)
 {
 	return (!r->renderedLast && r->transparency > 0);
 }
 
-void render3DSurface(RBX::Render::Renderable* r, RenderDevice* rd)
+void render3DSurface(RBX::Render::IRenderable* r, RenderDevice* rd)
 {
 	r->render3DSurfaces(rd);
 }
@@ -70,7 +70,7 @@ void RBX::Scene::opaquePass(RenderDevice* rd)
 {
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		Render::IRenderable* iRenderable = toInstance<Render::IRenderable>(sceneObjects.at(i));
 		if (iRenderable && opaqueRule(iRenderable) &&
 			!RBX::IsA<Render::SpecialMesh>(iRenderable))
 		{
@@ -99,7 +99,7 @@ void RBX::Scene::transparentPass(RenderDevice* rd)
 
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		Render::IRenderable* iRenderable = toInstance<Render::IRenderable>(sceneObjects.at(i));
 		if (iRenderable &&
 			transparentRule(iRenderable) &&
 			!RBX::IsA<Render::SpecialMesh>(iRenderable))
@@ -116,7 +116,7 @@ void RBX::Scene::darkPass(RenderDevice* rd)
 {
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		Render::IRenderable* iRenderable = toInstance<Render::IRenderable>(sceneObjects.at(i));
 		if (iRenderable && 
 			opaqueRule(iRenderable) &&
 			!RBX::IsA<Render::SpecialMesh>(iRenderable))
@@ -127,7 +127,7 @@ void RBX::Scene::darkPass(RenderDevice* rd)
 
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		Render::IRenderable* iRenderable = toInstance<Render::IRenderable>(sceneObjects.at(i));
 		if (iRenderable && 
 			opaqueRule(iRenderable) 
 			&& iRenderable->unaffectedByLight &&
@@ -142,7 +142,7 @@ void RBX::Scene::lastPass(RenderDevice* rd)
 {
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		Render::IRenderable* iRenderable = toInstance<Render::IRenderable>(sceneObjects.at(i));
 		if (iRenderable && iRenderable->renderedLast &&
 			!RBX::IsA<Render::SpecialMesh>(iRenderable))
 		{
@@ -175,17 +175,17 @@ void RBX::Scene::saveStartPVs() /* before run: save each position of everything 
 	}
 }
 
-void RBX::Scene::onWorkspaceDescendentAdded(Render::Renderable* descendent)
+void RBX::Scene::onWorkspaceDescendentAdded(Render::IRenderable* descendent)
 {
 	RBX::Instance* instance = (Instance*)descendent;
-	if (IsA<Render::Renderable>(instance) || IsA<RBX::ISteppable>(instance))
+	if (IsA<Render::IRenderable>(instance) || IsA<RBX::ISteppable>(instance))
 	{
 		Render::SpecialMesh* specialMesh = toInstance<Render::SpecialMesh>(descendent);
 		PVInstance* pvInstance = toInstance<PVInstance>(descendent);
 
 		if (specialMesh)
 		{
-			Render::Renderable* p = toInstance<Render::Renderable>(descendent->getParent());
+			Render::IRenderable* p = toInstance<Render::IRenderable>(descendent->getParent());
 			if (p)
 			{
 				p->specialShape = descendent;
@@ -201,7 +201,7 @@ void RBX::Scene::onWorkspaceDescendentAdded(Render::Renderable* descendent)
 	}
 }
 
-void RBX::Scene::onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent)
+void RBX::Scene::onWorkspaceDescendentRemoved(RBX::Render::IRenderable* descendent)
 {
 	if (std::find(
 		sceneObjects.begin(),

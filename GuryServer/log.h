@@ -5,10 +5,18 @@
 
 namespace RBX
 {
+	enum MessageType
+	{
+		MESSAGE_PRINT,
+		MESSAGE_INFO,
+		MESSAGE_WARNING,
+		MESSAGE_ERROR,
+	};
 	class Log
 	{
 	public:
-		static void writeEntry(const char* message);
+		static void cleanup();
+		static void writeEntry(MessageType messageType, const char* message);
 	};
 }
 

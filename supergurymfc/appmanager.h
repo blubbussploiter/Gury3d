@@ -33,10 +33,10 @@ namespace RBX
 
 		bool mainLoopStarted();
 
-		static AppManager* singleton();
+		static AppManager* get();
 		static bool isReady()
 		{
-			return (singleton()->getApplication() != 0);
+			return (get()->getApplication() != 0);
 		}
 	};
 }

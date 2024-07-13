@@ -14,7 +14,7 @@ namespace RBX
 
 	public:
 
-		SnapConnector* getConnectingSnap(Primitive* prim);
+		static SnapConnector* getConnectingSnap(Primitive* prim);
 
 		void build();
 		void unlink();

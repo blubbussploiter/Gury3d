@@ -19,7 +19,7 @@ namespace RBX
 
 		void setBrickColor(int bc)
 		{
-			color = BrickColor::BrickMap::singleton()->fromNumber(bc);
+			color = BrickColor::BrickMap::get()->fromNumber(bc);
 		}
 
 		int getBrickColor()
@@ -36,10 +36,9 @@ namespace RBX
 			setClassName("Part");
 			setName("Part");
 
-			shape = Shape::part;
+			shape = Shape::Block;
 
-			//setTopSurface(Studs);
-			//setBottomSurface(Inlet);
+			setSize(Vector3(2, 1.2f, 4));
 
 		}
 

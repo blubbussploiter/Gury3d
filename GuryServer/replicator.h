@@ -8,7 +8,7 @@
 #include "slikenet/Bitstream.h"
 
 #include "players.h"
-#include "workspace.h"
+#include "datamodel.h"
 
 #include "bitstreamHelp.h"
 #include "guid.h"
@@ -60,7 +60,7 @@ namespace RBX
 
 			static Replicator* replicator();
 
-			bool connected() 
+			bool connected()
 			{
 				if (!peer) return 0;
 				return peer->GetConnectionState(server) == IS_CONNECTED;
@@ -89,12 +89,6 @@ namespace RBX
 			}
 
 			template<typename T>
-			void serialize(BitStream& stream, int value)
-			{
-				stream << value;
-			}
-
-			template<typename T>
 			void serialize(BitStream& stream, std::string value)
 			{
 				stream << value.size();
@@ -107,7 +101,9 @@ namespace RBX
 				Vector3 v = value.translation;
 				Matrix3 m = value.rotation;
 
-				serialize<Vector3>(stream, v);
+				stream.WriteBits((unsigned char*)&v.x, 32);
+				stream.WriteBits((unsigned char*)&v.y, 32);
+				stream.WriteBits((unsigned char*)&v.z, 32);
 				stream.WriteBits((unsigned char*)&m.elt[0][0], 32);
 				stream.WriteBits((unsigned char*)&m.elt[0][1], 32);
 				stream.WriteBits((unsigned char*)&m.elt[0][2], 32);
@@ -135,55 +131,10 @@ namespace RBX
 				stream.WriteBits((unsigned char*)&value.b, 32);
 			}
 
-			template<typename T>
-			void serialize(BitStream& stream, Instance* value)
-			{
-				RBX::GuidItem* item;
-
-				if (value && value->id)
-				{
-					item = value->id;
-					stream << item->guid->data.index; /* ezpz, just write the index of the guid */
-				}
-				else
-				{
-					stream << -1; /* null parent */
-				}
-			}
-
 			/* deserialize */
 
 			template <class T>
 			void deserialize(RBX::Instance* instance, BitStream& stream, rttr::property& property) {}
-
-			template<>
-			void deserialize<std::string>(RBX::Instance* instance, BitStream& stream, rttr::property& property)
-			{
-				size_t string_size;
-				std::string str;
-
-				stream >> string_size;
-				if (string_size > 0)
-				{
-					property.set_value(instance, Help::read(stream, string_size));
-				}
-			}
-
-			template<>
-			void deserialize<RBX::Instance>(RBX::Instance* instance, BitStream& stream, rttr::property& property)
-			{
-				RBX::Instance* v = 0;
-
-				int index;
-				stream >> index;
-
-				if (index != -1)
-				{
-					v = Guid::fromIndex(index);
-				}
-
-				property.set_value(instance, v);
-			}
 
 			template <>
 			void deserialize<float>(RBX::Instance* instance, BitStream& stream, rttr::property& property)
@@ -209,14 +160,12 @@ namespace RBX
 			void deserialize<Vector3>(RBX::Instance* instance, BitStream& stream, rttr::property& property)
 			{
 				float x, y, z;
-				Vector3 v;
 
 				stream.ReadBits((unsigned char*)&x, 32);
 				stream.ReadBits((unsigned char*)&y, 32);
 				stream.ReadBits((unsigned char*)&z, 32);
 
-				v = Vector3(x, y, z);
-				property.set_value(instance, v);
+				property.set_value(instance, Vector3(x, y, z));
 			}
 
 			template<>
@@ -256,14 +205,6 @@ namespace RBX
 
 				c = Color3(x, y, z);
 				property.set_value(instance, c);
-			}
-
-			template<>
-			void deserialize<int>(RBX::Instance* instance, BitStream& stream, rttr::property& property)
-			{
-				int value;
-				stream >> value;
-				property.set_value(instance, value);
 			}
 
 			Replicator(SystemAddress server, RakPeerInterface* peer, int sendRate = 5);

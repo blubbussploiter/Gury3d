@@ -18,75 +18,22 @@ RTTR_REGISTRATION
 {
 	rttr::registration::class_<RBX::Network::Players>("Players")
 		.constructor<>()
-		.property_readonly("LocalPlayer", &RBX::Network::Players::localPlayer)
+		.property_readonly("LocalPlayer", &RBX::Network::Players::getLocalPlayer)
+		.property("maxPlayers", &RBX::Network::Players::getMaxPlayers, &RBX::Network::Players::setMaxPlayers)(rttr::metadata("Type", RBX::Data))
+		.property_readonly("numPlayers", &RBX::Network::Players::getNumPlayers)(rttr::metadata("Type", RBX::Data))
 		.method("createLocalPlayer", &RBX::Network::Players::createLocalPlayer);
 }
 
-void Player::loadCharacter()
-{
-	RBX::Instances* load;
-	RBX::Humanoid* h = 0;
 
-	if (character) return;
-
-	load = RBX::Serializer::loadInstances(GetFileInPath("/content/font/character.rbxm"));
-
-	if (load && load->size() > 0)
-	{
-		RBX::Instance* possibleCharacter = load->at(0);
-		if (possibleCharacter->getClassName() == "Model")
-		{
-			h = RBX::Humanoid::modelIsCharacter(possibleCharacter);
-			if (h)
-				character = (RBX::ModelInstance*)possibleCharacter;
-		}
-	}
-
-	if (!character) return;
-
-	RBX::PartInstance* head, * humanoidRootPart;
-
-	head = (RBX::PartInstance*)character->findFirstChild("Head");
-	humanoidRootPart = (RBX::PartInstance*)character->findFirstChild("Torso");
-
-	if (!head || !humanoidRootPart) return;
-
-	if (head->getClassName() != "PVInstance" || humanoidRootPart->getClassName() != "PVInstance") return;
-
-	controller = new PlayerController();
-	controller->init(this);
-
-	Camera::singleton()->focusPart = head;
-	Camera::singleton()->cameraType = Follow;
-
-	character->setName(getName());
-	character->buildJoints();
-
-	character->setParent(RBX::Workspace::singleton());
-
-}
-
-void Player::disposeActiveBin()
-{
-	if (!activeBin)
-		return;
-
-	activeBin->remove();
-	activeBin = 0;
-}
-
-void Player::setAsController()
-{
-	if (!RBX::RunService::singleton()->isRunning) return;
-	RBX::ControllerService::singleton()->addController(controller);
-	RBX::Camera::singleton()->disable(1);
-}
-
-void Players::createLocalPlayer(int userId)
+Player* Players::createLocalPlayer(int userId)
 {
 	Player* player;
 
-	if (localPlayer) return; /* 'localplayer already exists!' */
+	if (localPlayer)
+	{
+		throw std::runtime_error("Local player already exists");
+	}
+
 	player = new Player();
 
 	if (userId == 0)
@@ -98,10 +45,12 @@ void Players::createLocalPlayer(int userId)
 	localPlayer = player;
 	addPlayer(player);
 
-	if (Replicator::replicator())
-	{
-		Replicator::replicator()->SendPlayer(localPlayer);
-	}
+	return localPlayer;
+}
+
+void RBX::Network::Players::setPlayerList(RBX::Gui::GuiList* _playerList)
+{
+	playerList = _playerList;
 }
 
 void Players::destroyPlayer(Player* plr)
@@ -112,7 +61,18 @@ void Players::destroyPlayer(Player* plr)
 
 void Players::addPlayer(Player* player)
 {
+	RBX::Gui::GuiLabel* lbl;
+
+	lbl = new RBX::Gui::GuiLabel();
+
+	lbl->textColor = Color3::wheelRandom();
+	lbl->title = player->getName();
+	lbl->sz = 10;
+
 	players.push_back(player);
+
+	playerList->visible = true;
+	playerList->addChild(lbl);
 }
 
 void Players::updatePlayerList()
@@ -129,7 +89,15 @@ void Players::updatePlayerList()
 	}
 }
 
-RBX::ModelInstance* RBX::Network::Players::findLocalCharacter()
+void RBX::Network::Players::onStep()
+{
+	if (localPlayer)
+	{
+		localPlayer->backpack->updateGui();
+	}
+}
+
+RBX::ModelInstance* Players::findLocalCharacter()
 {
 	Players* players = getPlayers();
 	Player* player;

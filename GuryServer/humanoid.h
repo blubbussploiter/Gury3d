@@ -2,7 +2,6 @@
 #define HUMANOID_H
 
 #include "part.h"
-#include "snaps.h"
 
 #include "ISteppable.h"
 
@@ -10,7 +9,26 @@
 
 namespace RBX
 {
-	class Humanoid : public RBX::ISteppable, public RBX::Derivable<RBX::Render::Renderable>
+
+	enum HumanoidStates
+	{
+		Running,
+		Strafing,
+		Jumping,
+		Falling,
+		Tripped,
+		Landed
+	};
+	/* ajajajsjjs */
+
+	struct groundData
+	{
+		float distanceFrom;
+		Vector3 hit;
+		Vector3 normal;
+	};
+
+	class Humanoid : public RBX::ISteppable, public RBX::Render::Renderable
 	{
 	private:
 
@@ -18,63 +36,114 @@ namespace RBX
 		{
 			DIRECTION_JUMP,
 			DIRECTION_MOVE,
+			DIRECTION_STAY
 		};
 
 		Vector3 walkDirection;
-		Vector3 walkRotationVelocity;
 
 		WalkMode walkMode;
+		HumanoidStates humanoidState;
+
+		bool wasTripped;
 
 		bool jointsBuilt;
+		bool attemptingToBalance;
+		bool currentlyJumping;
+		bool canJump;
+
+		float genieHeight;
+		float jumpClock, jumpTimer;
 
 	public:
 
-		RBX::PVInstance* humanoidRootPart, * humanoidHead;
+		RBX::PVInstance* humanoidRootPart, * humanoidHead, *rightLeg, *leftLeg, *rightArm, *leftArm;
 
 		float health;
 		float maxHealth;
-		float jmpPower;
+
+		float r_turnVelocity;
+
 		bool isDead;
+		bool isClimbing;
+		bool jumping;
 
 		Humanoid()
 		{
 			health = 100.0f;
 			maxHealth = 100.0f;
-			jmpPower = 30;
+			jumpTimer = 1.5f;
+			jumpClock = 0.0f;
+			jumping = 0;
+			genieHeight = 3.9f;
+			canJump = 1;
+			currentlyJumping = 0;
+			renderedLast = 1;
 			setClassName("Humanoid");
 			setName("Humanoid");
-			isSteppable = 1;
-			renderedLast = 1;
 		}
 
-		bool isGrounded();
+		bool limbsCheck(); /* double check checkHumanoidAttributes, returns result of second check, if not second check, return false indefinitely (until limbs appear) */
+
+		bool checkHumanoidAttributes();
+		void snap(PVInstance* p0, PVInstance* p1);
+
 		bool isFalling();
-		bool isInAir();
+		bool isGrounded();
 		bool isJoined();
 
-		bool checkHumanoidAttributes() { return (humanoidHead && humanoidRootPart && (humanoidRootPart->body && humanoidHead->body)); }
+		void setLegCollisions(bool collidable);
+		void setArmCollisions(bool collidable);
 
-		void balance();
-		void onDied();
-		/* corrects humanoidRootPart and humanoidHead */
-		void correctHumanoidAttributes();
+		void adjustLimbPhysics();
 		void buildJoints();
-		/* get Humanoid from model if its a character (has humanoid) */
-		static Humanoid* modelIsCharacter(RBX::Instance* testModel);
+
+		void setLocalTransparency(float transparency);
+
 		/* sets humanoidRootPart and humanoidHead accordingly */
+
 		void setHumanoidAttributes();
+
 		void setWalkDirection(Vector3 walkDir);
-		void setJump();
+		void setJump(bool jump=1);
+
 		void onStep();
+		void onKernelStep();
+
+		void onDied();
+		void onStrafe();
+		void onTurn();
+		void onMovement();
+		void onJump();
+
+		void doSounds();
+
+		void jumpTimeStep();
+		void resetJumpTimer();
+
+		void updateHumanoidState();
 
 		void render(RenderDevice* rd);
 		void drawHealthbar(RenderDevice* rd, CoordinateFrame center, float distance);
+		
+		groundData* getHumanoidGroundData();
 
-		RBX::PartInstance* getRightArm();
-		RBX::PartInstance* getLeftArm();
-		RBX::PartInstance* getRightLeg();
-		RBX::PartInstance* getLeftLeg();
+		static Humanoid* modelIsCharacter(RBX::Instance* testModel);
+
+		/* balancing physics stuff */
+
+		void getFeetOffGround(float damper=0.2f, float multiplier=2.f); /* balancing */
+		void genieFloat();
+
+		void tryEnable();
+
+		RBX::PVInstance* getRightArm();
+		RBX::PVInstance* getLeftArm();
+		RBX::PVInstance* getRightLeg();
+		RBX::PVInstance* getLeftLeg();
+
 		virtual ~Humanoid() {}
+
+		RTTR_ENABLE(RBX::Render::Renderable);
 	};
 }
 #endif

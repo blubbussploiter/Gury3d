@@ -34,9 +34,12 @@ namespace RBX
 		void onDescendentRemoved(RBX::Instance* descendent);
 
 		Camera* getCurrentCamera();
-		void setCurrentCamera(Camera* camera);
 
 		bool setImageServerView();
+		SelectableBox getBoundingBox()
+		{
+			return SelectableBox();
+		}
 
 		virtual RBX::ModelInstance* getModel() { return this; }
 		virtual RBX::Extents computeCameraOwnerExtents();
@@ -52,7 +55,7 @@ namespace RBX
 
 		}
 
-		RTTR_ENABLE(RBX::ModelInstance)
+		RTTR_ENABLE(ModelInstance)
 	};
 	void getPVInstances(RBX::Instances* instances, RBX::Instances* pvs);
 }

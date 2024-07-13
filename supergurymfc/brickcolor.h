@@ -27,7 +27,7 @@ namespace RBX
 
 			void insert(std::string name, int number, Color3 color);
 
-			static BrickMap* singleton();
+			static BrickMap* get();
 
 			BrickMap();
 		};

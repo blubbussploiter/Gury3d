@@ -3,49 +3,38 @@
 #include "pvinstance.h"
 #include "datamodel.h"
 
+#include "stdout.h"
+#include "mesh.h"
+
+#include "appmanager.h"
+
 RBX::Scene* RBX::Scene::singleton()
 {
 	return RBX::Datamodel::getDatamodel()->scene;
 }
 
-std::vector<RBX::Render::Renderable*> RBX::Scene::getArrayOfObjects()
+void RBX::Scene::close()
 {
-	return renderObjects;
+	for (Instance* object : sceneObjects)
+	{
+		object->remove();
+	}
+	sceneObjects.clear();
+}
+
+RBX::Instances RBX::Scene::getArrayOfObjects()
+{
+	return sceneObjects;
 }
 
 bool opaqueRule(RBX::Render::Renderable* r)
 {
-	return (r->isRenderable && r->transparency == 0 && !r->renderedLast);
+	return (!r->transparency && !r->renderedLast);
 }
 
 bool transparentRule(RBX::Render::Renderable* r)
 {
-	return (r->isRenderable
-		&& r->transparency > 0 && r->transparency < 1
-		&& !r->renderedLast);
-}
-
-bool lastRenderRule(RBX::Render::Renderable* r)
-{
-	return r->renderedLast;
-}
-
-bool physicsRule(RBX::Render::Renderable* r)
-{
-	return r->isAffectedByPhysics;
-}
-
-bool steppableRule(RBX::Render::Renderable* r)
-{
-	RBX::ISteppable* steppable;
-	RBX::Instance* i = dynamic_cast<RBX::Instance*>(r);
-	steppable = dynamic_cast<RBX::ISteppable*>(i);
-	return steppable;
-}
-
-void renderRenderable(RBX::Render::Renderable* r, RenderDevice* rd)
-{
-	r->render(rd);
+	return (!r->renderedLast && r->transparency > 0);
 }
 
 void render3DSurface(RBX::Render::Renderable* r, RenderDevice* rd)
@@ -53,100 +42,175 @@ void render3DSurface(RBX::Render::Renderable* r, RenderDevice* rd)
 	r->render3DSurfaces(rd);
 }
 
-void update3DObject(RBX::Render::Renderable* r, RenderDevice* rd)
+void RBX::Scene::updateSteppables()
 {
-	RBX::PVInstance* pv = dynamic_cast<RBX::PVInstance*>(r);
-	if (pv && pv->body)
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		RBX::RunService::singleton()->getPhysics()->createBody(pv);
-	}
-}
-
-void stepStepper(RBX::Render::Renderable* r, RenderDevice* rd)
-{
-	RBX::ISteppable* steppable;
-	RBX::Instance* i = dynamic_cast<RBX::Instance*>(r);
-	steppable = dynamic_cast<RBX::ISteppable*>(i);
-	if (steppable)
-	{
-		steppable->onStep();
-	}
-}
-
-void RBX::Scene::baseRender(RenderDevice* rd, bool(*rule)(RBX::Render::Renderable*), void(*render)(RBX::Render::Renderable*, RenderDevice*))
-{
-	for (unsigned int i = 0; i < renderObjects.size(); i++)
-	{
-		RBX::Render::Renderable* r = renderObjects.at(i);
-		if (rule(r))
+		ISteppable* steppableObject = toInstance<ISteppable>(sceneObjects.at(i));
+		if (steppableObject)
 		{
-			render(r, rd);
+			steppableObject->onStep();
 		}
 	}
 }
 
-void RBX::Scene::updateSteppables()
+void RBX::Scene::updateSteppablesKernelly()
 {
-	baseRender(0, steppableRule, stepStepper);
-}
-
-void RBX::Scene::updatePhysicsObjects()
-{
-	baseRender(0, physicsRule, update3DObject);
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		ISteppable* steppableObject = toInstance<ISteppable>(sceneObjects.at(i));
+		if (steppableObject)
+		{
+			steppableObject->onKernelStep();
+		}
+	}
 }
 
 void RBX::Scene::opaquePass(RenderDevice* rd)
 {
-	baseRender(rd, opaqueRule, renderRenderable);
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		if (iRenderable && opaqueRule(iRenderable) &&
+			!RBX::IsA<Render::SpecialMesh>(iRenderable))
+		{
+			iRenderable->render(rd);
+		}
+	}
+}
+
+void RBX::Scene::reflectancePass(RenderDevice* rd) /* keep working on this sometime idkf */
+{
+	rd->pushState();
+	rd->disableLighting();
+
+	//rd->configureReflectionMap(0, getGlobalSky()->getEnvironmentMap());
+	//rd->setDepthWrite(0);
+
+	//iterate(rd, reflectanceRule, renderRenderable);
+	
+	rd->popState();
 }
 
 void RBX::Scene::transparentPass(RenderDevice* rd)
 {
-	baseRender(rd, transparentRule, renderRenderable);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		if (iRenderable &&
+			transparentRule(iRenderable) &&
+			!RBX::IsA<Render::SpecialMesh>(iRenderable))
+		{
+			iRenderable->render(rd);
+		}
+	}
+
+	glBlendFunc(GL_ONE, GL_ONE);
+	glDisable(GL_BLEND);
 }
 
 void RBX::Scene::darkPass(RenderDevice* rd)
 {
-	baseRender(rd, opaqueRule, render3DSurface);
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		if (iRenderable && 
+			opaqueRule(iRenderable) &&
+			!RBX::IsA<Render::SpecialMesh>(iRenderable))
+		{
+			iRenderable->render3DSurfaces(rd);
+		}
+	}
+
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		if (iRenderable && 
+			opaqueRule(iRenderable) 
+			&& iRenderable->unaffectedByLight &&
+			!RBX::IsA<Render::SpecialMesh>(iRenderable))
+		{
+			iRenderable->render(rd);
+		}
+	}
 }
 
 void RBX::Scene::lastPass(RenderDevice* rd)
 {
-	baseRender(rd, lastRenderRule, renderRenderable);
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		Render::Renderable* iRenderable = toInstance<Render::Renderable>(sceneObjects.at(i));
+		if (iRenderable && iRenderable->renderedLast &&
+			!RBX::IsA<Render::SpecialMesh>(iRenderable))
+		{
+			iRenderable->render(rd);
+		}
+	}
 }
 
-void RBX::Scene::onWorkspaceDescendentAdded(RBX::Render::Renderable* descendent)
+void RBX::Scene::initializeKernel()
 {
-	if (descendent->isRenderable
-		|| steppableRule(descendent))
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-
-		RBX::Render::Renderable* r = dynamic_cast<RBX::Render::Renderable*>(descendent);
-
-		if (r->isSpecialShape)
+		PVInstance* pvInstance = toInstance<PVInstance>(sceneObjects.at(i));
+		if (pvInstance)
 		{
-			RBX::Render::Renderable* p = (RBX::Render::Renderable*)r->getParent();
-			if (p->isRenderable)
+			pvInstance->initializeForKernel();
+		}
+	}
+}
+
+void RBX::Scene::saveStartPVs() /* before run: save each position of everything in the scene */
+{
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		PVInstance* pvInstance = toInstance<PVInstance>(sceneObjects.at(i));
+		if (pvInstance)
+		{
+			pvInstance->savePV();
+		}
+	}
+}
+
+void RBX::Scene::onWorkspaceDescendentAdded(Render::Renderable* descendent)
+{
+	RBX::Instance* instance = (Instance*)descendent;
+	if (IsA<Render::Renderable>(instance) || IsA<RBX::ISteppable>(instance))
+	{
+		Render::SpecialMesh* specialMesh = toInstance<Render::SpecialMesh>(descendent);
+		PVInstance* pvInstance = toInstance<PVInstance>(descendent);
+
+		if (specialMesh)
+		{
+			Render::Renderable* p = toInstance<Render::Renderable>(descendent->getParent());
+			if (p)
 			{
-				p->specialShape = r;
+				p->specialShape = descendent;
 			}
 		}
 
-		renderObjects.push_back(r);
+		if (pvInstance)
+		{
+			Kernel::get()->addQueuedPrimitive(pvInstance->primitive);
+		}
+
+		sceneObjects.push_back(descendent);
 	}
 }
 
 void RBX::Scene::onWorkspaceDescendentRemoved(RBX::Render::Renderable* descendent)
 {
 	if (std::find(
-		renderObjects.begin(),
-		renderObjects.end(),
-		descendent) != renderObjects.end())
+		sceneObjects.begin(),
+		sceneObjects.end(),
+		descendent) != sceneObjects.end())
 	{
-		printf("removal '%s'\n", descendent->getName().c_str());
-		renderObjects.erase(std::remove(
-			renderObjects.begin(),
-			renderObjects.end(),
+		sceneObjects.erase(std::remove(
+			sceneObjects.begin(),
+			sceneObjects.end(),
 			descendent));
 	}
 }

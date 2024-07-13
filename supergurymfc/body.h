@@ -42,6 +42,7 @@ namespace RBX
 		PV* pv;
 
 		Vector3 size;
+		G3D::Array<Primitive*> attachedPrimitives;
 
 		void* ud;
 		bool disabled; /* anchored */
@@ -64,6 +65,8 @@ namespace RBX
 
 		void modifyPosition(CoordinateFrame position);
 
+		void modifyPV(PV pv);
+
 		void modifySize(Vector3 size);
 
 		void modifyMass(dMass mass);
@@ -71,6 +74,10 @@ namespace RBX
 		void applyTorque(Vector3 torque);
 
 		void applyForce(Vector3 force);
+
+		void applyForceAtPosition(Vector3 force, Vector3 position);
+
+		void applyForceAtRelativePosition(Vector3 force, Vector3 relativePosition);
 
 		Vector3 getTorque();
 

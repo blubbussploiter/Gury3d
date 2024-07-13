@@ -1,30 +1,61 @@
-#ifndef MOUSE_H
-#define MOUSE_H
+#pragma once
 
+#include <vector>
 #include <G3DAll.h>
-#include "pvinstance.h"
 
-namespace Rendering
-{
-	extern TextureRef cursor_custom;
-	extern float szx, szy;
-	extern unsigned int mouse_glid;
-	extern bool isOverGuiObject;
-	extern bool shouldRenderAsFar();
-	extern void renderCursor(G3D::UserInput* ui, RenderDevice* rd);
-}
+#include "appmanager.h"
+
+#include "instance.h"
+#include "pvinstance.h"
+#include "camera.h"
+#include "ray.h"
 
 namespace RBX
 {
 	class Mouse
 	{
-	private:
-		static Vector3 hitWorld, dir;
 	public:
-		static RBX::PVInstance* target;
-		static RBX::PVInstance* getTarget(RBX::PVInstance* ignorePart=0);
-		static Vector3 getDir() { getTarget(); return dir; }
-		static Vector3 getHit() { getTarget(); return hitWorld; }
+
+		bool hoveringUI;
+		int currentglId;
+		float cx, cy, x, y;
+
+		Vector3 hitWorld, dir;
+
+		RBX::PVInstance* target;
+
+		RBX::PVInstance* getTarget();
+
+		Vector3 getDir() { getTarget(); return dir; }
+		Vector3 getHit() { getTarget(); return hitWorld; }
+
+		bool inGuryWindow();
+
+		void update(UserInput* ui);
+		void updateCursorInfo();
+		void render(RenderDevice* rd);
+
+		template<typename IgnoredItem>
+		inline RBX::PVInstance* getTargetWithIgnoreList(std::vector<IgnoredItem*>& ignore)
+		{
+			Ray ray;
+			Rect2D viewport;
+
+			viewport = AppManager::singleton()->getApplication()->getViewport();
+			Camera* camera = Camera::singleton();
+
+			ray = camera->camera->worldRay(x, y, viewport);
+			target = (PVInstance*)World::getPartFromG3DRay<IgnoredItem>(ray, hitWorld, 0, ignore);
+
+			return target;
+		}
+
+		static Mouse* getMouse();
+
+		Mouse()
+		{
+
+		}
 	};
+
 }
-#endif

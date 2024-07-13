@@ -71,6 +71,14 @@ void RBX::Body::modifyPosition(CoordinateFrame position)
 	dBodySetPosition(body, translation.x, translation.y, translation.z);
 }
 
+void RBX::Body::modifyPV(PV _pv)
+{
+	pv->position = _pv.position;
+	pv->velocity = _pv.velocity;
+	modifyPosition(pv->position);
+	modifyVelocity(pv->velocity);
+}
+
 void RBX::Body::modifyMass(dMass mass)
 {
 	if (!body) return;
@@ -89,6 +97,18 @@ void RBX::Body::applyForce(Vector3 force)
 {
 	if (!body) return;
 	dBodyAddForce(body, force.x, force.y, force.z);
+}
+
+void RBX::Body::applyForceAtPosition(Vector3 force, Vector3 position)
+{
+	if (!body) return;
+	dBodyAddForceAtPos(body, force.x, force.y, force.z, position.x, position.y, position.z);
+}
+
+void RBX::Body::applyForceAtRelativePosition(Vector3 force, Vector3 relativePosition)
+{
+	if (!body) return;
+	dBodyAddForceAtRelPos(body, force.x, force.y, force.z, relativePosition.x, relativePosition.y, relativePosition.z);
 }
 
 Vector3 RBX::Body::getTorque()
@@ -202,6 +222,12 @@ void RBX::Body::destroyBody()
 			dJointDestroy(dBodyGetJoint(body, i));
 		}
 
+		for (int i = 0; i < attachedPrimitives.size(); i++)
+		{
+			Primitive* primitive = attachedPrimitives[i];
+			detachPrimitive(primitive);
+		}
+
 		dBodyDestroy(body);
 		body = NULL;
 	}
@@ -212,6 +238,7 @@ void RBX::Body::attachPrimitive(Primitive* primitive)
 	if (primitive->geom[0])
 	{
 		dGeomSetBody(primitive->geom[0], body);
+		attachedPrimitives.push_back(primitive);
 		primitive->body = this;
 	}
 }
@@ -220,6 +247,11 @@ void RBX::Body::detachPrimitive(Primitive* primitive)
 {
 	if (primitive->geom[0])
 	{
+		if (attachedPrimitives.contains(primitive))
+		{
+			attachedPrimitives.fastRemove(attachedPrimitives.findIndex(primitive));
+		}
 		dGeomSetBody(primitive->geom[0], 0);
+		primitive->body = NULL;
 	}
 }

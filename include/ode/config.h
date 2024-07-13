@@ -20,7 +20,7 @@
 
 #define dCYLINDER_ENABLED 1
 
-#define dTRIMESH_ENABLED 1
+//#define dTRIMESH_ENABLED 0
 
 /******************************************************************
  * SYSTEM SETTINGS - you shouldn't need to change these. If you

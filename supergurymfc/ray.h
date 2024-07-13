@@ -39,7 +39,7 @@ namespace RBX
 
 			float nearest = inf();
 
-			instances = RBX::Scene::singleton()->getArrayOfObjects();
+			instances = RBX::Scene::get()->getArrayOfObjects();
 
 			for (unsigned int i = 0; i < instances.size(); i++)
 			{
@@ -48,7 +48,7 @@ namespace RBX
 
 				if (child)
 				{
-					ISelectable::SelectableBox sb = child->getBoundingBox();
+					Render::Geometry sb = child->getInstanceGeometry();
 					Box b;
 
 					b = child->getCFrame().toWorldSpace(Box(-sb.size, sb.size));
@@ -84,10 +84,9 @@ namespace RBX
 
 
 		template <typename IgnoredItem>
-		PVInstance* getPVInstanceFromRay(G3D::Ray ray, bool ignoreNonCollidableObjects = false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
+		PVInstance* getPVInstanceFromRay(G3D::Ray ray, Vector3& hitWorld, bool ignoreNonCollidableObjects = false, std::vector<IgnoredItem*>& ignore = empty_ignoreList)
 		{
-			Vector3 h;
-			ISelectable* i = getPartFromG3DRay<IgnoredItem>(ray, h, ignoreNonCollidableObjects, ignore);
+			ISelectable* i = getPartFromG3DRay<IgnoredItem>(ray, hitWorld, ignoreNonCollidableObjects, ignore);
 			Instance* instance = dynamic_cast<Instance*>(i);
 			return toInstance<PVInstance>(instance);
 		}

@@ -49,9 +49,9 @@ namespace RBX
 
 	enum Shape
 	{
-		ball,
-		part,
-		cylinder
+		Ball,
+		Block,
+		Cylinder
 	};
 
 	enum FormFactor
@@ -87,9 +87,9 @@ namespace RBX
 
 		rttr::registration::enumeration<Shape>("Shape")
 			(
-				rttr::value("Ball", ball),
-				rttr::value("Block", part),
-				rttr::value("Cylinder", cylinder)
+				rttr::value("Ball", Ball),
+				rttr::value("Block", Block),
+				rttr::value("Cylinder", Cylinder)
 			);
 
 		rttr::registration::enumeration<FormFactor>("FormFactor")

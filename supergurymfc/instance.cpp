@@ -22,6 +22,8 @@ RTTR_REGISTRATION
 		.method("findFirstChild", &RBX::Instance::findFirstChild);
 }
 
+fakeBoost::signal<void(RBX::Instance*, rttr::property)> RBX::Instance::propertyChanged_signal = fakeBoost::signal<void(RBX::Instance*, rttr::property)>();
+
 bool RBX::Instance::isAncestorOf(RBX::Instance* descendant)
 {
 	const RBX::Instance* v2; // eax
@@ -138,7 +140,7 @@ void RBX::Instance::remove()
 	}
 
 	setParent(0);
-	onRemove();
+	delete this;
 }
 
 RBX::Instance* RBX::Instance::getParent()

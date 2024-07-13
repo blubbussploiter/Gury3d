@@ -18,7 +18,8 @@ RBX::Instance* RBX::fromName(std::string className)
 
 	if (className == "Part")
 	{
-		return new RBX::PartInstance();
+		PartInstance* partInstance = new RBX::PartInstance();
+		return partInstance;
 	}
 
 	if (className == "Model")
@@ -59,18 +60,18 @@ RBX::Instance* RBX::fromName(std::string className)
 
 	if (className == "Lighting")
 	{
-		return RBX::Lighting::singleton();
+		return RBX::Lighting::get();
 	}
 
 	if (className == "Camera")
 	{
-		return RBX::Camera::singleton();
+		return RBX::Camera::get();
 	}
 
 	if (className == "Workspace" ||
 		className == "PVWorkspace")
 	{
-		return RBX::Workspace::singleton();
+		return RBX::Workspace::get();
 	}
 
 	return 0;

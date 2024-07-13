@@ -7,24 +7,31 @@
 #include "datamodel.h"
 #include "selection.h"
 
+#include "jointsservice.h"
+
 #include "diagnosticsWorldDrawer.h"
-#include "StudioTool.h"
+#include "studio/StudioTool.h"
 
 RBX::View* rbx_view;
 
 void RBX::View::onWorkspaceDescendentAdded(RBX::Instance* descendent)
 {
-	RBX::Scene::singleton()->onWorkspaceDescendentAdded((RBX::Render::Renderable*)descendent);
+	RBX::Scene::get()->onWorkspaceDescendentAdded((RBX::Render::IRenderable*)descendent);
 }
 
 void RBX::View::onWorkspaceDescendentRemoved(RBX::Instance* descendent)
 {
-	RBX::Scene::singleton()->onWorkspaceDescendentRemoved((RBX::Render::Renderable*)descendent);
+	RBX::Scene::get()->onWorkspaceDescendentRemoved((RBX::Render::IRenderable*)descendent);
 }
 
 void RBX::View::presetLighting()
 {
-	getEffectSettings()->applyEffects(0, params, lighting);
+	if (!readyForToneMap)
+	{
+		params = getEffectSettings()->toneMap->prepareLightingParameters(params);
+		lighting = getEffectSettings()->toneMap->prepareLighting(lighting);
+		readyForToneMap = true;
+	}
 }
 
 void RBX::View::turnOnLights(RenderDevice* device)
@@ -32,10 +39,14 @@ void RBX::View::turnOnLights(RenderDevice* device)
 	int n = 1;
 	Color3 ambientColor;
 
-	ambientColor = (lighting->ambientBottom + lighting->ambientTop) / 2.0f;
+	presetLighting();
+
+	ambientColor = (lighting->ambientBottom + lighting->ambientTop) / 2.2f;
 
 	device->setSpecularCoefficient(1);
 	device->setColorClearValue(colorClearValue);
+	
+	device->setLight(0, GLight::directional(params.lightDirection, params.lightColor*0.9f, 1, 1));
 
 	for (int i = 0; i < lighting->lightArray.size(); i++)
 	{
@@ -49,7 +60,7 @@ void RBX::View::turnOnLights(RenderDevice* device)
 
 	device->setAmbientLightColor(ambientColor);
 
-	if (effectSettings->_hemisphereLighting)
+	if (getEffectSettings()->_hemisphereLighting)
 	{
 		if (lighting->ambientBottom != ambientColor)
 		{
@@ -73,42 +84,28 @@ void RBX::View::renderScene(RenderDevice* rd)
 	glCullFace(GL_BACK);
 
 	rd->enableLighting();
-	rd->setPolygonOffset(-0.02);
 
 	turnOnLights(rd);
 
-	rd->setLight(0, GLight::directional(params.lightDirection, params.lightColor * 0.9f, 1, 1));
-
-	RBX::Scene::singleton()->opaquePass(rd);
-	RBX::Scene::singleton()->transparentPass(rd);
+	RBX::Scene::get()->opaquePass(rd);
+	RBX::Scene::get()->transparentPass(rd);
 
 	rd->disableLighting();
 
-	RBX::Scene::singleton()->darkPass(rd);
-	RBX::Scene::singleton()->lastPass(rd);
-
-	rd->setPolygonOffset(0.02);
+	RBX::Scene::get()->darkPass(rd);
+	RBX::Scene::get()->lastPass(rd);
 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 
 	glCullFace(GL_NONE);
-
-	rd->pushState();
-
-	if (!effectSettings->toneMap.isNull())
-	{
-		effectSettings->toneMap->endFrame(rd);
-	}
-
-	rd->popState();
 }
 
 void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef sky)
 {
 	Datamodel* datamodel = RBX::Datamodel::getDatamodel();
 
-	presetLighting();
+	//presetLighting();
 
 	renderDevice->beginFrame();
 
@@ -139,6 +136,11 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 
 	renderDevice->popState();
 
+	if (!effectSettings->toneMap.isNull())
+	{
+		effectSettings->toneMap->endFrame(renderDevice);
+	}
+
 	if (!sky.isNull())
 	{
 		sky->renderLensFlare(params);
@@ -150,6 +152,9 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 	datamodel->message->render(renderDevice);
 
 	Selection::get()->renderDragBox(renderDevice);
+	Diagnostics::get_Renderer()->render2D(renderDevice);
+
+	Mouse::getMouse()->render(renderDevice);
 
 	renderDevice->pop2D();
 
@@ -157,7 +162,7 @@ void RBX::View::oneFrame(RenderDevice* renderDevice, Camera* projection, SkyRef 
 
 }
 
-RBX::View* RBX::View::singleton()
+RBX::View* RBX::View::get()
 {
 	if (!rbx_view)
 	{

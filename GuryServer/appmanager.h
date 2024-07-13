@@ -11,15 +11,22 @@ namespace RBX
 	{
 	private:
 
+		std::vector<Experimental::Application*> applications;
 		Experimental::Application* currentApplication;
 		bool bOneTimeInitialized, bMainLoopStarted;
 
 	public:
 
+		std::string toLoad;
+		std::string fileName;
+
 		Experimental::Application* instantiate(HWND wnd);
 		Experimental::Application* getApplication();
 
+		void closeCurrentApplication();
+
 		void setCurrentApplication(Experimental::Application* app);
+		void setCurrentApplicationFromIndex(int index);
 		void initOneTimeAppliances();
 
 		void start();
@@ -27,6 +34,10 @@ namespace RBX
 		bool mainLoopStarted();
 
 		static AppManager* singleton();
+		static bool isReady()
+		{
+			return (singleton()->getApplication() != 0);
+		}
 	};
 }
 #endif

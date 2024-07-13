@@ -26,7 +26,7 @@ namespace RBX
 	public:
 		/* deprecated, use Datamodel->workspace */
 
-		static Workspace* singleton();
+		static Workspace* get();
 
 		void wakeUpModels();
 
@@ -36,9 +36,9 @@ namespace RBX
 		Camera* getCurrentCamera();
 
 		bool setImageServerView();
-		SelectableBox getBoundingBox()
+		Render::Geometry getBoundingBox()
 		{
-			return SelectableBox();
+			return Render::Geometry();
 		}
 
 		virtual RBX::ModelInstance* getModel() { return this; }
@@ -52,6 +52,7 @@ namespace RBX
 			setName("Workspace");
 
 			isParentLocked = 1;
+			isSelectable = false;
 
 		}
 

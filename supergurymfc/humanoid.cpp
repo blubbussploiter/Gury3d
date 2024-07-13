@@ -67,31 +67,6 @@ bool RBX::Humanoid::checkHumanoidAttributes()
     return 1;
 }
 
-void RBX::Humanoid::buildJoints()
-{
-    if (isJoined()) return;
-
-    snap(humanoidRootPart, humanoidHead);
-    snap(humanoidRootPart, getRightArm());
-    snap(humanoidRootPart, getLeftArm());
-    snap(humanoidRootPart, getRightLeg());
-    snap(humanoidRootPart, getLeftLeg());
-
-    Body* body = humanoidHead->getBody();
-    if (body && body->body)
-    {
-        Vector3 cofm = humanoidRootPart->getPosition();
-        dMass m;
-
-        m = body->getMass();
-        m.c[0] = cofm.x;
-        m.c[1] = cofm.y;
-        m.c[2] = cofm.z;
-
-        body->modifyMass(m);
-    }
-}
-
 bool RBX::Humanoid::isFalling()
 {
     Body* body = humanoidRootPart->getBody();
@@ -105,8 +80,15 @@ bool RBX::Humanoid::isFalling()
 bool RBX::Humanoid::isJoined()
 {
     if (!checkHumanoidAttributes()) return 0;
-
     return JointsService::areConnectedPrimitives(humanoidRootPart->primitive, humanoidHead->primitive); /* change this probably.. fixi t!!!*/
+}
+
+bool RBX::Humanoid::isTripped()
+{
+    if (!checkHumanoidAttributes()) return 0;
+    Vector3 up = humanoidRootPart->getCoordinateFrame().upVector();
+    Vector3 absNormUp = normalize(abs(up));
+    return (round(absNormUp.y) != 1);
 }
 
 bool RBX::Humanoid::limbsCheck()
@@ -135,7 +117,7 @@ void RBX::Humanoid::setWalkDirection(Vector3 value)
             walkDirection.x = x * v4;
             walkDirection.y = 0;
             walkDirection.z = z * v4;
-            walkDirection *= 5; /* walk speed */
+            walkDirection *= walkSpeed; /* walk speed */
             walkMode = DIRECTION_MOVE;
         }
     }
@@ -178,7 +160,7 @@ void RBX::Humanoid::jumpTimeStep()
     else
     {
         if (!canJump)
-            jumpClock += RunService::singleton()->deltaTime;
+            jumpClock += RunService::get()->deltaTime;
     }
 }
 
@@ -187,19 +169,52 @@ void RBX::Humanoid::resetJumpTimer()
     canJump = 0;
 }
 
+void RBX::Humanoid::buildJoints()
+{
+    if (isJoined()) return;
+
+    snap(humanoidRootPart, humanoidHead);
+    snap(humanoidRootPart, getRightArm());
+    snap(humanoidRootPart, getLeftArm());
+    snap(humanoidRootPart, getRightLeg());
+    snap(humanoidRootPart, getLeftLeg());
+
+    setLegCollisions(false);
+
+    Body* body = humanoidHead->getBody();
+    if (body && body->body)
+    {
+        Vector3 cofm = humanoidRootPart->getPosition();
+        dMass m;
+
+        m = body->getMass();
+        m.c[0] = cofm.x;
+        m.c[1] = cofm.y - 2;
+        m.c[2] = cofm.z;
+
+        dMassTranslate(&m, 0, 0, 0);
+        body->modifyMass(m);
+    }
+}
+
+void RBX::Humanoid::onKernelStep()
+{
+
+    if (!checkHumanoidAttributes())
+        return;
+
+    onStrafe();
+}
+
 void RBX::Humanoid::onStep()
 {
+
     /* first things first.. build the guy! */
 
     if (!checkHumanoidAttributes())
         return;
 
     buildJoints();
-
-   // if (!isJoined())
-   // {
-   //     health = 0;
-   // }
 
     if (!health)
         onDied();
@@ -214,7 +229,9 @@ void RBX::Humanoid::updateHumanoidState()
     bool fallingOrJumping;
     fallingOrJumping = (humanoidState == Falling || humanoidState == Jumping);
 
-    if (isGrounded() && !fallingOrJumping)
+    if (isGrounded() &&
+        !fallingOrJumping &&
+        walkDirection == Vector3::zero())
     {
         humanoidState = Running;
     }
@@ -236,20 +253,6 @@ void RBX::Humanoid::updateHumanoidState()
     {
         humanoidState = Jumping;
     }
-     
-    if (humanoidRootPart)
-    {
-        Vector3 up;
-        CoordinateFrame cframe;
-
-        cframe = humanoidRootPart->getCFrame();
-        up = cframe.upVector();
-
-        if (up.y < 0.5f)
-        {
-            humanoidState = Tripped;
-        }
-    }
 }
 
 void RBX::Humanoid::render(RenderDevice* rd)
@@ -257,7 +260,7 @@ void RBX::Humanoid::render(RenderDevice* rd)
     GFontRef fnt;
     RBX::Network::Player* localPlayer;
 
-    fnt = Gui::singleton()->font;
+    fnt = Gui::get()->font;
     localPlayer = RBX::Network::getPlayers()->localPlayer;
 
     if (!checkHumanoidAttributes())

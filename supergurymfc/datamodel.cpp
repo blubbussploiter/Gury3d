@@ -1,7 +1,7 @@
 
-#include "pch.h"
-#include "framework.h"
-#include "MainFrm.h"
+#include "studio/pch.h"
+#include "studio/framework.h"
+#include "studio/MainFrm.h"
 
 #include "scene.h"
 #include "workspace.h"
@@ -30,7 +30,7 @@ RTTR_REGISTRATION
 
 RBX::Datamodel* RBX::Datamodel::getDatamodel()
 {
-    RBX::Experimental::Application* application = RBX::AppManager::singleton()->getApplication();
+    RBX::Experimental::Application* application = RBX::AppManager::get()->getApplication();
     if (application)
     {
         return application->getDatamodel();
@@ -42,12 +42,13 @@ void RBX::Datamodel::loadContent(std::string contentId)
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel loading %s", contentId.c_str());
     RBX::Serializer::load(contentId);
+    //JointsService::get()->buildGlobalJoints();
 }
 
 void RBX::Datamodel::close()
 {
     RBX::StandardOut::print(MESSAGE_INFO, "DataModel::close()");
-    RBX::Scene::singleton()->close();
+    RBX::Scene::get()->close();
     Kernel::get()->cleanup();
     RBX::Log::cleanup();
     emptyExplorerWindow();
@@ -103,14 +104,11 @@ void RBX::Datamodel::open()
     players = new RBX::Network::Players();   
     jointService = new JointsService();
     selectionService = new Selection();
-    guiRoot = Gui::singleton();
+    guiRoot = new Gui::GuiRoot();
     runService->scriptContext = scriptContext;
     yieldingThreads = new Lua::YieldingThreads(scriptContext);
 
     fillExplorerWindow();
-
-    /* if not server */
-    // guiRoot->initFont();
 }
 
 void RBX::Datamodel::step(double deltaTime)

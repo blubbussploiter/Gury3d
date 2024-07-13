@@ -2,6 +2,11 @@
 #include "camera.h"
 #include "sounds.h"
 
+#include "ray.h"
+
+#include "stdout.h"
+#include "players.h"
+
 static RBX::Sound* switch3 = RBX::Sound::fromFile(GetFileInPath("/content/sounds/SWITCH3.wav"));
 
 void RBX::Camera::lookAt(const Vector3& position)
@@ -22,7 +27,43 @@ void RBX::Camera::setFrame(const CoordinateFrame& cf)
 	cframe = cf;
 	lookAt(cframe.translation + look);
 	focusPosition = cframe.translation + cframe.lookVector() * zoom;
-	if(focusPart) focusPosition = focusPart->getPosition();
+}
+
+void RBX::Camera::occlude()
+{
+	if (focusPart)
+	{
+		RBX::World::Ray* ray;
+		RBX::Network::Player* player;
+		RBX::ISelectable* selectable;
+		RBX::PartInstance* part;
+		RBX::Instance* parent;
+
+		Vector3 startPos, negLook, hit;
+
+		player = RBX::Network::getPlayers()->localPlayer;
+		parent = focusPart->getParent();
+
+		if ((player && player->character)
+			&& parent && parent != player->character) return;
+
+		startPos = cframe.translation;
+		negLook = focusPart->getPosition();
+
+		ray = new World::Ray(startPos, negLook);
+		selectable = World::getPartFromG3DRay<Instance>(ray->g3dRay, hit);
+
+		if ((part = dynamic_cast<RBX::PartInstance*>(selectable)) && part)
+		{
+			if (part->getParent() != parent)
+			{
+				Vector3 pos = ray->p;
+				float distance = (pos - startPos).magnitude();
+
+				cframe.translation += (cframe.lookVector() * distance);
+			}
+		}
+	}
 }
 
 CoordinateFrame RBX::Camera::getCoordinateFrame()
@@ -40,11 +81,9 @@ void RBX::Camera::refreshZoom(const CoordinateFrame& frame)
 	setFrame(zoomFrame);
 }
 
-void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool shouldLerp, float lerpTime)
+void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool lookAt)
 {
-
 	Vector3 pos;
-	Vector3 _old;
 
 	yaw += spdX;
 	pitch += spdY;
@@ -52,14 +91,13 @@ void RBX::Camera::pan(CoordinateFrame* frame, float spdX, float spdY, bool shoul
 	if (pitch > 1.4f) pitch = 1.4f;
 	if (pitch < -1.4f) pitch = -1.4f;
 
-	_old = frame->translation;
-
 	pos = Vector3(sin(-yaw) * zoom * cos(pitch), sin(pitch) * zoom, cos(-yaw) * zoom * cos(pitch)) + focusPosition;
 
 	frame->translation = pos;
-	if(shouldLerp) frame->translation = lerp(_old, pos, lerpTime);
-
-	frame->lookAt(focusPosition);
+	if (lookAt)
+	{
+		frame->lookAt(focusPosition);
+	}
 }
 
 void RBX::Camera::panLock(CoordinateFrame* frame, float spdX, float spdY)
@@ -92,38 +130,53 @@ void RBX::Camera::panLock(CoordinateFrame* frame, float spdX, float spdY)
 
 void RBX::Camera::Zoom(short delta)
 {
-	
-	isZooming = 1;
-
-	switch3->play();
+	if (cameraType != Follow)
+	{
+		switch3->play();
+	}
+	if (oldZoom > zoom)
+	{
+		zoom = oldZoom;
+		oldZoom = 0;
+		pan(&cframe, 0, 0);
+	}
 
 	if (delta>0) { // Mouse wheel up
-		CoordinateFrame zoomFrame = cframe + cframe.lookVector()*(zoom*0.2f);
-		zoom=(zoomFrame.translation-focusPosition).magnitude();
-		if (zoom>CAM_ZOOM_MIN)
+		CoordinateFrame zoomFrame = cframe + cframe.lookVector() * (zoom * 0.2f);
+		zoom = (zoomFrame.translation - focusPosition).magnitude();
+		if (zoom > CAM_ZOOM_MIN)
 		{
 			setFrame(zoomFrame);
-			if(cameraType == Follow) tiltDown(15, 1);
 		}
 		else
 		{
-			zoom=CAM_ZOOM_MIN;
+			zoom = CAM_ZOOM_MIN;
 			refreshZoom(cframe);
+		}
+		if (cameraType == Follow)
+		{
+			tiltDown(5);
 		}
 	}
 	else 
 	{
-		CoordinateFrame zoomFrame = cframe - cframe.lookVector()*(zoom*0.2f);
-		zoom=(zoomFrame.translation-focusPosition).magnitude();
-		if (zoom<CAM_ZOOM_MAX)
+		if (canZoom(0))
 		{
-			setFrame(zoomFrame);
-			if (cameraType == Follow) tiltUp(15, 1);
+			CoordinateFrame zoomFrame = cframe - cframe.lookVector() * (zoom * 0.2f);
+			zoom = (zoomFrame.translation - focusPosition).magnitude();
+			if (zoom < CAM_ZOOM_MAX)
+			{
+				setFrame(zoomFrame);
+			}
+			else
+			{
+				zoom = CAM_ZOOM_MAX;
+				refreshZoom(cframe);
+			}
 		}
-		else
+		if (cameraType == Follow)
 		{
-			zoom=CAM_ZOOM_MAX;
-			refreshZoom(cframe);
+			tiltUp(5);
 		}
 	}
 }

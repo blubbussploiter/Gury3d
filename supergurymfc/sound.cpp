@@ -16,13 +16,28 @@ void RBX::Sound::setStartPosition(double value)
 	}
 }
 
+void RBX::Sound::setEndPosition(double value)
+{
+
+}
+
+void RBX::Sound::playOnce()
+{
+	if (!isPlaying())
+	{
+		play();
+	}
+}
+
 void RBX::Sound::play()
 {
-	if(!sound)
-		SoundService::singleton()->mpSystem->createSound(soundPath.c_str(), 0, 0, &sound);
+	if (!sound)
+	{
+		SoundService::get()->mpSystem->createSound(soundPath.c_str(), 0, 0, &sound);
+	}
 
 	sound->setMode(FMOD_LOOP_OFF);
-	SoundService::singleton()->mpSystem->playSound(sound, 0, 0, &channel);
+	SoundService::get()->mpSystem->playSound(sound, 0, 0, &channel);
 	channel->setPosition(startPosition, FMOD_TIMEUNIT_MS);
 	channel->setVolume(volume);
 }

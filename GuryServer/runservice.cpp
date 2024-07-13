@@ -1,46 +1,117 @@
+
+#include <queue>
+
 #include "stdout.h"
 
-#include "model.h"
-
 #include "scene.h"
-#include "jointservice.h"
+#include "workspace.h"
+
+#include "scriptcontext.h"
+#include "jointsservice.h"
+
 #include "datamodel.h"
+#include "players.h"
+
+RTTR_REGISTRATION
+{
+    rttr::registration::class_<RBX::RunService>("RunService")
+        .constructor<>()
+        .method("pause", &RBX::RunService::stop)
+        .method("run", &RBX::RunService::run);
+}
 
 void RBX::RunService::run()
 {
+    if (isRunning) return;
+
+    RBX::Network::Player* localPlayer;
+    localPlayer = RBX::Network::getPlayers()->localPlayer;
+
+    Scene::singleton()->saveStartPVs();
+    Kernel::get()->spawnWorld();
+
+    if (!hasStarted)
+    {
+        reset();
+        hasStarted = 1;
+    }
+    else
+    {
+        if (!isPaused)
+        {
+            restartPvs();
+        }
+    }
+
+    if (localPlayer)
+    {
+        localPlayer->setAsController();
+    }
+
+    if (scriptContext)
+    {
+        //scriptContext->runScripts();
+    }
+
     isRunning = true;
-    reset();
+    isPaused = false;
+}
+
+void RBX::RunService::pause()
+{
+    stop();
+    isPaused = true;
 }
 
 void RBX::RunService::stop()
 {
     isRunning = false;
+    isPaused = false;
 }
 
 void RBX::RunService::reset()
 {
-    RBX::Scene::singleton()->updatePhysicsObjects();
-   // RBX::Workspace::singleton()->buildJoints();
+    if (!hasStarted) /* to do : make this dependent on the functions below! this doesnt check for new objects / objects added after run */
+    {
+       JointsService::singleton()->buildGlobalJoints();
+       JointsService::singleton()->buildConnectors();
+    }
+    else
+    {
+        stop();
+        shouldReset = 1;
+    }
 }
 
 void RBX::RunService::update()
 {
-    for (int i = 0; i < 6; i++)
+
+    if (isRunning)
     {
-        physics->update();
+        RBX::Scene::singleton()->updateSteppables();
+        RBX::Scene::singleton()->updateSteppablesKernelly();
+
+        for (int i = 0; i < 4; i++)
+        {
+            Kernel::get()->step(0.04f);
+        }
+
     }
 
-    RBX::JointService::singleton()->update();
+    /* reset pvs */
 
-    RBX::Scene::singleton()->updatePhysicsObjects();
-    RBX::Scene::singleton()->updateSteppables();
+    if (shouldReset)
+    {
+        resetPvs();
+        shouldReset = 0;
+    }
 
 }
 
-void RBX::RunService::heartbeat()
+void RBX::RunService::heartbeat(float deltaTime)
 {
+    this->deltaTime = deltaTime;
     update();
-    //updateSteppers();
 }
 
 void RBX::RunService::updateSteppers()
@@ -51,12 +122,35 @@ void RBX::RunService::updateSteppers()
     }
 }
 
-void RBX::RunService::workspaceOnDescendentAdded(RBX::Instance* descendent)
+void RBX::RunService::resetPvs()
 {
-    if (descendent->isSteppable)
+    Instances scene = Scene::singleton()->getArrayOfObjects();
+    for (unsigned int i = 0; i < scene.size(); i++)
     {
-        steppers->push_back(descendent);
+        PVInstance* pv = toInstance<PVInstance>(scene.at(i));
+        if (pv)
+        {
+            pv->resetPV();
+        }
     }
+}
+
+void RBX::RunService::restartPvs()
+{
+    Instances scene = Scene::singleton()->getArrayOfObjects();
+    for (unsigned int i = 0; i < scene.size(); i++)
+    {
+        PVInstance* pv = toInstance<PVInstance>(scene.at(i));
+        if (pv)
+        {
+            pv->restartPV();
+        }
+    }
+}
+
+void RBX::RunService::onWorkspaceDescendentAdded(RBX::Instance* descendent)
+{
+
 }
 
 RBX::RunService* RBX::RunService::singleton()

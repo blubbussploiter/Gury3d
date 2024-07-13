@@ -7,10 +7,8 @@
 
 #include <thread>
 
-#include "rbx.h"
-#include "stdout.h"
-#include "appmanager.h"
-#include "crashreporter.h"
+#include "supergurymfc.h"
+#include "supergurymfcview.h"
 
 int main()
 {
@@ -18,29 +16,33 @@ int main()
 	//CStudioApp* studio;
 	//studio = new CStudioApp();
 
-	RBX::AppManager* manager = RBX::AppManager::singleton();
-	RBX::CrashReporter::singleton()->start();
+	//RBX::CrashReporter::singleton()->start();
+	/*
 
-	WNDCLASS wndClass = { };
-	HINSTANCE hInst = GetModuleHandle(0);
+	GAppSettings settings;
 
-	wndClass.style = 0;         // Windows Style (future article)
-	wndClass.lpfnWndProc = DefWindowProc;         // The Window Procedure
-	wndClass.cbClsExtra = 0;         // Extra memory for this class
-	wndClass.cbWndExtra = 0;         // Extra memory for this window
-	wndClass.hInstance = hInst;         // The definition of the instance of the application
-	wndClass.hIcon = 0;         // The icon in the upper left corner
-	wndClass.hCursor = 0;//::LoadCursor(0, IDC_ARROW);   // The cursor for this window
-	wndClass.hbrBackground = 0;//(HBRUSH)(COLOR_WINDOW + 1);   // The background color for this window
-	wndClass.lpszMenuName = 0;         // The name of the class for the menu for this window
-	wndClass.lpszClassName = "gcc";      // The name of this class
+	settings.window.width = 820;
+	settings.window.height = 480;
+	settings.window.resizable = true;
+	settings.dataDir = ConFileInPath("\\content\\");
 
-	RegisterClass(&wndClass);
+	Rendering::G3DApp app(settings);
 
-	manager->setCurrentApplication(manager->instantiate(0));
-	manager->getApplication()->start();
+	app.debugController.setActive(false);
 
-	manager->start();
+	app.run();
+	*/
+
+	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 1))
+	{
+		_tprintf(_T("Fatal Error: MFC initialization failed\n"));
+		return 1;
+	}
+
+	theApp.InitApplication();
+	theApp.InitInstance();
+
+	theApp.Run();
 
 	return 0;
 }

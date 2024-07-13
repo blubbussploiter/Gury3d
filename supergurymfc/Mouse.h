@@ -41,8 +41,8 @@ namespace RBX
 			Ray ray;
 			Rect2D viewport;
 
-			viewport = AppManager::singleton()->getApplication()->getViewport();
-			Camera* camera = Camera::singleton();
+			viewport = AppManager::get()->getApplication()->getViewport();
+			Camera* camera = Camera::get();
 
 			ray = camera->camera->worldRay(x, y, viewport);
 			target = (PVInstance*)World::getPartFromG3DRay<IgnoredItem>(ray, hitWorld, 0, ignore);
